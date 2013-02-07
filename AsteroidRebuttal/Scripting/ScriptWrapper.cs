@@ -11,6 +11,8 @@ namespace AsteroidRebuttal.Scripting
     {
         // Stores the script itself
         IEnumerator<float> thisScript;
+        public bool IsObjectScript { get; private set; }
+        public GameObject ScriptObject { get; private set; }
 
         // The amount of time this script should sleep for
         float SleepTime;
@@ -44,6 +46,7 @@ namespace AsteroidRebuttal.Scripting
             State = ScriptState.Running;
             SleepTime = 0f;
 
+            IsObjectScript = false;
             Initialized = initialized;
         }
 
@@ -53,11 +56,17 @@ namespace AsteroidRebuttal.Scripting
             State = ScriptState.Running;
             SleepTime = 0f;
 
+            IsObjectScript = true;
+            ScriptObject = go;
+
             Initialized = initialized;
         }
 
         public void Update(GameTime gameTime)
         {
+            if (IsObjectScript && ScriptObject == null)
+                State = ScriptState.Completed;
+
             if (State == ScriptState.Completed)
                 return;
 
@@ -98,6 +107,12 @@ namespace AsteroidRebuttal.Scripting
                 default:
                     break;
             }
+        }
+
+        public void SetCompleted()
+        {
+            Console.WriteLine("Script set to complete!");
+            State = ScriptState.Completed;
         }
     }
 

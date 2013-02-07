@@ -22,6 +22,8 @@ namespace AsteroidRebuttal.GameObjects
         #endregion
 
         #region Position, Hitboxes, Collision
+        // The parent object, if it exists
+        public GameObject Parent { get; set; }
 
         // The position of the game object in world space
         private Vector2 _position;
@@ -29,7 +31,7 @@ namespace AsteroidRebuttal.GameObjects
         {
             get { return _position; }
 
-            protected set
+            set
             {
                 _position = value;
                 if (Hitbox != null)
@@ -48,6 +50,10 @@ namespace AsteroidRebuttal.GameObjects
         public Vector2 Center
         {
             get { return Position + Origin; }
+            set
+            {
+                Position = value - Origin;
+            }
         }
 
         public Circle Hitbox { get; protected set; }
@@ -68,6 +74,9 @@ namespace AsteroidRebuttal.GameObjects
             }
         }
 
+        // Stores the object's position on the last frame.
+        public Vector2 LastPosition { get; protected set; }
+
         // Stores the vector of movement
         public Vector2 MovementVector { get; protected set; }
 
@@ -77,11 +86,36 @@ namespace AsteroidRebuttal.GameObjects
         // This is the layer on which this object will send collision.
         public int CollisionLayer;
 
+        public bool LockedToParentPosition { get; set; }
+        public Vector2 LockPositionOffset { get; set; }
+        public bool LockedToParentRotation { get; set; }
+
+        public Vector2 DeletionBoundary { get; protected set; }
+
         #endregion
 
         #region Game Physics
         // Angle of rotation in radians
-        public float Rotation { get; set; }
+        private float _rotation;
+        public float Rotation 
+        {
+            get
+            {
+                return _rotation;
+            }
+            set
+            {
+                _rotation = value;
+                if (DrawAtTrueRotation)
+                    DrawRotation = value;
+            }
+        }
+
+        // Angle of the object's draw rotation.
+        public virtual float DrawRotation { get; set; }
+
+        // If this is true, DrawRotation will be updated to match Rotation.  Otherwise it must be set separately.
+        public bool DrawAtTrueRotation { get; set; }
 
         // How fast the object is moving
         public float Velocity { get; set; }
@@ -127,6 +161,12 @@ namespace AsteroidRebuttal.GameObjects
         public bool IsNewObject = true;
         #endregion
 
+        #region Miscellaneous
+        public float CustomValue1 { get; set; }
+        public float CustomValue2 { get; set; }
+        public float CustomValue3 { get; set; }
+        public float CustomValue4 { get; set; }
+        #endregion
 
         public virtual void Initialize()
         {
@@ -140,44 +180,89 @@ namespace AsteroidRebuttal.GameObjects
 
             if (thisScene != null)
                 thisScene.AddGameObject(this);
+
+            if (DeletionBoundary == null)
+            {
+                DeletionBoundary = new Vector2(Hitbox.Radius, Hitbox.Radius);
+            }
         }
+
 
         public virtual void Update(GameTime gameTime)
         {
-            // If acceleration exists, modify velocity by it
-            if(Acceleration != 0)
+            // Check if object is off screen and remove it if it is.
+            CheckIfOffScreen();
+
+            // Update the last position no matter what.
+            LastPosition = Position;
+
+            if (Parent != null && LockedToParentRotation)
             {
-                Velocity += Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                Console.WriteLine("LOCKED ROTATION SET");
+                Rotation = Parent.Rotation;
+            }
+            else
+            {
+                // If angular acceleration is not 0, change the angular velocity of the object
+                if (AngularAcceleration != 0)
+                {
+                    AngularVelocity += AngularAcceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+
+                // If angular velocity is not 0, change the rotation of the object
+                if (AngularVelocity != 0)
+                {
+                    Rotation += AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
             }
 
-            // If angular velocity is not 0, change the angular velocity of the object
-            if (AngularAcceleration != 0)
+            // If the object has a parent and its position is locked to it...
+            if (Parent != null && LockedToParentPosition)
             {
-                AngularVelocity += AngularAcceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                // Set the position to the parent.
+                Center = Parent.Center + LockPositionOffset;
+            }
+            else
+            {
+                // If acceleration exists, modify velocity by it
+                if (Acceleration != 0)
+                {
+                    Velocity += Acceleration * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                }
+
+                // Move the object forward by its velocity if it is not equal to 0
+                if (Velocity != 0)
+                {
+                    // Create a new vector to store movement
+                    Vector2 movement = new Vector2();
+
+                    movement.X = (float)Math.Cos(Rotation) * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                    movement.Y = (float)Math.Sin(Rotation) * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+
+                    // Set the movement vector
+                    MovementVector = movement;
+
+                    // Actually move the object
+                    Position += MovementVector;
+                }
             }
             
-            // If angular velocity is not 0, change the rotation of the object
-            if (AngularVelocity != 0)
-            {
-                Rotation += AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
-            }
-
-            // Move the object forward by its velocity if it is not equal to 0
-            if (Velocity != 0)
-            {
-                // Create a new vector to store movement
-                Vector2 movement = new Vector2();
-
-                movement.X = (float)Math.Cos(Rotation) * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
-                movement.Y = (float)Math.Sin(Rotation) * (Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
-
-                // Actually move the object
-                MovementVector = movement;
-                Position += MovementVector;
-            }
 
             if (lerpingPosition || lerpingRotation || lerpingVelocity || lerpingAngularVelocity)
                 LerpUpdate(gameTime);
+        }
+
+
+        private void CheckIfOffScreen()
+        {
+            // Check if object is off screen and remove it if it is.
+            if (Hitbox.Center.X + Hitbox.Radius < thisScene.ScreenArea.X - DeletionBoundary.X ||
+                Hitbox.Center.X - Hitbox.Radius > thisScene.ScreenArea.Width + DeletionBoundary.X ||
+                Hitbox.Center.Y + Hitbox.Radius < thisScene.ScreenArea.Y - DeletionBoundary.Y ||
+                Hitbox.Center.Y - Hitbox.Radius > thisScene.ScreenArea.Height + DeletionBoundary.Y)
+            {
+                Destroy();
+            }
         }
 
         // Lerp values that are changing over time
@@ -190,6 +275,8 @@ namespace AsteroidRebuttal.GameObjects
                 newPos.X = MathHelper.Lerp(startPosition.X, targetPosition.X, positionLerpElapsedTime / positionLerpDuration);
                 newPos.Y = MathHelper.Lerp(startPosition.Y, targetPosition.Y, positionLerpElapsedTime / positionLerpDuration);
 
+                Center = newPos;
+
                 if (positionLerpElapsedTime >= positionLerpDuration)
                     lerpingPosition = false;
             }
@@ -197,8 +284,7 @@ namespace AsteroidRebuttal.GameObjects
             if (lerpingRotation)
             {
                 rotationLerpElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                Rotation = MathHelper.Lerp(startRotation, targetRotation, rotationLerpElapsedTime / rotationLerpDuration);
-                
+                Rotation = MathHelper.Lerp(startRotation, targetRotation, rotationLerpElapsedTime / rotationLerpDuration);              
 
                 if (rotationLerpElapsedTime >= rotationLerpDuration)
                     lerpingRotation = false;
@@ -228,14 +314,21 @@ namespace AsteroidRebuttal.GameObjects
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            // Take into account the rotation...
+            // Draw the sprite simply.
+            
+            //float drawnRotation;
+            //if (DrawAtTrueRotation) 
+                //drawnRotation = Rotation;
+            //else 
+                //drawnRotation = DrawRotation;
+
             spriteBatch.Draw(Texture, Position, Color.White);
         }
 
         public void LerpPosition(Vector2 newPosition, float duration)
         {
             lerpingPosition = true;
-            startPosition = Position;
+            startPosition = Center;
             targetPosition = newPosition;
             positionLerpDuration = duration;
             positionLerpElapsedTime = 0f;

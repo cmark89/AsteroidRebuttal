@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Media;
 using AsteroidRebuttal;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.GameObjects;
+using AsteroidRebuttal.Enemies;
 using AsteroidRebuttal.Scripting;
 using AsteroidRebuttal.Scenes;
 using ObjectivelyRadical;
@@ -48,7 +49,9 @@ namespace AsteroidRebuttal
 
             PlayerShip.LoadContent(Content);
             Bullet.LoadContent(Content);
+            BulletEmitter.LoadContent(Content);
             QuadTree.LoadContent(Content);
+            Boss.LoadContent(Content);
         }
 
 

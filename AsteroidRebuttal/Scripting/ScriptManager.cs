@@ -54,5 +54,13 @@ namespace AsteroidRebuttal.Scripting
         {
             scripts.Add(new ScriptWrapper(newScript, go, initialized));
         }
+
+        public void AbortObjectScripts(GameObject go)
+        {
+            foreach (ScriptWrapper sw in scripts.FindAll(x => x.ScriptObject == go))
+            {
+                sw.SetCompleted();
+            }
+        }
     }
 }

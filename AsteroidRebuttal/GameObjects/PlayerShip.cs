@@ -13,7 +13,7 @@ using AsteroidRebuttal.Scripting;
 
 namespace AsteroidRebuttal.GameObjects
 {
-    public class PlayerShip : GameObject
+    public class PlayerShip : GameObject, ICollidable
     {
         static Texture2D playerShipTexture;
         public static Texture2D hitboxTexture;
@@ -22,11 +22,22 @@ namespace AsteroidRebuttal.GameObjects
         List<Bullet> bullets;
 
         float speed = 250;
+        float currentGameTime;
+
+        public int[] CollidesWithLayers { get; set; }
+        public event CollisionEventHandler OnOuterCollision;
+        public event CollisionEventHandler OnInnerCollision;
+        public List<GameObject> CollidedObjects { get; set;  }
+
+        // Placeholder until cool weapons come
+        private BulletEmitter mainEmitter;
+        private bool firing;
+        private float nextFireTime;
 
         public PlayerShip(GameScene newScene = null, Vector2 position = new Vector2())
         {
             thisScene = newScene;
-            Position = position;
+            Center = position;
 
             Initialize();
         }
@@ -35,15 +46,28 @@ namespace AsteroidRebuttal.GameObjects
         {
             Console.WriteLine("Player initialized!");
             Texture = playerShipTexture;
-            scriptManager = new ScriptManager();
+
+            if (thisScene == null)
+                Console.WriteLine("This scene is null!?");
+            scriptManager = thisScene.scriptManager;
+
             bullets = new List<Bullet>();
 
             Origin = new Vector2(23.5f, 23.5f);
-            Hitbox = new Circle(Center, 17.5f);
+            Hitbox = new Circle(Center, 20f);
             UsesInnerHitbox = true;
             InnerHitbox = new Circle(new Vector2(23.5f, 19.5f), 4f);
 
-            scriptManager.Execute(FireBullet, true);
+            mainEmitter = new BulletEmitter(this, Position, false);
+            mainEmitter.LockedToParentPosition = true;
+            mainEmitter.LockPositionOffset = new Vector2(-16f, 0f);
+
+            CollidesWithLayers = new int[] { 0, 1 };
+            CollisionLayer = 3;
+
+
+            OnOuterCollision += ObjectGrazed;
+            OnInnerCollision += ObjectCollidedWith;
 
             base.Initialize();
         }
@@ -64,11 +88,11 @@ namespace AsteroidRebuttal.GameObjects
 
         public override void Update(GameTime gameTime)
         {
+            currentGameTime = (float)gameTime.TotalGameTime.TotalSeconds;
             scriptManager.Update(gameTime);
 
-            Console.Clear();
-
-            Console.WriteLine(string.Format("Main Hitbox: {0}, {1} ... Radius: {2}\nInner Hitbox: {3}, {4} ... Radius: {5}", Hitbox.Center.X, Hitbox.Center.Y, Hitbox.Radius, InnerHitbox.Center.X, InnerHitbox.Center.Y, InnerHitbox.Radius));
+            //Console.Clear();
+            //Console.WriteLine(string.Format("Main Hitbox: {0}, {1} ... Radius: {2}\nInner Hitbox: {3}, {4} ... Radius: {5}", Hitbox.Center.X, Hitbox.Center.Y, Hitbox.Radius, InnerHitbox.Center.X, InnerHitbox.Center.Y, InnerHitbox.Radius));
 
             Vector2 movement = new Vector2();
             // Update controls
@@ -83,6 +107,7 @@ namespace AsteroidRebuttal.GameObjects
                 moveSpeed = speed;
             }
 
+         
             if(KeyboardManager.KeyDown(Keys.Left))
             {
                 movement.X = -1 * (moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
@@ -98,6 +123,14 @@ namespace AsteroidRebuttal.GameObjects
             if(KeyboardManager.KeyDown(Keys.Down))
             {
                 movement.Y = (moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
+
+            if (KeyboardManager.KeyDown(Keys.Space) && gameTime.TotalGameTime.TotalSeconds > nextFireTime)
+            {
+                // Fire!
+                mainEmitter.FireBullet(((float)Math.PI / 2) * 3, 500f, Color.GreenYellow, BulletType.Diamond).SetCollisionLayer(2);
+
+                nextFireTime = (float)gameTime.TotalGameTime.TotalSeconds + .1f;
             }
 
             Position += movement;
@@ -116,90 +149,43 @@ namespace AsteroidRebuttal.GameObjects
             spriteBatch.Draw(QuadTree.texture, new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height), Color.White);
         }
 
-        // THESE ARE ALL FOR TESTING BULLET SCRIPTING
-        public IEnumerator<float> FireBullet()
-        {
-            BulletEmitter emitter = new BulletEmitter(this, Position);
-            ChildObjects.Add(emitter);
-            emitter.AngularVelocity = 2f;
-            int times = 0;
 
-            while(true)
+        public void OuterCollision(GameObject sender, CollisionEventArgs e)
+        {
+            if (OnOuterCollision != null)
+                OnOuterCollision(sender, e);
+        }
+
+        public void InnerCollision(GameObject sender, CollisionEventArgs e)
+        {
+            if (OnInnerCollision != null)
+                OnInnerCollision(sender, e);
+        }
+
+
+        public void ObjectGrazed(GameObject sender, CollisionEventArgs e)
+        {
+            // If the object grazed was a bullet, graze it and report the graze.
+            if (sender is Bullet)
             {
-                while (times < 35)
+                Bullet thisBullet = (Bullet)sender;
+                if (!thisBullet.Grazed)
                 {
-                    int numBullets;
-                    float spread;
-
-                    Bullet b = emitter.FireBullet(VectorMathHelper.GetAngleTo(emitter.Center, this.Center, .3f), 200f, Color.White);
-                    bullets.Add(b);
-                    scriptManager.Execute(RandomCoolChargeBullet, b);
-                    
-                    times++;
-                    yield return .03f;
+                    Console.WriteLine("Bullet Graze!");
+                    thisBullet.Grazed = true;
                 }
-
-                yield return 5f;
-                emitter.AngularVelocity *= -1;
-                times = 0;
+                return;
             }
+            
         }
 
-        public IEnumerator<float> BulletsWackyCurve(GameObject go)
+        public void ObjectCollidedWith(GameObject sender, CollisionEventArgs e)
         {
-            Bullet thisBullet = (Bullet)go;
-            float angleMultiplier = 1;
-
-            while (true)
+            if (sender is Bullet)
             {
-                if (thisBullet.Rotation < 6.5)
-                {
-                    angleMultiplier = 1;
-                }
-                else if(thisBullet.Rotation > 7.5)
-                {
-                    angleMultiplier = -1;
-                }
-
-                thisBullet.Rotation += .1f * angleMultiplier;
-                yield return 0;
+                Console.WriteLine("Killed by bullet!");
+                Destroy();
             }
-        }
-
-        public IEnumerator<float> RandomChargeBullet(GameObject go)
-        {
-            Bullet thisBullet = (Bullet)go;
-            Random rand = new Random();
-
-            yield return .8f;
-            thisBullet.Rotation = (float)rand.NextDouble() * 5f;
-        }
-
-        public IEnumerator<float> RandomCoolChargeBullet(GameObject go)
-        {
-            Bullet thisBullet = (Bullet)go;
-            Random rand = new Random();
-
-            thisBullet.LerpVelocity(100f, 1.5f);
-            yield return 2f;
-
-            foreach (Bullet b in (new BulletEmitter(this, thisBullet.Position, true).BulletExplosion(22, 150f, Color.Lerp(Color.White, Color.Magenta, 0.2f))))
-            {
-                bullets.Add(b);
-                scriptManager.Execute(SwitchDirections, b);
-            }
-
-            thisBullet.Destroy();
-        }
-
-        public IEnumerator<float> SwitchDirections(GameObject go)
-        {
-            Bullet thisBullet = (Bullet)go;
-            thisBullet.LerpVelocity(0f, 2f);
-            yield return 2f;
-
-            thisBullet.Rotation += (float)Math.PI;
-            thisBullet.LerpVelocity(300f, 3f);
         }
     }
 }

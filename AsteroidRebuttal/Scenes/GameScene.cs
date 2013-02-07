@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using AsteroidRebuttal.GameObjects;
+using AsteroidRebuttal.Enemies;
+using AsteroidRebuttal.Enemies.Bosses;
 using AsteroidRebuttal.Scripting;
 using AsteroidRebuttal.Core;
 
@@ -17,23 +19,26 @@ namespace AsteroidRebuttal.Scenes
     {
         public QuadTree quadtree {get; protected set;}
         public List<GameObject> gameObjects { get; private set; }
-        ScriptManager scriptManger;
+        public ScriptManager scriptManager;
 
         public Rectangle ScreenArea { get; private set; }
         float gameAreaBoundary = 100f;
 
-        PlayerShip player;
+        public PlayerShip player;
+
+        CollisionDetection collisionDetection;
 
         public override void Initialize()
         {
+
+            scriptManager = new ScriptManager();
             gameObjects = new List<GameObject>();
-            scriptManger = new ScriptManager();
             ScreenArea = new Rectangle(0, 0, AsteroidRebuttal.graphics.GraphicsDevice.Viewport.Width, AsteroidRebuttal.graphics.GraphicsDevice.Viewport.Height);
             quadtree = new QuadTree(0, ScreenArea);
-
-
+            collisionDetection = new CollisionDetection(this);
 
             player = new PlayerShip(this, new Vector2(100, 200));
+            new TestBoss(this, new Vector2(100, 50));
         }
 
 
@@ -49,6 +54,7 @@ namespace AsteroidRebuttal.Scenes
 
             foreach (GameObject go in gameObjects.FindAll(x => x.FlaggedForRemoval))
             {
+                scriptManager.AbortObjectScripts(go);
                 gameObjects.Remove(go);
             }
 
@@ -65,6 +71,8 @@ namespace AsteroidRebuttal.Scenes
                 go.Update(gameTime);
                 quadtree.Insert(go);
             }
+
+            collisionDetection.BroadphaseCollisionDetection();
         }
 
         public void RemoveObjectsOutsideScreen()
@@ -89,7 +97,7 @@ namespace AsteroidRebuttal.Scenes
                 go.Draw(spriteBatch);
             }
 
-            quadtree.Draw(spriteBatch);
+            //quadtree.Draw(spriteBatch);
         }
 
         public void AddGameObject(GameObject newObject)
