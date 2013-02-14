@@ -20,7 +20,7 @@ namespace AsteroidRebuttal.GameObjects
         {
             Parent = newParent;
             thisScene = newParent.thisScene;
-            Position = newPosition;
+            Center = newPosition;
             Type = type;
 
             if (oneshot)
@@ -36,6 +36,8 @@ namespace AsteroidRebuttal.GameObjects
             // Set phasing to true by default.
             Phasing = true;
             CollisionLayer = 8;
+
+            DeletionBoundary = new Vector2(100, 100);
 
             // Switch on the type to set its graphics
             if (Type != BulletEmitterType.Invisible)

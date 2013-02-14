@@ -29,7 +29,7 @@ namespace AsteroidRebuttal.Core
                 ICollidable thisIC = (ICollidable)ic;
                 // Next, get all the objects from that object's sector of the quadtree.
                 // Exclude all objects further away than 3 times the object's hitbox radius.
-                List<GameObject> collisionCandidates = thisScene.quadtree.Retrieve(ic).FindAll(x => Vector2.Distance(x.Hitbox.Center, ic.Hitbox.Center) < ic.Hitbox.Radius * 3);
+                List<GameObject> collisionCandidates = thisScene.quadtree.Retrieve(ic).FindAll(x => !x.Phasing && Vector2.Distance(x.Hitbox.Center, ic.Hitbox.Center) < ic.Hitbox.Radius * 3);
 
                 // For each object returned that is not phasing and that the ICollidable is able to collide with...
                 foreach (GameObject go in collisionCandidates.FindAll(x => !x.Phasing && thisIC.CollidesWithLayers.Contains(x.CollisionLayer)))

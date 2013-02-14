@@ -38,7 +38,7 @@ namespace AsteroidRebuttal.Scenes
             collisionDetection = new CollisionDetection(this);
 
             player = new PlayerShip(this, new Vector2(100, 200));
-            new TestBoss(this, new Vector2(100, 50));
+            new PhantomBoss(this, new Vector2(320, 50));
         }
 
 
@@ -72,6 +72,7 @@ namespace AsteroidRebuttal.Scenes
                 quadtree.Insert(go);
             }
 
+            scriptManager.Update(gameTime);
             collisionDetection.BroadphaseCollisionDetection();
         }
 

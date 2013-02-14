@@ -17,6 +17,7 @@ namespace AsteroidRebuttal.GameObjects
         #region Core Fields
         // The texture of the game object
         public Texture2D Texture { get; protected set; }
+        public Color Color { get; protected set; }
         public GameScene thisScene;
         public List<GameObject> ChildObjects { get; protected set; }
         #endregion
@@ -130,28 +131,34 @@ namespace AsteroidRebuttal.GameObjects
         #region Private Lerping Properties
         // I know there's a better way to do this, but for now this will suffice
         bool lerpingPosition;
-        float positionLerpElapsedTime;
-        float positionLerpDuration;
+        double positionLerpElapsedTime;
+        double positionLerpDuration;
         Vector2 startPosition;
         Vector2 targetPosition;
 
         bool lerpingRotation;
-        float rotationLerpElapsedTime;
-        float rotationLerpDuration;
+        double rotationLerpElapsedTime;
+        double rotationLerpDuration;
         float startRotation;
         float targetRotation;
 
         bool lerpingVelocity;
-        float velocityLerpElapsedTime;
-        float velocityLerpDuration;
+        double velocityLerpElapsedTime;
+        double velocityLerpDuration;
         float startVelocity;
         float targetVelocity;
 
         bool lerpingAngularVelocity;
-        float angularVelocityLerpElapsedTime;
-        float angularVelocityLerpDuration;
+        double angularVelocityLerpElapsedTime;
+        double angularVelocityLerpDuration;
         float startAngularVelocity;
         float targetAngularVelocity;
+
+        bool lerpingColor;
+        double colorLerpElapsedTime;
+        double colorLerpDuration;
+        Color startColor;
+        Color targetColor;
 
         #endregion
 
@@ -179,11 +186,23 @@ namespace AsteroidRebuttal.GameObjects
             }
 
             if (thisScene != null)
+            {
                 thisScene.AddGameObject(this);
+            }
+
+            if (Texture != null && Origin == null)
+            {
+                Origin = new Vector2(Texture.Width/2, Texture.Height/2);
+            }
 
             if (DeletionBoundary == null)
             {
                 DeletionBoundary = new Vector2(Hitbox.Radius, Hitbox.Radius);
+            }
+
+            if (Color == null)
+            {
+                Color = Color.White;
             }
         }
 
@@ -248,7 +267,7 @@ namespace AsteroidRebuttal.GameObjects
             }
             
 
-            if (lerpingPosition || lerpingRotation || lerpingVelocity || lerpingAngularVelocity)
+            if (lerpingPosition || lerpingRotation || lerpingVelocity || lerpingAngularVelocity || lerpingColor)
                 LerpUpdate(gameTime);
         }
 
@@ -270,10 +289,10 @@ namespace AsteroidRebuttal.GameObjects
         {
             if (lerpingPosition)
             {
-                positionLerpElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                positionLerpElapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
                 Vector2 newPos = new Vector2();
-                newPos.X = MathHelper.Lerp(startPosition.X, targetPosition.X, positionLerpElapsedTime / positionLerpDuration);
-                newPos.Y = MathHelper.Lerp(startPosition.Y, targetPosition.Y, positionLerpElapsedTime / positionLerpDuration);
+                newPos.X = MathHelper.Lerp(startPosition.X, targetPosition.X, (float)positionLerpElapsedTime / (float)positionLerpDuration);
+                newPos.Y = MathHelper.Lerp(startPosition.Y, targetPosition.Y, (float)positionLerpElapsedTime / (float)positionLerpDuration);
 
                 Center = newPos;
 
@@ -283,8 +302,8 @@ namespace AsteroidRebuttal.GameObjects
 
             if (lerpingRotation)
             {
-                rotationLerpElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                Rotation = MathHelper.Lerp(startRotation, targetRotation, rotationLerpElapsedTime / rotationLerpDuration);              
+                rotationLerpElapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
+                Rotation = MathHelper.Lerp(startRotation, targetRotation, (float)rotationLerpElapsedTime / (float)rotationLerpDuration);              
 
                 if (rotationLerpElapsedTime >= rotationLerpDuration)
                     lerpingRotation = false;
@@ -292,8 +311,8 @@ namespace AsteroidRebuttal.GameObjects
 
             if (lerpingVelocity)
             {
-                velocityLerpElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                Velocity = MathHelper.Lerp(startVelocity, targetVelocity, velocityLerpElapsedTime / velocityLerpDuration);
+                velocityLerpElapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
+                Velocity = MathHelper.Lerp(startVelocity, targetVelocity, (float)velocityLerpElapsedTime / (float)velocityLerpDuration);
 
 
                 if (velocityLerpElapsedTime >= velocityLerpDuration)
@@ -302,12 +321,21 @@ namespace AsteroidRebuttal.GameObjects
 
             if (lerpingAngularVelocity)
             {
-                angularVelocityLerpElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                AngularVelocity = MathHelper.Lerp(startAngularVelocity, targetAngularVelocity, angularVelocityLerpElapsedTime / angularVelocityLerpDuration);
+                angularVelocityLerpElapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
+                AngularVelocity = MathHelper.Lerp(startAngularVelocity, targetAngularVelocity, (float)angularVelocityLerpElapsedTime / (float)angularVelocityLerpDuration);
 
 
                 if (angularVelocityLerpElapsedTime >= angularVelocityLerpDuration)
                     lerpingAngularVelocity = false;
+            }
+
+            if (lerpingColor)
+            {
+                colorLerpElapsedTime += gameTime.ElapsedGameTime.TotalSeconds;
+                Color = Color.Lerp(startColor, targetColor, (float)colorLerpElapsedTime / (float)colorLerpDuration);
+
+                if (colorLerpElapsedTime >= colorLerpDuration)
+                    lerpingColor = false;
             }
         }
 
@@ -322,7 +350,7 @@ namespace AsteroidRebuttal.GameObjects
             //else 
                 //drawnRotation = DrawRotation;
 
-            spriteBatch.Draw(Texture, Position, Color.White);
+            spriteBatch.Draw(Texture, Position, Color);
         }
 
         public void LerpPosition(Vector2 newPosition, float duration)
@@ -361,15 +389,16 @@ namespace AsteroidRebuttal.GameObjects
             angularVelocityLerpElapsedTime = 0f;
         }
 
-        //public void LerpAcceleration(float newAcceleration, float duration)
-        //{
-        //}
+        public void LerpColor(Color newColor, float duration)
+        {
+            lerpingColor = true;
+            startColor = Color;
+            targetColor = newColor;
+            colorLerpDuration = duration;
+            colorLerpElapsedTime = 0f;
+        }
 
-        //public void LerpAngularAcceleration(float newAngularAcceleration, float duration)
-        //{
-        //}
-
-        // Lerp color
+        
         public void SetCollisionLayer(int newLayer)
         {
             CollisionLayer = newLayer;

@@ -19,6 +19,8 @@ namespace AsteroidRebuttal.Scripting
     {
         public List<ScriptWrapper> scripts { get; set; }
 
+        ScriptWrapper lastScript;
+
         public ScriptManager()
         {
             scripts = new List<ScriptWrapper>();

@@ -22,8 +22,6 @@ namespace AsteroidRebuttal.GameObjects
         #endregion
 
         BulletType bulletType;
-        // Stores the color of the bullet.
-        Color bulletColor;
 
         // Stores whether or not the bullet has already been grazed.
         public bool Grazed { get; set; }
@@ -37,11 +35,13 @@ namespace AsteroidRebuttal.GameObjects
         {
             parent = newParent;
 
-            Center = newPosition;
+            // Because the Origin does not exist yet, set Position here and update it later once Origin exists.
+            Position = newPosition;
+
             Rotation = newRotation;
             Velocity = newVelocity;
 
-            bulletColor = newColor;
+            Color = newColor;
             bulletType = type;
 
             Initialize();
@@ -85,6 +85,7 @@ namespace AsteroidRebuttal.GameObjects
                     break;
             }
 
+            Center = Position;
             DeletionBoundary = new Vector2(24, 24);
              
             base.Initialize();
@@ -116,8 +117,7 @@ namespace AsteroidRebuttal.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Center, Texture.Bounds, bulletColor, Rotation + ((float)Math.PI / 2), Origin, 1f, SpriteEffects.None, 0f);
-            //spriteBatch.Draw(PlayerShip.hitboxTexture, new Rectangle((int)Hitbox.Center.X - (int)Hitbox.Radius, (int)Hitbox.Center.Y - (int)Hitbox.Radius, (int)Hitbox.Radius * 2, (int)Hitbox.Radius * 2), Color.White);
+            spriteBatch.Draw(Texture, Center, Texture.Bounds, Color, Rotation + ((float)Math.PI / 2), Origin, 1f, SpriteEffects.None, 0f);
         }
     }
 

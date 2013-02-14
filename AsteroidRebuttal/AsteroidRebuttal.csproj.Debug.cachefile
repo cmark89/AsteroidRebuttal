@@ -4,8 +4,12 @@ Content\Graphics\QuadtreeFont.xnb
 Content\Graphics\hitbox.xnb
 Content\Graphics\Bullets\ArrowBullet.xnb
 Content\Graphics\Bullets\DiamondBullet.xnb
-Content\Graphics\SHIP03.xnb
 Content\Graphics\Bullets\BulletCircleSmall.xnb
 Content\Graphics\Bullets\BulletCircle16.xnb
 Content\Graphics\Bullets\Diamond32.xnb
 Content\Graphics\BulletEmitters\eyefamiliar.xnb
+Content\Graphics\Ships\Enemy1.xnb
+Content\Graphics\Ships\Enemy4.xnb
+Content\Graphics\Ships\Boss2.xnb
+Content\Graphics\Ships\Enemy2.xnb
+Content\Graphics\Ships\Enemy3.xnb

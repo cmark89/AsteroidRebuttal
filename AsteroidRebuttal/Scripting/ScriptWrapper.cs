@@ -15,7 +15,7 @@ namespace AsteroidRebuttal.Scripting
         public GameObject ScriptObject { get; private set; }
 
         // The amount of time this script should sleep for
-        float SleepTime;
+        double SleepTime;
 
         // Stores the current state of the script
         public ScriptState State { get; private set; }
@@ -79,8 +79,8 @@ namespace AsteroidRebuttal.Scripting
                         // The script is still executing; sleep if the current value is greater than 0
                         if (Current > 0)
                         {
-                            SleepTime = Current;
                             State = ScriptState.Sleeping;
+                            SleepTime = Current;
                         }
                         // If the value is 0, then simply break
                         break;
@@ -95,7 +95,7 @@ namespace AsteroidRebuttal.Scripting
                 // The script is sleeping
                 case ScriptState.Sleeping:
                     // Decrement the sleep timer
-                    SleepTime -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    SleepTime -= gameTime.ElapsedGameTime.TotalSeconds;
                     if (SleepTime <= 0)
                     {
                         // If the timer is less than 0, then set it back to running
@@ -111,7 +111,7 @@ namespace AsteroidRebuttal.Scripting
 
         public void SetCompleted()
         {
-            Console.WriteLine("Script set to complete!");
+            //Console.WriteLine("Script set to complete!");
             State = ScriptState.Completed;
         }
     }

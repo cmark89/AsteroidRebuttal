@@ -16,6 +16,7 @@ namespace AsteroidRebuttal.Enemies
     public class Boss : Enemy
     {
         protected static Texture2D testBossTexture;
+        protected static Texture2D boss2Texture;
 
         protected float currentGameTime;
 
@@ -25,8 +26,11 @@ namespace AsteroidRebuttal.Enemies
 
         public override void Initialize()
         {
+            Color = Color.Transparent;
             CollisionLayer = 1;
             CollidesWithLayers = new int[] { 2 };
+            Origin = new Vector2(127.5f, 101.5f);
+            Hitbox = new Circle(Center, 12.5f);
 
             base.Initialize();
         }
@@ -35,20 +39,19 @@ namespace AsteroidRebuttal.Enemies
         {
             if (testBossTexture == null)
             {
-                testBossTexture = content.Load<Texture2D>("Graphics/SHIP03");
+                testBossTexture = content.Load<Texture2D>("Graphics/Ships/Enemy2");
+            }
+            if (boss2Texture == null)
+            {
+                boss2Texture = content.Load<Texture2D>("Graphics/Ships/Boss2");
             }
         }
 
         public override void Update(GameTime gameTime)
         {
             currentGameTime = (float)gameTime.TotalGameTime.TotalSeconds;
-            scriptManager.Update(gameTime);
 
             base.Update(gameTime);
         }
-
-        //public override void Draw()
-        //{
-        //}
     }
 }

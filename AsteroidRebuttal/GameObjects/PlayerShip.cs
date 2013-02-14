@@ -31,7 +31,6 @@ namespace AsteroidRebuttal.GameObjects
 
         // Placeholder until cool weapons come
         private BulletEmitter mainEmitter;
-        private bool firing;
         private float nextFireTime;
 
         public PlayerShip(GameScene newScene = null, Vector2 position = new Vector2())
@@ -58,9 +57,8 @@ namespace AsteroidRebuttal.GameObjects
             UsesInnerHitbox = true;
             InnerHitbox = new Circle(new Vector2(23.5f, 19.5f), 4f);
 
-            mainEmitter = new BulletEmitter(this, Position, false);
+            mainEmitter = new BulletEmitter(this, Center, false);
             mainEmitter.LockedToParentPosition = true;
-            mainEmitter.LockPositionOffset = new Vector2(-16f, 0f);
 
             CollidesWithLayers = new int[] { 0, 1 };
             CollisionLayer = 3;
@@ -89,7 +87,6 @@ namespace AsteroidRebuttal.GameObjects
         public override void Update(GameTime gameTime)
         {
             currentGameTime = (float)gameTime.TotalGameTime.TotalSeconds;
-            scriptManager.Update(gameTime);
 
             //Console.Clear();
             //Console.WriteLine(string.Format("Main Hitbox: {0}, {1} ... Radius: {2}\nInner Hitbox: {3}, {4} ... Radius: {5}", Hitbox.Center.X, Hitbox.Center.Y, Hitbox.Radius, InnerHitbox.Center.X, InnerHitbox.Center.Y, InnerHitbox.Radius));

@@ -26,10 +26,6 @@ namespace AsteroidRebuttal.Enemies
 
         public Enemy(GameScene newScene, Vector2 position = new Vector2())
         {
-            thisScene = newScene;
-            Center = position;
-
-            Initialize();
         }
 
         public override void Initialize()
@@ -51,9 +47,6 @@ namespace AsteroidRebuttal.Enemies
             base.Update(gameTime);
         }
 
-        //public override void Draw()
-        //{
-        //}
 
         public void OuterCollision(GameObject sender, CollisionEventArgs e)
         {
