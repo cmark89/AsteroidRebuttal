@@ -29,7 +29,7 @@ namespace AsteroidRebuttal.Core
                 ICollidable thisIC = (ICollidable)ic;
                 // Next, get all the objects from that object's sector of the quadtree.
                 // Exclude all objects further away than 3 times the object's hitbox radius.
-                List<GameObject> collisionCandidates = thisScene.quadtree.Retrieve(ic).FindAll(x => !x.Phasing && Vector2.Distance(x.Hitbox.Center, ic.Hitbox.Center) < ic.Hitbox.Radius * 3);
+                List<GameObject> collisionCandidates = thisScene.quadtree.Retrieve(ic).FindAll(x => !x.Phasing && Vector2.Distance(ic.Hitbox.Center, x.Hitbox.Center) < ic.Hitbox.Radius * 3);
 
                 // For each object returned that is not phasing and that the ICollidable is able to collide with...
                 foreach (GameObject go in collisionCandidates.FindAll(x => !x.Phasing && thisIC.CollidesWithLayers.Contains(x.CollisionLayer)))
@@ -38,8 +38,6 @@ namespace AsteroidRebuttal.Core
                     // Add the pair of objects to the list of narrow checks to be performed after the broad phase.
                     PossibleCollisions.Add(new CollisionPair(thisIC, go));
                 }
-
-                //Console.WriteLine(checks + " collisions checked this frame.");
 
                 // Run the narrow phase if at least one collision is possible.
                 if (PossibleCollisions.Count > 0)
@@ -58,7 +56,7 @@ namespace AsteroidRebuttal.Core
                 GameObject other = pair.SecondaryCollider;
 
                 // Check if the objects overlap
-                if (CirclesOverlap(main.Hitbox, other.Hitbox) || LineSegementOverlapsCircle(new LineSegment(other.LastPosition,other.Position), main.Hitbox))
+                if (CirclesOverlap(main.Hitbox, other.Hitbox) || LineSegementOverlapsCircle(new LineSegment(other.LastPosition, other.Position), main.Hitbox))
                 {
                     // A collision was detected!  Report the collision to the first collision event.
                     pair.MainCollider.OuterCollision(pair.SecondaryCollider, new CollisionEventArgs(pair.SecondaryCollider, pair.SecondaryCollider.CollisionLayer));

@@ -17,7 +17,7 @@ namespace AsteroidRebuttal.GameObjects
         #region Core Fields
         // The texture of the game object
         public Texture2D Texture { get; protected set; }
-        public Color Color { get; protected set; }
+        public Color Color { get; set; }
         public GameScene thisScene;
         public List<GameObject> ChildObjects { get; protected set; }
         #endregion
@@ -46,7 +46,7 @@ namespace AsteroidRebuttal.GameObjects
             }
         }
 
-        public Vector2 Origin { get; protected set; }
+        public Vector2 Origin { get; set; }
 
         public Vector2 Center
         {
@@ -91,7 +91,7 @@ namespace AsteroidRebuttal.GameObjects
         public Vector2 LockPositionOffset { get; set; }
         public bool LockedToParentRotation { get; set; }
 
-        public Vector2 DeletionBoundary { get; protected set; }
+        public Vector2 DeletionBoundary { get; set; }
 
         #endregion
 
@@ -173,6 +173,9 @@ namespace AsteroidRebuttal.GameObjects
         public float CustomValue2 { get; set; }
         public float CustomValue3 { get; set; }
         public float CustomValue4 { get; set; }
+
+        // Controls the order objects are drawn in
+        public int DrawPriority { get; protected set; }
         #endregion
 
         public virtual void Initialize()
@@ -343,14 +346,10 @@ namespace AsteroidRebuttal.GameObjects
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             // Draw the sprite simply.
-            
-            //float drawnRotation;
-            //if (DrawAtTrueRotation) 
-                //drawnRotation = Rotation;
-            //else 
-                //drawnRotation = DrawRotation;
-
-            spriteBatch.Draw(Texture, Position, Color);
+            if (!DrawAtTrueRotation)
+                spriteBatch.Draw(Texture, Position, Color);
+            else
+                spriteBatch.Draw(Texture, Center, Texture.Bounds, Color, Rotation, Origin, 1f, SpriteEffects.None, 0f);
         }
 
         public void LerpPosition(Vector2 newPosition, float duration)
@@ -410,6 +409,11 @@ namespace AsteroidRebuttal.GameObjects
             FlaggedForRemoval = true;
             foreach (GameObject go in ChildObjects)
                 go.Destroy();
+        }
+
+        public void SetParent(GameObject newParent)
+        {
+            Parent = newParent;
         }
     }
 }

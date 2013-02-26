@@ -153,6 +153,12 @@ namespace AsteroidRebuttal.Core
                 returnedObjects = subnodes[index].Retrieve(go);
             }
 
+            if (index == -1 && subnodes[0] != null)
+            {
+                for (int i = 0; i < subnodes.Length; i++)
+                    returnedObjects.AddRange(subnodes[i].Retrieve(go));
+            }
+
             returnedObjects.AddRange(gameObjects);
 
             return returnedObjects;

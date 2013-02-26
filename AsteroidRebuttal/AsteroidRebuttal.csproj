@@ -114,6 +114,9 @@
     <Compile Include="Core\ICollidable.cs" />
     <Compile Include="Core\QuadTree.cs" />
     <Compile Include="Core\VectorMathHelper.cs" />
+    <Compile Include="Enemies\Bosses\CrablordBoss.cs" />
+    <Compile Include="Enemies\Bosses\CrablordEgg.cs" />
+    <Compile Include="Enemies\Bosses\FinalBoss.cs" />
     <Compile Include="Enemies\Bosses\PhantomBoss.cs" />
     <Compile Include="Enemies\Bosses\TestBoss.cs" />
     <Compile Include="GameObjects\Boss.cs" />

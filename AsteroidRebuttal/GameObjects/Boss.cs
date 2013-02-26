@@ -17,6 +17,13 @@ namespace AsteroidRebuttal.Enemies
     {
         protected static Texture2D testBossTexture;
         protected static Texture2D boss2Texture;
+        protected static Texture2D boss3Texture;
+        protected static Texture2D boss3EggTexture;
+        protected static Texture2D boss4Texture;
+        protected static Texture2D boss5BaseTexture;
+        protected static Texture2D boss5Ring1Texture;
+        protected static Texture2D boss5Ring2Texture;
+        protected static Texture2D boss5TopTexture;
 
         protected float currentGameTime;
 
@@ -26,11 +33,16 @@ namespace AsteroidRebuttal.Enemies
 
         public override void Initialize()
         {
-            Color = Color.Transparent;
+            if (Color == null)
+                Color = Color.White;
+
             CollisionLayer = 1;
-            CollidesWithLayers = new int[] { 2 };
-            Origin = new Vector2(127.5f, 101.5f);
-            Hitbox = new Circle(Center, 12.5f);
+
+            if(Origin == null)
+                Origin = new Vector2(127.5f, 101.5f);
+
+            if (DeletionBoundary == null)
+                DeletionBoundary = new Vector2(9999, 9999);
 
             base.Initialize();
         }
@@ -45,6 +57,31 @@ namespace AsteroidRebuttal.Enemies
             {
                 boss2Texture = content.Load<Texture2D>("Graphics/Ships/Boss2");
             }
+            if (boss3Texture == null)
+            {
+                boss3Texture = content.Load<Texture2D>("Graphics/Ships/Boss3");
+            }
+            if (boss3EggTexture == null)
+            {
+                boss3EggTexture = content.Load<Texture2D>("Graphics/Ships/Boss3Egg");
+            }
+            if (boss5BaseTexture == null)
+            {
+                boss5BaseTexture = content.Load<Texture2D>("Graphics/Ships/Boss5Base");
+            }
+            if (boss5Ring1Texture == null)
+            {
+                boss5Ring1Texture = content.Load<Texture2D>("Graphics/Ships/Boss5Ring1");
+            }
+            if (boss5Ring2Texture == null)
+            {
+                boss5Ring2Texture = content.Load<Texture2D>("Graphics/Ships/Boss5Ring2");
+            }
+            if (boss5TopTexture == null)
+            {
+                boss5TopTexture = content.Load<Texture2D>("Graphics/Ships/Boss5Top");
+            }
+
         }
 
         public override void Update(GameTime gameTime)
@@ -53,5 +90,7 @@ namespace AsteroidRebuttal.Enemies
 
             base.Update(gameTime);
         }
+
+
     }
 }

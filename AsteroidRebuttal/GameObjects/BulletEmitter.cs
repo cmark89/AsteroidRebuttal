@@ -13,6 +13,7 @@ namespace AsteroidRebuttal.GameObjects
     public class BulletEmitter : GameObject
     {
         BulletEmitterType Type;
+        Random rand;
 
         static Texture2D EyeFamiliarTexture;
 
@@ -37,7 +38,9 @@ namespace AsteroidRebuttal.GameObjects
             Phasing = true;
             CollisionLayer = 8;
 
-            DeletionBoundary = new Vector2(100, 100);
+            rand = new Random();
+
+            DeletionBoundary = Parent.DeletionBoundary;
 
             // Switch on the type to set its graphics
             if (Type != BulletEmitterType.Invisible)
@@ -124,8 +127,6 @@ namespace AsteroidRebuttal.GameObjects
         // Method that creates a cluster of bullets in a random spread and at variable velocity.
         public Bullet[] FireBulletCluster(float rotation, int numberOfBullets, float spread, float baseVelocity, float randomVelocity, Color newColor, BulletType type = BulletType.Circle)
         {
-            Random rand = new Random();
-
             List<Bullet> bullets = new List<Bullet>();
             spread = VectorMathHelper.DegreesToRadians(spread);
             float launchRotation;

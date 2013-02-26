@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using AsteroidRebuttal;
 using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Core;
@@ -26,13 +27,21 @@ namespace AsteroidRebuttal.Enemies
 
         public Enemy(GameScene newScene, Vector2 position = new Vector2())
         {
+            thisScene = newScene;
+            Center = position;
         }
-
+        
         public override void Initialize()
         {
-            Hitbox = new Circle(Center, 15f);
-            CollisionLayer = 1;
-            scriptManager = thisScene.scriptManager;
+            if(Hitbox == null)
+                Hitbox = new Circle(Center, 15f);
+
+            if(scriptManager == null)
+                scriptManager = thisScene.scriptManager;
+
+            if (CollidesWithLayers == null)
+                CollidesWithLayers = new int[0];
+
             CollidedObjects = new List<GameObject>();
 
             if (DeletionBoundary == null)
@@ -57,6 +66,11 @@ namespace AsteroidRebuttal.Enemies
         {
             if (OnOuterCollision != null)
                 OnOuterCollision(sender, e);
+        }
+
+        public void SetTexture(Texture2D newTexture)
+        {
+            Texture = newTexture;
         }
     }
 

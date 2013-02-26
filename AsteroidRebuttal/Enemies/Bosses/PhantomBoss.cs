@@ -42,6 +42,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
             Hitbox = new Circle(Center, 15f);
             Texture = boss2Texture;
 
+            // Set transparent for the fade in
+            Color = Color.Transparent;
+
             CollisionLayer = 1;
             CollidesWithLayers = new int[] { 2 };
 
@@ -247,15 +250,15 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 }
 
                 LerpPosition(new Vector2(350, 125), 2.2f);
-                yield return 2.2f;
+                yield return 1.2f;
                 shots = 0;
 
                 while (shots < 10)
                 {
                     leftInnerWingCannon.FireBulletSpread(leftInnerWingCannon.Rotation - .33f, 4, 40f, 130f, Color.DeepSkyBlue);
-                    yield return .7f;
+                    yield return .35f;
                     rightInnerWingCannon.FireBulletSpread(rightInnerWingCannon.Rotation + .33f, 4, 40f, 130f, Color.DeepSkyBlue);
-                    yield return .7f;
+                    yield return .35f;
 
                     shots++;
                 }
@@ -288,7 +291,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             while (true)
             {
-                while (cycles < 10)
+                while (cycles < 4)
                 {
                     int shots = 0;
 
@@ -302,7 +305,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     }
 
                     shots = 0;
-                    yield return .3f;
+                    yield return .2f;
 
                     float randomSpray = .7f;
                     while (shots < 10)
@@ -459,7 +462,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
         {
             Random rand = new Random();
             Color thisColor = thisObject.Color;
-            Vector2 newPos;
 
             Vector2[] positions = new Vector2[]
             {

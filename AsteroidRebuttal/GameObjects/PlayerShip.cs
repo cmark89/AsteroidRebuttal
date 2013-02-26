@@ -10,6 +10,8 @@ using Microsoft.Xna.Framework.Input;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
+using AsteroidRebuttal.GameObjects;
+using AsteroidRebuttal.Enemies;
 
 namespace AsteroidRebuttal.GameObjects
 {
@@ -178,9 +180,16 @@ namespace AsteroidRebuttal.GameObjects
 
         public void ObjectCollidedWith(GameObject sender, CollisionEventArgs e)
         {
+            Console.WriteLine(sender.ToString());
             if (sender is Bullet)
             {
                 Console.WriteLine("Killed by bullet!");
+                Destroy();
+            }
+
+            if (sender is Enemy || sender is Boss)
+            {
+                Console.WriteLine("Killed by enemy!");
                 Destroy();
             }
         }

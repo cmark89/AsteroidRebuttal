@@ -22,23 +22,23 @@ namespace AsteroidRebuttal.Scenes
         public ScriptManager scriptManager;
 
         public Rectangle ScreenArea { get; private set; }
-        float gameAreaBoundary = 100f;
 
         public PlayerShip player;
 
         CollisionDetection collisionDetection;
+        bool DrawQuadtree;
 
         public override void Initialize()
         {
-
             scriptManager = new ScriptManager();
             gameObjects = new List<GameObject>();
             ScreenArea = new Rectangle(0, 0, AsteroidRebuttal.graphics.GraphicsDevice.Viewport.Width, AsteroidRebuttal.graphics.GraphicsDevice.Viewport.Height);
             quadtree = new QuadTree(0, ScreenArea);
             collisionDetection = new CollisionDetection(this);
 
+            
+            new FinalBoss(this, new Vector2(320, -300));
             player = new PlayerShip(this, new Vector2(100, 200));
-            new PhantomBoss(this, new Vector2(320, 50));
         }
 
 
@@ -69,21 +69,36 @@ namespace AsteroidRebuttal.Scenes
             foreach (GameObject go in gameObjects.FindAll(x => !x.IsNewObject))
             {
                 go.Update(gameTime);
+            }
+
+            foreach (GameObject go in gameObjects.FindAll(x => !x.IsNewObject))
+            {
                 quadtree.Insert(go);
             }
 
             scriptManager.Update(gameTime);
             collisionDetection.BroadphaseCollisionDetection();
+            
+            // Respawn function
+            if (KeyboardManager.KeyPressedUp(Microsoft.Xna.Framework.Input.Keys.F1))
+            {
+                player.Destroy();
+                player = new PlayerShip(this, new Vector2(350, 450));
+            }
+            if (KeyboardManager.KeyPressedUp(Microsoft.Xna.Framework.Input.Keys.Q))
+            {
+                DrawQuadtree = !DrawQuadtree;
+            }
         }
 
         public void RemoveObjectsOutsideScreen()
         {
             foreach (GameObject go in gameObjects)
             {
-                if (go.Position.X < ScreenArea.X - gameAreaBoundary ||
-                    go.Position.X > ScreenArea.Width + gameAreaBoundary ||
-                    go.Position.Y < ScreenArea.Y - gameAreaBoundary ||
-                    go.Position.Y > ScreenArea.Height + gameAreaBoundary)
+                if (go.Center.X < ScreenArea.X - go.DeletionBoundary.X ||
+                    go.Center.X > ScreenArea.Width + go.DeletionBoundary.X ||
+                    go.Center.Y < ScreenArea.Y - go.DeletionBoundary.Y ||
+                    go.Center.Y > ScreenArea.Height + go.DeletionBoundary.Y)
                 {
                     go.Destroy();
                 }
@@ -98,7 +113,8 @@ namespace AsteroidRebuttal.Scenes
                 go.Draw(spriteBatch);
             }
 
-            //quadtree.Draw(spriteBatch);
+            if(DrawQuadtree)
+                quadtree.Draw(spriteBatch);
         }
 
         public void AddGameObject(GameObject newObject)
