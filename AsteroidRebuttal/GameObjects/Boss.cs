@@ -65,6 +65,11 @@ namespace AsteroidRebuttal.Enemies
             {
                 boss3EggTexture = content.Load<Texture2D>("Graphics/Ships/Boss3Egg");
             }
+            if (boss4Texture == null)
+            {
+                boss4Texture = content.Load<Texture2D>("Graphics/Ships/Boss4");
+            }
+
             if (boss5BaseTexture == null)
             {
                 boss5BaseTexture = content.Load<Texture2D>("Graphics/Ships/Boss5Base");

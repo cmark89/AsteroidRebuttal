@@ -33,6 +33,12 @@ namespace AsteroidRebuttal.Core
             return GetAngleTo(from, to) + randomAngle;
         }
 
+        // Returns a random angle.
+        public static float GetRandom()
+        {
+            return (float)rand.NextDouble() * ((float)Math.PI * 2);
+        }
+
         // This is like the previous get angle to function, except that instead of getting a random spread, 
         // it will instead get a straight angle to a point given within a certain area of the target.
         public static float GetAngleToWithinArea(Vector2 from, Vector2 to, float randomRadius)

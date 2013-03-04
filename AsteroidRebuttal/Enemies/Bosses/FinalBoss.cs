@@ -19,6 +19,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
         List<BulletEmitter> ring1Emitters;
         List<BulletEmitter> ring2Emitters;
 
+        List<Bullet> rotatingBullets;
+
         Enemy ring1;
         Enemy ring2;
         Enemy topLayer;
@@ -42,7 +44,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             // Get the actual origin.
             Origin = new Vector2(255.5f, 234.5f);
-            Hitbox = new Circle(Center, 140f);
+            Hitbox = new Circle(Center, 120f);
             Texture = boss5BaseTexture;
             DeletionBoundary = new Vector2(1500, 1500);
 
@@ -131,6 +133,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
             topLayer.SetTexture(boss5TopTexture);
             topLayer.SetParent(this);
             topLayer.LockedToParentPosition = true;
+
+            rotatingBullets = new List<Bullet>();
         }
 
         public override void Update(GameTime gameTime)
@@ -162,6 +166,22 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 be.Center = Center + newPos;
             }
 
+            foreach (Bullet b in rotatingBullets)
+            {
+                Vector2 shotOrigin = new Vector2(b.CustomValue3, b.CustomValue4);
+                // Update rotation.
+                b.Rotation += (b.CustomValue1 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+                // Custom Value 1 is the angular velocity of rotation
+
+                b.CustomValue2 = Vector2.Distance(b.Center, shotOrigin) + (b.Velocity * (float)gameTime.ElapsedGameTime.TotalSeconds);
+
+                Vector2 newPos = new Vector2();
+                newPos.X = (float)Math.Cos(b.Rotation) * b.CustomValue2;
+                newPos.Y = (float)Math.Sin(b.Rotation) * b.CustomValue2;
+
+                b.Center = shotOrigin + newPos;
+            }
+
 
             if (phase == 1 && Health < 1600)
             {
@@ -181,7 +201,21 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 phase = 4;
                 scriptManager.AbortObjectScripts(this);
-                //scriptManager.Execute(Phase4Script, this);
+                scriptManager.Execute(Phase4Script, this);
+            }
+
+            if (phase == 4 && Health < 700)
+            {
+                phase = 5;
+                scriptManager.AbortObjectScripts(this);
+                scriptManager.Execute(Phase5Script, this);
+            }
+
+            if (phase == 5 && Health < 250)
+            {
+                phase = 6;
+                scriptManager.AbortObjectScripts(this);
+                scriptManager.Execute(FinalPhase, this);
             }
 
             base.Update(gameTime);
@@ -517,6 +551,323 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 yield return 10f;
             }
         }
+
+        public IEnumerator<float> Phase4Script(GameObject go)
+        {
+            ring1.LerpAngularVelocity(-.8f, 3.5f);
+            ring2.LerpAngularVelocity(.8f, 3.5f);
+
+            scriptManager.Execute(Phase4MovementScript, this);
+            LerpPosition(new Vector2(350f, 140f), 5f);
+            yield return 3.5f;
+
+            while (true)
+            {
+                int shots = 0;
+
+                mainEmitter.Rotation = (float)Math.PI / 2f;
+
+                while (shots < 50)
+                {
+                    mainEmitter.Rotation += .1f;
+                    mainEmitter.FireBulletExplosion(5, 120f, Color.DeepSkyBlue);
+                    shots++;
+                    yield return .06f;
+                }
+
+                shots = 0;
+                mainEmitter.Rotation = 0;
+
+                yield return 1f;
+
+                while (shots < 75)
+                {
+                    mainEmitter.Rotation -= .138f;
+                    mainEmitter.FireBulletExplosion(4, 40f, Color.Red);
+                    shots++;
+                    yield return .03f;
+                }
+
+                yield return .8f;
+
+                shots = 0;
+                mainEmitter.Rotation = (float)Math.PI / 2f;
+
+                yield return 1.5f;
+            }
+        }
+
+        public IEnumerator<float> Phase4MovementScript(GameObject go)
+        {
+            yield return 6f;
+            while (true)
+            {
+                yield return 10f;
+
+                LerpPosition(new Vector2(100f, 140f), 1.5f);
+                yield return 6.5f;
+                LerpPosition(new Vector2(350f, 140f), 1.5f);
+                yield return 6.5f;
+                LerpPosition(new Vector2(500f, 140f), 1.5f);
+                yield return 6.5f;
+                LerpPosition(new Vector2(350f, 140f), 1.5f);
+                yield return 6.5f;
+
+                LerpPosition(new Vector2(350f, 400f), 12f);
+                yield return 18f;
+                LerpPosition(new Vector2(350f, 90f), 12f);
+                yield return 18f;
+                //yield return 10f;
+                //ring1.LerpAngularVelocity(ring1.AngularVelocity * -1, 10f);
+                //ring2.LerpAngularVelocity(ring2.AngularVelocity * -1, 10f);
+                //yield return 10f;
+            }
+        }
+
+        public IEnumerator<float> Phase5Script(GameObject thisObject)
+        {
+            LerpPosition(new Vector2(350f, 125f), 3f);
+            yield return 1f;
+
+            ring1.LerpAngularVelocity(.6f, 3f);
+            yield return 1f;
+            ring2.LerpAngularVelocity(-.8f, 3f);
+            yield return 2f;
+
+            int moveCount = 0;
+            Vector2[] movePositions = new Vector2[]
+            {
+                new Vector2(200, 125f),
+                new Vector2(350f, 125f),
+                new Vector2(500f, 125f),
+                new Vector2(350f, 125f)
+            };
+
+            float fireTime = .12f;
+
+            // Cycle the power!
+            while (true)
+            {
+                float nextMoveTime = currentGameTime + 6f;
+
+                while (currentGameTime < nextMoveTime)
+                {
+                    foreach (BulletEmitter be in ring1Emitters)
+                    {
+                        //be.FireBullet(200, Color.Red).LerpVelocity(90, 1f);
+                        be.FireBullet(110, Color.Red);
+                    }
+                    foreach (BulletEmitter be in ring2Emitters)
+                    {
+                        //be.FireBullet(200, Color.DeepSkyBlue).LerpVelocity(60, 1f);
+                        be.FireBullet(80, Color.DeepSkyBlue);
+                    }
+                    yield return fireTime;
+                }
+
+                LerpPosition(movePositions[moveCount], 2f);
+                scriptManager.Execute(Phase5MoveVolley, this);
+
+                moveCount++;
+
+                if (moveCount >= movePositions.Length)
+                    moveCount = 0;
+            }
+        }
+
+        public IEnumerator<float> Phase5MoveVolley(GameObject go)
+        {
+            mainEmitter.Rotation = 0;
+            mainEmitter.FireBulletExplosion(40, 160, Color.Lerp(Color.White, Color.Orange, .4f));
+            yield return .2f;
+
+            mainEmitter.Rotation += .2f;
+            mainEmitter.FireBulletExplosion(40, 160, Color.Lerp(Color.White, Color.Orange, .4f));
+            yield return .2f;
+
+            mainEmitter.Rotation += .2f;
+            mainEmitter.FireBulletExplosion(40, 160, Color.Lerp(Color.White, Color.Orange, .4f));
+            yield return .2f;
+
+            foreach (BulletEmitter be in ring2Emitters)
+            {
+                Bullet b = be.FireBullet(200, Color.Orange);
+                b.LerpVelocity(0f, 1.5f);
+                scriptManager.Execute(Phase5BombExplosion, b);
+            }
+        }
+
+        public IEnumerator<float> Phase5BombExplosion(GameObject go)
+        {
+            yield return 2f;
+            BulletEmitter explosion = new BulletEmitter(this, go.Center, true);
+            explosion.FireBulletExplosion(10, 110f, Color.Lerp(Color.White, Color.Orange, .7f));
+            explosion.FireBulletExplosion(15, 130f, Color.Lerp(Color.White, Color.Orange, .7f), BulletType.CircleSmall);
+            go.Destroy();
+        }
+
+        public IEnumerator<float> FinalPhase(GameObject go)
+        {
+            // Do explosions and lerp the position dramatically.
+            LerpPosition(new Vector2(350f, 75f), 5f);
+            ring1.LerpAngularVelocity(0f, 3f);
+            ring2.LerpAngularVelocity(0f, 4f);
+            yield return 5f;
+            // Lerp the position and disable the player's shot 
+            Console.WriteLine("WARNING! TARGET SYSTEM IS JAMMED!  YOU CANNOT FIRING!");
+            thisScene.player.CanFire = false;
+            ring1.LerpAngularVelocity(2f, 3f);
+            ring2.LerpAngularVelocity(-3f, 3f);
+            yield return 3f;
+
+            // Start a 60 second countdown timer.
+            float finalPhaseEndTime = currentGameTime + 60f;
+            float nextShotTime = currentGameTime + 2.5f;
+
+            //BEGIN!
+            scriptManager.Execute(FinalPhaseMovement, this);
+
+            while (finalPhaseEndTime - currentGameTime > 42f)
+            {
+                Bullet b;
+                foreach (BulletEmitter be in ring2Emitters)
+                {
+                    b = be.FireBullet(200f, Color.DeepSkyBlue);
+                    b.LerpVelocity(150f, 1.5f);
+                }
+
+                if (currentGameTime >= nextShotTime && finalPhaseEndTime - currentGameTime > 47f)
+                {
+                    foreach(BulletEmitter be in ring1Emitters)
+                    {
+                        be.FireBulletSpread(be.Rotation, 5, 90f, 40f, Color.Red);
+                        nextShotTime = currentGameTime + .7f;
+                    }
+                }
+
+                yield return .03f;
+            }
+
+            yield return 2f;
+
+            float rotationSpeed = .4f;
+            float phase2StartTime = currentGameTime;
+
+            while(finalPhaseEndTime - currentGameTime  > 22f)
+            {
+                mainEmitter.Rotation = VectorMathHelper.GetRandom();
+                // Do some movementing while this happens
+                foreach (Bullet b in mainEmitter.FireBulletExplosion(15, 100f, Color.DeepSkyBlue))
+                {
+                    b.CustomValue1 = rotationSpeed;
+                    b.CustomValue2 = 0f;
+                    b.CustomValue3 = mainEmitter.Center.X;
+                    b.CustomValue4 = mainEmitter.Center.Y;
+
+                    rotatingBullets.Add(b);
+                }
+
+                foreach (Bullet b in mainEmitter.FireBulletExplosion(15, 100f, Color.Red))
+                {
+                    b.CustomValue1 = rotationSpeed * -1f;
+                    b.CustomValue2 = 0f;
+                    b.CustomValue3 = mainEmitter.Center.X;
+                    b.CustomValue4 = mainEmitter.Center.Y;
+
+                    rotatingBullets.Add(b);
+                }
+
+                yield return .5f;
+            }
+
+            yield return 2f;
+
+            int shots = 0;
+            float waitTime = .06f;
+            nextShotTime = currentGameTime + 2f;
+            
+            rotationSpeed = .3f;
+
+            while (finalPhaseEndTime - currentGameTime > 0f)
+            {
+                if (shots < 10)
+                {
+                    foreach (Bullet b in mainEmitter.FireBulletExplosion(35, 40, Color.Orange))
+                    {
+                        scriptManager.Execute(FinalPhaseBulletSpeed, b);
+                    }
+
+                    shots++;
+                    waitTime = .06f;
+                }
+                else
+                {
+                    mainEmitter.Rotation = VectorMathHelper.GetRandom();
+                    waitTime = .5f;
+                    shots = 0;
+                }
+
+                if (currentGameTime > nextShotTime)
+                {
+                    foreach (Bullet b in mainEmitter.FireBulletExplosion(15, 60f, Color.DeepSkyBlue))
+                    {
+                        b.CustomValue1 = rotationSpeed;
+                        b.CustomValue2 = 0f;
+                        b.CustomValue3 = mainEmitter.Center.X;
+                        b.CustomValue4 = mainEmitter.Center.Y;
+
+                        rotatingBullets.Add(b);
+                    }
+
+                    foreach (Bullet b in mainEmitter.FireBulletExplosion(15, 60f, Color.Red))
+                    {
+                        b.CustomValue1 = rotationSpeed * -1f;
+                        b.CustomValue2 = 0f;
+                        b.CustomValue3 = mainEmitter.Center.X;
+                        b.CustomValue4 = mainEmitter.Center.Y;
+
+                        rotatingBullets.Add(b);
+                    }
+
+                    nextShotTime += .5f;
+                }
+
+                yield return waitTime;
+            }
+
+            yield return 3f;
+
+            // Now explode for realzies
+
+        }
+
+        public IEnumerator<float> FinalPhaseMovement(GameObject go)
+        {
+            // Don't move at all during the first phase.
+            yield return 20f;
+
+            // For phase 2, move back and forth between the top locations.
+            yield return 4f;
+
+            LerpPosition(new Vector2(250f, 75f), 2f);
+            yield return 4f;
+
+            LerpPosition(new Vector2(350f, 75f), 2f);
+            yield return 4f;
+
+            LerpPosition(new Vector2(450f, 75f), 2f);
+            yield return 4f;
+
+            LerpPosition(new Vector2(350f, 75f), 2f);
+            
+        }
+
+        public IEnumerator<float> FinalPhaseBulletSpeed(GameObject go)
+        {
+            yield return 2f;
+            go.Velocity = 230f;
+        }
+
 
         public override void Draw(SpriteBatch spriteBatch)
         {

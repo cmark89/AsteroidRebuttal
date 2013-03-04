@@ -37,7 +37,7 @@ namespace AsteroidRebuttal.Scenes
             collisionDetection = new CollisionDetection(this);
 
             
-            new FinalBoss(this, new Vector2(320, -300));
+            new ParasiteBoss(this, new Vector2(350, -300));
             player = new PlayerShip(this, new Vector2(100, 200));
         }
 

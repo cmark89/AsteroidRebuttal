@@ -35,6 +35,8 @@ namespace AsteroidRebuttal.GameObjects
         private BulletEmitter mainEmitter;
         private float nextFireTime;
 
+        public bool CanFire { get; set; }
+
         public PlayerShip(GameScene newScene = null, Vector2 position = new Vector2())
         {
             thisScene = newScene;
@@ -65,6 +67,7 @@ namespace AsteroidRebuttal.GameObjects
             CollidesWithLayers = new int[] { 0, 1 };
             CollisionLayer = 3;
 
+            CanFire = true;
 
             OnOuterCollision += ObjectGrazed;
             OnInnerCollision += ObjectCollidedWith;
@@ -124,7 +127,7 @@ namespace AsteroidRebuttal.GameObjects
                 movement.Y = (moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
 
-            if (KeyboardManager.KeyDown(Keys.Space) && gameTime.TotalGameTime.TotalSeconds > nextFireTime)
+            if (KeyboardManager.KeyDown(Keys.Space) && gameTime.TotalGameTime.TotalSeconds > nextFireTime && CanFire)
             {
                 // Fire!
                 mainEmitter.FireBullet(((float)Math.PI / 2) * 3, 500f, Color.GreenYellow, BulletType.Diamond).SetCollisionLayer(2);
