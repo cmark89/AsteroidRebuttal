@@ -32,12 +32,11 @@ namespace AsteroidRebuttal.Levels
         {
             //TEST
             Console.WriteLine("Loaded level content!");
-            Level1.Level1Texture = content.Load<Texture2D>("Graphics/testbg");
-            //Level1Texture = content.Load<Texture2D>("Graphics/Backgrounds/Level1");
-            //Level2Texture = content.Load<Texture2D>("Graphics/Backgrounds/Level2");
-            //Level3Texture = content.Load<Texture2D>("Graphics/Backgrounds/Level3");
-            //Level4Texture = content.Load<Texture2D>("Graphics/Backgrounds/Level4");
-            //Level5Texture = content.Load<Texture2D>("Graphics/Backgrounds/Level5");
+            Level1.Level1Texture = content.Load<Texture2D>("Graphics/Backgrounds/level1");
+            //Level2.Level2Texture = content.Load<Texture2D>("Graphics/Backgrounds/level2");
+            //Level3Texture = content.Load<Texture2D>("Graphics/Backgrounds/level3");
+            //Level4Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4");
+            //Level5Texture = content.Load<Texture2D>("Graphics/Backgrounds/level5");
         }
 
         public void Update(GameTime gameTime)

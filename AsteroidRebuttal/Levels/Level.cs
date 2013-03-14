@@ -9,9 +9,8 @@ namespace AsteroidRebuttal.Levels
 {
     public class Level
     {
-        ScrollingBackground[] scrollingBackground = new ScrollingBackground[2];
-
-        LevelManager manager;
+        protected List<ScrollingBackgroundLayer> scrollingBackground;
+        protected LevelManager manager;
 
         public Level(LevelManager thisManager)
         {
@@ -25,17 +24,17 @@ namespace AsteroidRebuttal.Levels
 
         public void Update(GameTime gameTime)
         {
-            foreach (ScrollingBackground sb in scrollingBackground)
+            foreach (ScrollingBackgroundLayer sbl in scrollingBackground)
             {
-                sb.Update(gameTime);
+                sbl.Update(gameTime);
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (ScrollingBackground sb in scrollingBackground)
+            foreach (ScrollingBackgroundLayer sbl in scrollingBackground)
             {
-                spriteBatch.Draw(sb.texture, new Rectangle((int)sb.position.X, (int)sb.position.Y, sb.texture.Width, sb.texture.Height), Color.White);
+                sbl.Draw(spriteBatch);
             }
         }
 
@@ -46,42 +45,13 @@ namespace AsteroidRebuttal.Levels
         }
 
         // Sets up the background to begin scrolling.
-        public void SetupBackground(Texture2D bg, float bgSpeed)
+        public virtual void SetupBackground(Texture2D bg, float bgSpeed)
         {
             Console.WriteLine("Set up the background");
 
-            scrollingBackground = new ScrollingBackground[2];
-            for (int i = 0; i < 2; i++)
-            {
-                scrollingBackground[i] = new ScrollingBackground(bg, bgSpeed);
-
-                scrollingBackground[i].position = new Vector2(0, manager.thisScene.ScreenArea.Height - (scrollingBackground[i].texture.Height * i));
-                scrollingBackground[i].screenArea = manager.thisScene.ScreenArea;
-            }
-        }
-    }
-
-    public class ScrollingBackground
-    {
-        public Texture2D texture;
-        public Vector2 position;
-        float scrollSpeed;
-        public Rectangle screenArea;
-
-        public ScrollingBackground(Texture2D newTexture, float scrollingSpeed)
-        {
-            texture = newTexture;
-            scrollSpeed = scrollingSpeed;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            position.Y += (float)gameTime.ElapsedGameTime.TotalSeconds * scrollSpeed;
-
-            if (position.Y >= screenArea.Height)
-            {
-                position.Y = screenArea.Y - texture.Height;
-            }
+            scrollingBackground = new List<ScrollingBackgroundLayer>();
+            // Individually add each layer to the scrolling background...
+            //scrollingBackground.Add(new ScrollingBackgroundLayer(thisScene, texture, scrollSpeed, color);
         }
     }
 }

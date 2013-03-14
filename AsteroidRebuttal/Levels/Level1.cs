@@ -18,8 +18,19 @@ namespace AsteroidRebuttal.Levels
             SetupBackground(Level1Texture, 100);
         }
 
+        public override void SetupBackground(Texture2D bg, float bgSpeed)
+        {
+            Console.WriteLine("Set up the background for level 1!");
+
+            scrollingBackground = new List<ScrollingBackgroundLayer>();
+
+            // Individually add each layer to the scrolling background...
+            scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level1Texture, 100f, Color.White));
+        }
+
         public override IEnumerator<float> LevelScript()
         {
+            scrollingBackground[0].LerpSpeed(10f, 4f);
             yield return 1f;
         }
     }
