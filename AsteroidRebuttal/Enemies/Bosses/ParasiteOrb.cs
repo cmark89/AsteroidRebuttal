@@ -11,8 +11,14 @@ using AsteroidRebuttal.Scripting;
 
 namespace AsteroidRebuttal.Enemies.Bosses
 {
-    class ParasiteOrb : Enemy
+    public class ParasiteOrb : Enemy
     {
+        ParasiteBoss parentBoss;
+        float nextLeftBounceTime = 0;
+        float nextRightBounceTime = 0;
+        float nextUpBounceTime = 0;
+        float nextDownBounceTime = 0;
+
         public ParasiteOrb(GameScene newScene, Vector2 newPos = new Vector2()) 
             : base(newScene, newPos)
         {
@@ -42,7 +48,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             OnOuterCollision += CollisionHandling;
 
-
             base.Initialize();
         }
 
@@ -66,11 +71,63 @@ namespace AsteroidRebuttal.Enemies.Bosses
             }
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (Center.X - Hitbox.Radius < thisScene.ScreenArea.X && nextRightBounceTime < gameTime.TotalGameTime.TotalSeconds)
+            {
+                // Bounce right
+                Rotation = MathHelper.WrapAngle(Rotation = VectorMathHelper.GetRandomBetween((float)Math.PI / 4f, (float)Math.PI / -4f));
+                Center = new Vector2(thisScene.ScreenArea.X + Hitbox.Radius, Center.Y);
+
+                Console.WriteLine("Bounce Right!  New Rotation: " + Rotation);
+                nextRightBounceTime =  (float)gameTime.TotalGameTime.TotalSeconds + .1f;
+            }
+            else if (Center.X + Hitbox.Radius > thisScene.ScreenArea.X + thisScene.ScreenArea.Width && nextLeftBounceTime < gameTime.TotalGameTime.TotalSeconds)
+            {
+                // Bounce left
+                Rotation = MathHelper.WrapAngle(VectorMathHelper.GetRandomBetween(((float)Math.PI / 4) * 3f, ((float)Math.PI / 4f) * 6f));
+                Center = new Vector2(thisScene.ScreenArea.X + thisScene.ScreenArea.Width - Hitbox.Radius, Center.Y);
+
+                Console.WriteLine("Bounce Left!  New Rotation: " + Rotation);
+                nextLeftBounceTime = (float)gameTime.TotalGameTime.TotalSeconds + .1f;
+            }
+            else if (Center.Y - Hitbox.Radius < thisScene.ScreenArea.Y && nextDownBounceTime < gameTime.TotalGameTime.TotalSeconds)
+            {
+                // Bounce down
+                Rotation = MathHelper.WrapAngle(Rotation = VectorMathHelper.GetRandomBetween((float)Math.PI / 4f, ((float)Math.PI / 4f) * 3f));
+                Center = new Vector2(Center.X, thisScene.ScreenArea.Y + Hitbox.Radius);
+
+                Console.WriteLine("Bounce Down!  New Rotation: " + Rotation);
+                nextDownBounceTime = (float)gameTime.TotalGameTime.TotalSeconds + .1f;
+            }
+            else if (Center.Y + Hitbox.Radius > thisScene.ScreenArea.Y + thisScene.ScreenArea.Height && nextUpBounceTime < gameTime.TotalGameTime.TotalSeconds)
+            {
+                // Bounce up
+                Rotation = MathHelper.WrapAngle((Rotation = VectorMathHelper.GetRandomBetween((float)Math.PI / -4f, ((float)Math.PI / -4f) * 3f)));
+                Center = new Vector2(Center.X, thisScene.ScreenArea.Y + thisScene.ScreenArea.Height - Hitbox.Radius);
+
+                Console.WriteLine("Bounce Up!  New Rotation: " + Rotation);
+                nextUpBounceTime = (float)gameTime.TotalGameTime.TotalSeconds + .1f;
+            }
+
+            base.Update(gameTime);
+        }
+
         public void Explode()
         {
             //Damage the boss here.
-
+            parentBoss.TakeDamage(1, this);
             Destroy();
+        }
+
+        public void SetParent(ParasiteBoss parasiteParent)
+        {
+            parentBoss = parasiteParent;
+        }
+
+        public void SetHealth(int newHealth)
+        {
+            Health = newHealth;
         }
     }
 }

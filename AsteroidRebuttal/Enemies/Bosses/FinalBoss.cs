@@ -57,6 +57,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             scriptManager = thisScene.scriptManager;
             scriptManager.Execute(Phase1Script, this);
+            //scriptManager.Execute(FinalPhase, this);
 
             OnOuterCollision += CollisionHandling;
 
@@ -865,7 +866,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public IEnumerator<float> FinalPhaseBulletSpeed(GameObject go)
         {
             yield return 2f;
-            go.Velocity = 230f;
+            go.LerpVelocity(230f, .4f);
         }
 
 

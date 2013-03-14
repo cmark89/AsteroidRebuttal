@@ -12,6 +12,7 @@ using AsteroidRebuttal.Enemies;
 using AsteroidRebuttal.Enemies.Bosses;
 using AsteroidRebuttal.Scripting;
 using AsteroidRebuttal.Core;
+using AsteroidRebuttal.Levels;
 
 namespace AsteroidRebuttal.Scenes
 {
@@ -21,23 +22,41 @@ namespace AsteroidRebuttal.Scenes
         public List<GameObject> gameObjects { get; private set; }
         public ScriptManager scriptManager;
 
+        // This is the actual GAME window; the UI will appear to the side.
         public Rectangle ScreenArea { get; private set; }
+
+        // This is the area of the UI.
+        public Rectangle UIArea { get; private set; }
 
         public PlayerShip player;
 
         CollisionDetection collisionDetection;
         bool DrawQuadtree;
 
+        LevelManager levelManager;
+
         public override void Initialize()
         {
             scriptManager = new ScriptManager();
             gameObjects = new List<GameObject>();
-            ScreenArea = new Rectangle(0, 0, AsteroidRebuttal.graphics.GraphicsDevice.Viewport.Width, AsteroidRebuttal.graphics.GraphicsDevice.Viewport.Height);
+
+            // Set the game area to 700 x 650.
+            ScreenArea = new Rectangle(0, 0, 700, 650);
+            
+            // Set the UI window to 150 x 650, beginning after the ScreenArea.
+            UIArea = new Rectangle(700, 0, 150, 650);
+
             quadtree = new QuadTree(0, ScreenArea);
             collisionDetection = new CollisionDetection(this);
 
-            
-            new ParasiteBoss(this, new Vector2(350, -300));
+            levelManager = new LevelManager(this);
+
+            // Test
+            levelManager.SetLevel(1);
+
+
+            new CrablordBoss(this, new Vector2(350, -300));
+            //new FinalBoss(this, new Vector2(350, -300));
             player = new PlayerShip(this, new Vector2(100, 200));
         }
 
@@ -89,6 +108,8 @@ namespace AsteroidRebuttal.Scenes
             {
                 DrawQuadtree = !DrawQuadtree;
             }
+
+            levelManager.Update(gameTime);
         }
 
         public void RemoveObjectsOutsideScreen()
@@ -108,6 +129,8 @@ namespace AsteroidRebuttal.Scenes
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            levelManager.Draw(spriteBatch);
+
             foreach (GameObject go in gameObjects)
             {
                 go.Draw(spriteBatch);

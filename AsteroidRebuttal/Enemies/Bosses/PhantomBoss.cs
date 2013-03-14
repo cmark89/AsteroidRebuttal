@@ -42,6 +42,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
             Hitbox = new Circle(Center, 15f);
             Texture = boss2Texture;
 
+
+            DeletionBoundary = new Vector2(1500, 1500);
+
             // Set transparent for the fade in
             Color = Color.Transparent;
 

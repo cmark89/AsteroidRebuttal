@@ -20,6 +20,7 @@ namespace AsteroidRebuttal.Enemies
         protected static Texture2D boss3Texture;
         protected static Texture2D boss3EggTexture;
         protected static Texture2D boss4Texture;
+        protected static Texture2D boss4OrbTexture;
         protected static Texture2D boss5BaseTexture;
         protected static Texture2D boss5Ring1Texture;
         protected static Texture2D boss5Ring2Texture;
@@ -69,7 +70,10 @@ namespace AsteroidRebuttal.Enemies
             {
                 boss4Texture = content.Load<Texture2D>("Graphics/Ships/Boss4");
             }
-
+            if (boss4OrbTexture == null)
+            {
+                boss4OrbTexture = content.Load<Texture2D>("Graphics/Ships/Boss4Orb");
+            }
             if (boss5BaseTexture == null)
             {
                 boss5BaseTexture = content.Load<Texture2D>("Graphics/Ships/Boss5Base");

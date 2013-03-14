@@ -34,6 +34,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
             Hitbox = new Circle(Center, 15f);
             Texture = testBossTexture;
 
+            DeletionBoundary = new Vector2(1500, 1500);
+            Color = Color.White;
+
             CollisionLayer = 1;
             CollidesWithLayers = new int[] { 2 };
 
@@ -43,7 +46,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             OnOuterCollision += CollisionHandling;
 
             // Test
-            Health = 99;
+            Health = 200;
 
             base.Initialize();
         }

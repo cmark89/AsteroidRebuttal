@@ -14,6 +14,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Enemies;
 using AsteroidRebuttal.Scripting;
 using AsteroidRebuttal.Scenes;
+using AsteroidRebuttal.Levels;
 using ObjectivelyRadical;
 using ObjectivelyRadical.Controls;
 
@@ -32,6 +33,12 @@ namespace AsteroidRebuttal
         public AsteroidRebuttal()
         {
             graphics = new GraphicsDeviceManager(this);
+
+            graphics.PreferredBackBufferHeight = 650;
+            graphics.PreferredBackBufferWidth = 700;
+
+            graphics.ApplyChanges();
+
             Content.RootDirectory = "Content";
         }
 
@@ -52,6 +59,7 @@ namespace AsteroidRebuttal
             BulletEmitter.LoadContent(Content);
             QuadTree.LoadContent(Content);
             Boss.LoadContent(Content);
+            LevelManager.LoadContent(Content);
         }
 
 

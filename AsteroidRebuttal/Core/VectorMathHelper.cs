@@ -39,6 +39,18 @@ namespace AsteroidRebuttal.Core
             return (float)rand.NextDouble() * ((float)Math.PI * 2);
         }
 
+        // Returns a random angle between the given angles.
+        public static float GetRandomBetween(float ang1, float ang2)
+        {
+            float minAngle = Math.Min(ang1, ang2);
+            float maxAngle = Math.Max(ang1, ang2);
+
+            float difference = maxAngle - minAngle;
+            difference *= (float)rand.NextDouble();
+
+            return minAngle + difference;
+        }
+
         // This is like the previous get angle to function, except that instead of getting a random spread, 
         // it will instead get a straight angle to a point given within a certain area of the target.
         public static float GetAngleToWithinArea(Vector2 from, Vector2 to, float randomRadius)
