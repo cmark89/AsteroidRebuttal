@@ -9,6 +9,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
+using Microsoft.Xna.Framework.Content;
 
 namespace AsteroidRebuttal.Enemies
 {
@@ -16,7 +17,7 @@ namespace AsteroidRebuttal.Enemies
     {
         protected List<Bullet> bullets;
 
-        public float Health { get; protected set; }
+        public float Health { get; set; }
 
         public List<GameObject> CollidedObjects { get; set; }
         public int[] CollidesWithLayers { get; set; }
@@ -25,10 +26,15 @@ namespace AsteroidRebuttal.Enemies
 
         protected ScriptManager scriptManager;
 
+        protected static Texture2D slicerTexture;
+        protected static Texture2D tortoiseTexture;
+
         public Enemy(GameScene newScene, Vector2 position = new Vector2())
         {
             thisScene = newScene;
             Center = position;
+
+            Initialize();
         }
         
         public override void Initialize()
@@ -47,7 +53,21 @@ namespace AsteroidRebuttal.Enemies
             if (DeletionBoundary == null)
                 DeletionBoundary = new Vector2(Hitbox.Radius + 20, Hitbox.Radius + 20);
 
+            Rotation = (float)Math.PI / 2;
+
             base.Initialize();
+        }
+
+        public static void LoadContent(ContentManager content)
+        {
+            if (slicerTexture == null)
+            {
+                slicerTexture = content.Load<Texture2D>("Graphics/Ships/Enemy1");
+            }
+            if (tortoiseTexture == null)
+            {
+                tortoiseTexture = content.Load<Texture2D>("Graphics/Ships/Enemy2");
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -72,9 +92,23 @@ namespace AsteroidRebuttal.Enemies
         {
             Texture = newTexture;
         }
+
+        // Put explosion here
+        public void CheckForDeath()
+        {
+            if (Health < 1)
+            {
+                // Explosion
+                Destroy();
+            }
+        }
     }
 
     public enum EnemyType
     {
+        Slicer,
+        Tortoise,
+        Dragon,
+        Komodo
     }
 }

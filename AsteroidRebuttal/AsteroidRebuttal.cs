@@ -58,6 +58,7 @@ namespace AsteroidRebuttal
             Bullet.LoadContent(Content);
             BulletEmitter.LoadContent(Content);
             QuadTree.LoadContent(Content);
+            Enemy.LoadContent(Content);
             Boss.LoadContent(Content);
             LevelManager.LoadContent(Content);
         }

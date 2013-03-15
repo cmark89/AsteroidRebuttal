@@ -13,6 +13,7 @@ using AsteroidRebuttal.Enemies;
 using AsteroidRebuttal.Enemies.Bosses;
 using AsteroidRebuttal.Scripting;
 using AsteroidRebuttal.Core;
+using Microsoft.Xna.Framework.Media;
 
 namespace AsteroidRebuttal.Levels
 {
@@ -32,11 +33,19 @@ namespace AsteroidRebuttal.Levels
         {
             //TEST
             Console.WriteLine("Loaded level content!");
-            Level1.Level1Texture = content.Load<Texture2D>("Graphics/Backgrounds/level1");
+            Level1.Level1GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level1");
             //Level2.Level2Texture = content.Load<Texture2D>("Graphics/Backgrounds/level2");
             //Level3Texture = content.Load<Texture2D>("Graphics/Backgrounds/level3");
             //Level4Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4");
             //Level5Texture = content.Load<Texture2D>("Graphics/Backgrounds/level5");
+
+            Level1.Level1Theme = content.Load<Song>("Audio/Music/ThisWarTornMote");
+            //Level2.Level1Theme = content.Load<Song>("Audio/Music/PaleBlueBattlefield");
+            //Level3.Level1Theme = content.Load<Song>("Audio/Music/ApolloGraveyard");
+            //Level4.Level1Theme = content.Load<Song>("Audio/Music/TechnoFuture");
+            //Level5.Level1Theme = content.Load<Song>("Audio/Music/Showdown");
+
+            Level.BossTheme = content.Load<Song>("Audio/Music/BossTheme");
         }
 
         public void Update(GameTime gameTime)

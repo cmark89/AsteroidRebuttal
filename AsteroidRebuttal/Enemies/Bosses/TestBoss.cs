@@ -15,7 +15,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 {
     public class TestBoss : Boss
     {
-        public bool phase2;
+        public int phase = 1;
 
         public TestBoss(GameScene newScene, Vector2 newPos = new Vector2()) : base(newScene, newPos)
         {
@@ -27,7 +27,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public override void Initialize()
         {
-            Health = 200;
+            Health = 400;
 
             // Get the actual origin.
             Origin = new Vector2(23.5f, 23.5f);
@@ -45,9 +45,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             OnOuterCollision += CollisionHandling;
 
-            // Test
-            Health = 200;
-
             base.Initialize();
         }
 
@@ -55,18 +52,19 @@ namespace AsteroidRebuttal.Enemies.Bosses
         {
             Console.Clear();
             Console.WriteLine("Boss Health: " + Health + " / " + 200 + " ... " + ((float)Health / 200f) + "%");
-            if(!phase2 && Health < 100)
+
+            if(phase == 1 && Health < 200)
             {
-                phase2 = true;
+                phase = 2;
                 Console.WriteLine("GO TO BOSS PHASE 2!!");
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(MainScriptPhase2, this);
             }
 
-            if (phase2)
+            if (phase == 2)
             {
-                CustomValue1 += (((float)Math.PI * 2) / 2) * (float)gameTime.ElapsedGameTime.TotalSeconds * 1.5f;
-                CustomValue2 -= (((float)Math.PI * 2) / 2) * (float)gameTime.ElapsedGameTime.TotalSeconds * 1.5f;
+                CustomValue1 += (((float)Math.PI * 2) / 2) * (float)gameTime.ElapsedGameTime.TotalSeconds * .75f;
+                CustomValue2 -= (((float)Math.PI * 2) / 2) * (float)gameTime.ElapsedGameTime.TotalSeconds * .75f;
             }
 
             base.Update(gameTime);
@@ -79,7 +77,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             mainEmitter.LockedToParentPosition = true;
             
             int bossPhase = 1;
-            LerpPosition(new Vector2(300f, 25f), 2f);
+            LerpPosition(new Vector2(300f, 125f), 2f);
             yield return 2f;
 
             bool alive = true;
@@ -96,38 +94,38 @@ namespace AsteroidRebuttal.Enemies.Bosses
                         mainEmitter.FireBulletSpread(((float)Math.PI / 2), 7, 90f, 140f, Color.Lerp(Color.White, Color.Orange, .45f), BulletType.Circle);
                         shots++;
 
-                        yield return .5f;
+                        yield return .25f;
                         mainEmitter.FireBulletSpread(((float)Math.PI / 2), 6, 70f, 140f, Color.Lerp(Color.White, Color.Orange, .45f), BulletType.Circle);
                         shots++;
-                        yield return .5f;
+                        yield return .25f;
                     }
 
                     shots = 0;
-                    LerpPosition(new Vector2(25, 25), 1.5f);
+                    LerpPosition(new Vector2(25, 125), 1.5f);
                     yield return 1.5f;
 
                     while (shots < 20)
                     {
-                        mainEmitter.FireBulletSpread(((float)Math.PI / 2 * .35f) + (float)Math.Sin(currentGameTime * 3) / 4, 3, 25f, 220f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
+                        mainEmitter.FireBulletSpread(((float)Math.PI / 2 * .6f) + (float)Math.Sin(currentGameTime * 3) / 4, 3, 25f, 220f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                         shots++;
-                        yield return .15f;
+                        yield return .06f;
                     }
 
                     shots = 0;
-                    LerpPosition(new Vector2(600, 25), 2.5f);
+                    LerpPosition(new Vector2(600, 125), 2.5f);
                     yield return 2.5f;
 
                     while (shots < 20)
                     {
-                        mainEmitter.FireBulletSpread(((float)Math.PI / 2 * 1.65f) + (float)Math.Sin(currentGameTime * 3) / 4, 3, 25f, 220f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
+                        mainEmitter.FireBulletSpread(((float)Math.PI / 2 * 1.4f) + (float)Math.Sin(currentGameTime * 3) / 4, 3, 25f, 220f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                         shots++;
-                        yield return .15f;
+                        yield return .06f;
                     }
 
-                    LerpPosition(new Vector2(300f, 25f), 1.5f);
+                    LerpPosition(new Vector2(300f, 125f), 1.5f);
                     yield return 2.2f;
                     cycles++;
-                    if (cycles > 3)
+                    if (cycles > 2)
                         bossPhase++;
                 }
 
@@ -150,30 +148,30 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 while (bossPhase == 2)
                 {
                     mainEmitter.FireBulletExplosion(15, 100f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
-                    yield return 1f;
-                    LerpPosition(new Vector2(50, 300), 3f);
-                    yield return 3f;
-                    mainEmitter.FireBulletExplosion(15, 100f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
-                    yield return 1f;
-                    LerpPosition(new Vector2(550, 300), 3f);
-                    yield return 3f;
-                    LerpPosition(new Vector2(300f, 150f), 2f);
-                    mainEmitter.FireBulletExplosion(15, 100f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
-                    yield return 1f;
-                    LerpPosition(new Vector2(300f, 25f), 4f);
                     yield return .5f;
+                    LerpPosition(new Vector2(50, 400), 3f);
+                    yield return 1.5f;
+                    mainEmitter.FireBulletExplosion(15, 100f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
+                    yield return .5f;
+                    LerpPosition(new Vector2(550, 400), 3f);
+                    yield return 1.5f;
+                    LerpPosition(new Vector2(300f, 250f), 2f);
+                    mainEmitter.FireBulletExplosion(15, 100f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
+                    yield return .5f;
+                    LerpPosition(new Vector2(300f, 125f), 4f);
+                    yield return .25f;
                     mainEmitter.FireBulletExplosion(15, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
-                    yield return .5f;
+                    yield return .25f;
                     mainEmitter.FireBulletExplosion(13, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
-                    yield return .5f;
+                    yield return .25f;
+                    mainEmitter.FireBulletExplosion(11, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
+                    yield return .25f;
+                    mainEmitter.FireBulletExplosion(15, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
+                    yield return .25f;
+                    mainEmitter.FireBulletExplosion(13, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
+                    yield return .25f;
                     mainEmitter.FireBulletExplosion(11, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .5f;
-                    mainEmitter.FireBulletExplosion(15, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
-                    yield return .5f;
-                    mainEmitter.FireBulletExplosion(13, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
-                    yield return .5f;
-                    mainEmitter.FireBulletExplosion(11, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
-                    yield return 1f;
 
                     cycles++;
                     if (cycles > 2)
@@ -186,7 +184,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 subEmitter1.Destroy();
                 subEmitter2.Destroy();
 
-                LerpPosition(new Vector2(300f, 25f), 2f);
+                LerpPosition(new Vector2(300f, 125f), 3.5f);
                 while (bossPhase == 3)
                 {
                     int shots = 0;
@@ -194,7 +192,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     {
                         shots++;
                         mainEmitter.FireBulletSpread(VectorMathHelper.GetAngleTo(this.Hitbox.Center, thisScene.player.InnerHitbox.Center), 5, 80f, 200f, Color.Lerp(Color.White, Color.Orange, .4f), BulletType.Circle);
-                        yield return .35f;
+                        yield return .175f;
                     }
 
                     int i = 1;
@@ -211,10 +209,10 @@ namespace AsteroidRebuttal.Enemies.Bosses
                         scriptManager.Execute(ClusterBombs, b);
                     }
 
-                    yield return 7f;
+                    yield return 3.5f;
                     cycles++;
 
-                    if (cycles > 3)
+                    if (cycles > 2)
                     {
                         bossPhase = 1;
                     }
@@ -238,11 +236,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             while (true)
             {
-                LerpPosition(new Vector2(335, 155), 2f);
-                yield return 1.85f;
+                LerpPosition(new Vector2(335, 255), 2f);
+                yield return .9f;
                 CustomValue1 = (float)Math.PI / 2f * 3;
                 CustomValue2 = CustomValue1;
-                yield return .15f;
+                yield return .075f;
 
                 int shots = 0;
 
@@ -259,10 +257,10 @@ namespace AsteroidRebuttal.Enemies.Bosses
                         yield return .03f;
                     }
                     subshots = 0;
-                    yield return .09f;
+                    yield return .06f;
                 }
 
-                LerpPosition(new Vector2(335, 35), 1.5f);
+                LerpPosition(new Vector2(335, 135), 1.5f);
                 shots = 0;
                 // Randomize the rotation
                 CustomValue1 = (float)(new Random().NextDouble() * ((float)Math.PI*2));
@@ -283,7 +281,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     yield return .15f;
                 }
 
-                yield return 3f;
+                yield return 1.5f;
             }
         }
 

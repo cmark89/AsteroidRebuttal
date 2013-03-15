@@ -54,8 +54,6 @@ namespace AsteroidRebuttal.Scenes
             // Test
             levelManager.SetLevel(1);
 
-
-            new CrablordBoss(this, new Vector2(350, -300));
             //new FinalBoss(this, new Vector2(350, -300));
             player = new PlayerShip(this, new Vector2(100, 200));
         }

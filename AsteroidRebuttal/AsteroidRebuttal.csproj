@@ -121,6 +121,8 @@
     <Compile Include="Enemies\Bosses\FinalBoss.cs" />
     <Compile Include="Enemies\Bosses\PhantomBoss.cs" />
     <Compile Include="Enemies\Bosses\TestBoss.cs" />
+    <Compile Include="Enemies\Tortoise.cs" />
+    <Compile Include="Enemies\Slicer.cs" />
     <Compile Include="GameObjects\Boss.cs" />
     <Compile Include="GameObjects\Enemy.cs" />
     <Compile Include="GameObjects\Bullet.cs" />
