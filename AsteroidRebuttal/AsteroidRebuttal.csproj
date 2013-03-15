@@ -129,6 +129,7 @@
     <Compile Include="GameObjects\BulletEmitter.cs" />
     <Compile Include="GameObjects\GameObject.cs" />
     <Compile Include="GameObjects\PlayerShip.cs" />
+    <Compile Include="Levels\Level2.cs" />
     <Compile Include="Levels\Level.cs" />
     <Compile Include="Levels\Level1.cs" />
     <Compile Include="Levels\LevelManager.cs" />

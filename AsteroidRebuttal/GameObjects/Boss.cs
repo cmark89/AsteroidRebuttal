@@ -28,6 +28,21 @@ namespace AsteroidRebuttal.Enemies
 
         protected float currentGameTime;
 
+        public List<int> PhaseChangeValues {get; protected set;}
+        public int MaxHealth { get; protected set; }
+        private bool _vulnerable = false;
+        public bool Vulnerable
+        {
+            get
+            {
+                return _vulnerable;
+            }
+            protected set
+            {
+                _vulnerable = value;
+            }
+        }
+
         public Boss(GameScene newScene, Vector2 newPos = new Vector2()) : base(newScene, newPos)
         {
         }

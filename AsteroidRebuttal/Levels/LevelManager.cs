@@ -34,7 +34,7 @@ namespace AsteroidRebuttal.Levels
             //TEST
             Console.WriteLine("Loaded level content!");
             Level1.Level1GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level1");
-            //Level2.Level2Texture = content.Load<Texture2D>("Graphics/Backgrounds/level2");
+            Level2.Level2GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level2");
             //Level3Texture = content.Load<Texture2D>("Graphics/Backgrounds/level3");
             //Level4Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4");
             //Level5Texture = content.Load<Texture2D>("Graphics/Backgrounds/level5");
@@ -69,7 +69,7 @@ namespace AsteroidRebuttal.Levels
                     newLevel = new Level1(this);
                     break;
                 case (2):
-                    //Set level = 2
+                    newLevel = new Level2(this);
                     break;
                 case (3):
                     //Set level = 3

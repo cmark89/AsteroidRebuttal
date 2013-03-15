@@ -59,6 +59,13 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             OnOuterCollision += CollisionHandling;
 
+            PhaseChangeValues = new List<int>()
+            {
+                400,
+                200,
+                100
+            };
+            MaxHealth = (int)Health;
 
             base.Initialize();
         }
@@ -72,6 +79,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 1 && Health < 400)
             {
                 phase = 2;
+                thisScene.BossPhaseChange();
                 Console.WriteLine("GO TO BOSS PHASE 2!!");
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase2Script, this);
@@ -80,6 +88,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 2 && Health < 200)
             {
                 phase = 3;
+                thisScene.BossPhaseChange();
                 Console.WriteLine("GO TO BOSS PHASE 3!!");
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.AbortObjectScripts(leftWingCannon);
@@ -90,6 +99,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 3 && Health < 100)
             {
                 phase = 4;
+                thisScene.BossPhaseChange();
                 Console.WriteLine("GO TO BOSS PHASE 3!!");
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase4Script, this);
@@ -133,7 +143,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
             LerpPosition(new Vector2(350, 100), 2f);
             yield return .5f;
             LerpColor(Color.White, 2f);
-            yield return 2f;
+            yield return 4f;
+
+            Vulnerable = true;
 
             int repeats = 0;
             while (true)
@@ -511,8 +523,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (e.collisionLayer == 2)
             {
                 sender.Destroy();
-                // Flash the thing here.
-                Health--;
+                if (Vulnerable)
+                {
+                    // Flash the thing here.
+                    Health--;
+                }
             }
         }
     }

@@ -45,6 +45,12 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             OnOuterCollision += CollisionHandling;
 
+            PhaseChangeValues = new List<int>()
+            {
+                200
+            };
+            MaxHealth = (int)Health;
+
             base.Initialize();
         }
 
@@ -57,6 +63,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 phase = 2;
                 Console.WriteLine("GO TO BOSS PHASE 2!!");
+                thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(MainScriptPhase2, this);
             }
@@ -78,7 +85,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
             
             int bossPhase = 1;
             LerpPosition(new Vector2(300f, 125f), 2f);
-            yield return 2f;
+            yield return 3f;
+            Vulnerable = true;
 
             bool alive = true;
             while (alive)
@@ -377,8 +385,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (e.collisionLayer == 2)
             {
                 sender.Destroy();
-                // Flash the thing here.
-                Health--;
+                if (Vulnerable)
+                {
+                    // Flash the thing here.
+                    Health--;
+                }
             }
         }
     }

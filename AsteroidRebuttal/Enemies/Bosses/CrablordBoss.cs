@@ -77,6 +77,12 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             OnOuterCollision += CollisionHandling;
 
+            PhaseChangeValues = new List<int>()
+            {
+                275,
+                75
+            };
+            MaxHealth = (int)Health;
 
             base.Initialize();
         }
@@ -107,6 +113,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 1 && Health < 275)
             {
                 phase = 2;
+                thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase2Script, this);
             }
@@ -114,6 +121,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 2 && Health < 75)
             {
                 phase = 3;
+                thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase3Script, this);
             }
@@ -172,8 +180,10 @@ namespace AsteroidRebuttal.Enemies.Bosses
             while (true)
             {
                 int cycles = 0;
-                thisShip.LerpPosition(new Vector2(350f, 65f), 1f);
-                yield return 1f;
+                thisShip.LerpPosition(new Vector2(350f, 65f), 3f);
+                yield return 4f;
+                
+                Vulnerable = true;
 
                 CircleMovement(60f, 1f, 4f);
 

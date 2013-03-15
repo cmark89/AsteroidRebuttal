@@ -35,6 +35,19 @@ namespace AsteroidRebuttal.Scenes
 
         LevelManager levelManager;
 
+        //Content 
+        Texture2D BossHealthbarFrameTexture;
+        Texture2D BossHealthbarBackgroundTexture;
+        Texture2D BossHealthbarTexture;
+        Texture2D BossHealthbarDividerTexture;
+
+        public Boss levelBoss;
+        bool bossHealthbarFrameShown = false;
+        Color bossHealthbarFrameColor = Color.Transparent;
+        Color bossHealthbarColor = Color.Transparent;
+        float bossHealthbarWidth = 0;
+        float bossHealthbarMaxWidth = 675f;
+
         public override void Initialize()
         {
             scriptManager = new ScriptManager();
@@ -52,7 +65,7 @@ namespace AsteroidRebuttal.Scenes
             levelManager = new LevelManager(this);
 
             // Test
-            levelManager.SetLevel(1);
+            levelManager.SetLevel(2);
 
             //new FinalBoss(this, new Vector2(350, -300));
             player = new PlayerShip(this, new Vector2(100, 200));
@@ -136,6 +149,18 @@ namespace AsteroidRebuttal.Scenes
 
             if(DrawQuadtree)
                 quadtree.Draw(spriteBatch);
+
+            if (bossHealthbarFrameShown)
+            {
+                spriteBatch.Draw(BossHealthbarBackgroundTexture, Vector2.Zero, bossHealthbarFrameColor);
+                spriteBatch.Draw(BossHealthbarTexture, new Rectangle(20, 0, (int)bossHealthbarWidth, 20), bossHealthbarColor);
+                spriteBatch.Draw(BossHealthbarFrameTexture, Vector2.Zero, bossHealthbarFrameColor);
+                foreach (int i in levelBoss.PhaseChangeValues)
+                {
+                    spriteBatch.Draw(BossHealthbarDividerTexture, new Vector2(20 + ((i / levelBoss.MaxHealth) * bossHealthbarMaxWidth) - 2, 0), bossHealthbarColor);
+                }
+            }
+            
         }
 
         public void AddGameObject(GameObject newObject)
@@ -152,6 +177,38 @@ namespace AsteroidRebuttal.Scenes
         // Sets the game's level
         public void SetLevel()
         {
+        }
+
+        public IEnumerator<float> ShowBossHealthBar()
+        {
+            bossHealthbarFrameShown = true;
+            bossHealthbarFrameColor = Color.Transparent;
+
+            float elapsedTime = 0f;
+            while (elapsedTime < 1f)
+            {
+                bossHealthbarColor = Color.Lerp(Color.Transparent, Color.White, elapsedTime);
+                elapsedTime += .03f;
+                yield return .03f;
+            }
+
+            bossHealthbarColor = Color.White;
+            yield return .5f;
+            elapsedTime = 0f;
+            while (elapsedTime < 2f)
+            {
+                elapsedTime += .03f;
+
+                bossHealthbarWidth = (elapsedTime / 2f) * bossHealthbarMaxWidth;
+            }
+
+            bossHealthbarWidth = bossHealthbarMaxWidth;
+        }
+
+        public void BossPhaseChange()
+        {
+            // Maybe play a sound or something here.
+            bossHealthbarColor = Color.Lerp(Color.Yellow, Color.Red, levelBoss.Health / levelBoss.MaxHealth);
         }
     }
 }

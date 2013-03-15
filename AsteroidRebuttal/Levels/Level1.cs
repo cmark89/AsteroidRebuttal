@@ -250,11 +250,12 @@ namespace AsteroidRebuttal.Levels
 
             // Level time 49.5
 
-            yield return 17.5f;
+            yield return 16.5f;
 
             //SPAWN THE BOSS
-            new TestBoss(manager.thisScene, new Vector2(350f, -20f));
-            yield return 1.5f;
+            Boss boss = new TestBoss(manager.thisScene, new Vector2(350f, -20f));
+            BeginBossBattle(boss);
+            yield return 3f;
             AudioManager.PlaySong(BossTheme);
 
 

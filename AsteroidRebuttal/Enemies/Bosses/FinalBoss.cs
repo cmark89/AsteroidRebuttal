@@ -61,6 +61,16 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             OnOuterCollision += CollisionHandling;
 
+            PhaseChangeValues = new List<int>()
+            {
+                1600,
+                1350,
+                1000,
+                700,
+                250
+            };
+            MaxHealth = (int)Health;
+
             base.Initialize();
         }
 
@@ -187,6 +197,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 1 && Health < 1600)
             {
                 phase = 2;
+                thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase2Script, this);
             }
@@ -194,6 +205,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 2 && Health < 1350)
             {
                 phase = 3;
+                thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase3Script, this);
             }
@@ -201,6 +213,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 3 && Health < 1000)
             {
                 phase = 4;
+                thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase4Script, this);
             }
@@ -208,6 +221,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 4 && Health < 700)
             {
                 phase = 5;
+                thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase5Script, this);
             }
@@ -215,6 +229,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             if (phase == 5 && Health < 250)
             {
                 phase = 6;
+                thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(FinalPhase, this);
             }
@@ -227,6 +242,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             Console.WriteLine("MOVE FINAL BOSS");
             LerpPosition(new Vector2(350f, 220f), 10f);
             yield return 5f;
+            Vulnerable = true;
 
             int cycles = 0;
             while (cycles < 4)
@@ -892,7 +908,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 sender.Destroy();
                 // Flash the thing here.
-                Health--;
+                if (Vulnerable)
+                {
+                    // Flash the thing here.
+                    Health--;
+                }
             }
 
             // Collided with player; kill!

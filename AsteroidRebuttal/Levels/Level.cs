@@ -16,6 +16,8 @@ namespace AsteroidRebuttal.Levels
         protected LevelManager manager;
         protected ScriptManager scriptManager;
 
+        protected Boss levelBoss;
+
         // Content
         public static Song BossTheme;
 
@@ -95,6 +97,12 @@ namespace AsteroidRebuttal.Levels
             e.Velocity = velocity;
 
             return e;
+        }
+
+        public void BeginBossBattle(Boss thisBoss)
+        {
+            manager.thisScene.levelBoss = thisBoss;
+            scriptManager.Execute(manager.thisScene.ShowBossHealthBar);
         }
     }
 }
