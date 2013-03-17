@@ -349,7 +349,10 @@ namespace AsteroidRebuttal.GameObjects
             if (!DrawAtTrueRotation)
                 spriteBatch.Draw(Texture, Position, Color);
             else
-                spriteBatch.Draw(Texture, Center, Texture.Bounds, Color, Rotation - (float)Math.PI/2, Origin, 1f, SpriteEffects.None, 0f);
+            {
+
+                spriteBatch.Draw(Texture, Center, Texture.Bounds, Color, Rotation - (float)Math.PI / 2, Origin, 1f, SpriteEffects.None, 0f);
+            }
         }
 
         public void LerpPosition(Vector2 newPosition, float duration)

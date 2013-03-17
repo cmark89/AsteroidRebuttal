@@ -26,6 +26,8 @@ namespace AsteroidRebuttal.Enemies
             CollisionLayer = 1;
             CollidesWithLayers = new int[] { 2 };
 
+            pointValue = 150;
+
             Origin = new Vector2(24.5f, 24.5f);
 
             Hitbox = new Circle(Center, 12f);

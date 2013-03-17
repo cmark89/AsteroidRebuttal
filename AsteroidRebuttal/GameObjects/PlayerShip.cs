@@ -146,9 +146,7 @@ namespace AsteroidRebuttal.GameObjects
             spriteBatch.Draw(Texture, Center, Texture.Bounds, Color.White, Rotation, Origin, 1f, SpriteEffects.None, 0f);
 
             //HITBOX
-            spriteBatch.Draw(hitboxTexture, new Rectangle((int)(Hitbox.Center.X - Hitbox.Radius), (int)(Hitbox.Center.Y - Hitbox.Radius), (int)(Hitbox.Radius) * 2, (int)(Hitbox.Radius*2)), new Color(.3f, .7f, .5f, .5f));
             spriteBatch.Draw(hitboxTexture, new Vector2(InnerHitbox.Center.X - InnerHitbox.Radius, InnerHitbox.Center.Y - InnerHitbox.Radius), Color.White);
-            spriteBatch.Draw(QuadTree.texture, new Rectangle((int)Position.X, (int)Position.Y, Texture.Width, Texture.Height), Color.White);
         }
 
 
@@ -175,6 +173,11 @@ namespace AsteroidRebuttal.GameObjects
                 {
                     Console.WriteLine("Bullet Graze!");
                     thisBullet.Grazed = true;
+                    thisScene.GrazeCount++;
+                    thisScene.Score += thisScene.GrazeValue;
+
+                    thisScene.GainExperience(1f);
+                    thisScene.PauseExperienceDecay(1f);
                 }
                 return;
             }

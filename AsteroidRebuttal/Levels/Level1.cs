@@ -230,7 +230,7 @@ namespace AsteroidRebuttal.Levels
 
                 Vector2 spawnPoint = new Vector2(x, 100 + (15 * i));
 
-                e = SpawnEnemyAtAngle(EnemyType.Slicer, spawnPoint, VectorMathHelper.GetAngleTo(spawnPoint, manager.thisScene.player.InnerHitbox.Center), 130f);
+                e = SpawnEnemyAtAngle(EnemyType.Dragonfly, spawnPoint, VectorMathHelper.GetAngleTo(spawnPoint, manager.thisScene.player.InnerHitbox.Center), 130f);
                 yield return .5f;
             }
 
@@ -250,13 +250,48 @@ namespace AsteroidRebuttal.Levels
 
             // Level time 49.5
 
-            yield return 16.5f;
+            yield return 1.5f;
+
+            // A tortoise from below that will track the player with its cannons as it moves
+            e = SpawnEnemy(EnemyType.Tortoise, new Vector2(250, 680));
+            e.Rotation = (float)Math.PI / 2f * 3f;
+            scriptManager.Execute(HeavyTortoise, e);
+
+            yield return 4f;
+
+            // A tortoise from below that will track the player with its cannons as it moves
+            e = SpawnEnemy(EnemyType.Tortoise, new Vector2(550, 680));
+            e.Rotation = (float)Math.PI / 2f * 3f;
+            scriptManager.Execute(HeavyTortoise, e);
+
+            yield return 4f;
+
+            yield return 6f;
+
+            manager.thisScene.PlayBossWarning();
+            yield return 6.6f;
 
             //SPAWN THE BOSS
             Boss boss = new TestBoss(manager.thisScene, new Vector2(350f, -20f));
             BeginBossBattle(boss);
+            yield return 1f;
+            SoundEffectInstance bossTheme = AudioManager.PlaySong(BossTheme);
+
+            while (boss.Health > 0)
+            {
+                yield return .03f;
+            }
+
+            // Explode the enemy!
+            // Destroy() here is temporary!
+            boss.Destroy();
+
+            // Dispose of the boss theme.
+            bossTheme.Dispose();
+
             yield return 3f;
-            AudioManager.PlaySong(BossTheme);
+
+            // Play a cool stinger for victory!
 
 
         }
@@ -290,6 +325,33 @@ namespace AsteroidRebuttal.Levels
                 }
 
                 yield return 2.72f;
+            }
+        }
+
+        public IEnumerator<float> HeavyTortoise(GameObject go)
+        {
+            Enemy e = (Enemy)go;
+            e.Rotation = (float)Math.PI / 2f * 3f;
+            e.Health = 25f;
+            e.LerpVelocity(65f, 8f);
+            e.LerpRotation(e.Rotation + VectorMathHelper.GetAngleTo(e.Center, manager.thisScene.player.InnerHitbox.Center) / 2f, 12f);
+            yield return 1.5f;
+
+            BulletEmitter mainEmitter = new BulletEmitter(e, e.Center, false);
+            mainEmitter.LockedToParentPosition = true;
+            mainEmitter.LockPositionOffset = Vector2.Zero;
+            yield return .01f;
+            while(true)
+            {
+                int shots  = 0;
+                while (shots < 20)
+                {
+                    mainEmitter.FireBulletCluster(VectorMathHelper.GetAngleTo(mainEmitter.Center, manager.thisScene.player.InnerHitbox.Center), 1, 10f, 150f, 0f, Color.DeepSkyBlue);
+                    shots++;
+                    yield return .06f;
+                }
+
+                yield return 1.73f;
             }
         }
     }

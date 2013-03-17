@@ -57,7 +57,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             scriptManager = thisScene.scriptManager;
             scriptManager.Execute(Phase1Script, this);
-            //scriptManager.Execute(FinalPhase, this);
 
             OnOuterCollision += CollisionHandling;
 
@@ -150,13 +149,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public override void Update(GameTime gameTime)
         {
-            Console.Clear();
-            Console.WriteLine("Health: " + Health + " / 2050");
             // Move the subemitters with the rotation of the rings, and ensure they are facing outwards.
             foreach (BulletEmitter be in ring1Emitters)
             {
                 // Update rotation.
-                be.Rotation += ring1.AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                be.Rotation += ring1.AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds * 2;
 
                 Vector2 newPos = new Vector2();
                 newPos.X = (float)Math.Cos(be.Rotation) * be.CustomValue1;
@@ -168,7 +165,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             foreach (BulletEmitter be in ring2Emitters)
             {
                 // Update rotation.
-                be.Rotation += ring2.AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                be.Rotation += ring2.AngularVelocity * (float)gameTime.ElapsedGameTime.TotalSeconds * 2;
 
                 Vector2 newPos = new Vector2();
                 newPos.X = (float)Math.Cos(be.Rotation) * be.CustomValue1;

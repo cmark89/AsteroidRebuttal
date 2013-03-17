@@ -12,21 +12,21 @@ using AsteroidRebuttal.Scripting;
 
 namespace AsteroidRebuttal.Enemies
 {
-    public class Tortoise : Enemy
+    public class Komodo : Enemy
     {
         BulletEmitter mainEmitter;
-        public Tortoise(GameScene newScene, Vector2 position = new Vector2()) : base(newScene, position) { }
+        public Komodo(GameScene newScene, Vector2 position = new Vector2()) : base(newScene, position) { }
 
         public override void Initialize()
         {
-            Health = 10;
-            Texture = tortoiseTexture;
+            Health = 50;
+            Texture = komodoTexture;
             Color = Color.White;
 
             CollisionLayer = 1;
             CollidesWithLayers = new int[] { 2 };
 
-            Origin = new Vector2(24.5f, 24.5f);
+            Origin = new Vector2(32.5f, 32.5f);
 
             Hitbox = new Circle(Center, 12f);
 
@@ -38,9 +38,7 @@ namespace AsteroidRebuttal.Enemies
             mainEmitter.LockedToParentPosition = true;
             mainEmitter.LockPositionOffset = (Origin / 2);
 
-            pointValue = 500;
-
-
+            pointValue = 8000;
 
             scriptManager = thisScene.scriptManager;
 

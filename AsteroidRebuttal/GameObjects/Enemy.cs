@@ -28,6 +28,10 @@ namespace AsteroidRebuttal.Enemies
 
         protected static Texture2D slicerTexture;
         protected static Texture2D tortoiseTexture;
+        protected static Texture2D dragonflyTexture;
+        protected static Texture2D komodoTexture;
+
+        protected int pointValue;
 
         public Enemy(GameScene newScene, Vector2 position = new Vector2())
         {
@@ -68,6 +72,14 @@ namespace AsteroidRebuttal.Enemies
             {
                 tortoiseTexture = content.Load<Texture2D>("Graphics/Ships/Enemy2");
             }
+            if (dragonflyTexture == null)
+            {
+                dragonflyTexture = content.Load<Texture2D>("Graphics/Ships/Enemy3");
+            }
+            if (komodoTexture == null)
+            {
+                komodoTexture = content.Load<Texture2D>("Graphics/Ships/Enemy4");
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -100,6 +112,8 @@ namespace AsteroidRebuttal.Enemies
             {
                 // Explosion
                 Destroy();
+                thisScene.Score += pointValue * thisScene.ScoreMultiplier;
+                thisScene.GainExperience(Math.Min(pointValue / 75, 5));
             }
         }
     }
@@ -108,7 +122,7 @@ namespace AsteroidRebuttal.Enemies
     {
         Slicer,
         Tortoise,
-        Dragon,
+        Dragonfly,
         Komodo
     }
 }

@@ -35,7 +35,7 @@ namespace AsteroidRebuttal
             graphics = new GraphicsDeviceManager(this);
 
             graphics.PreferredBackBufferHeight = 650;
-            graphics.PreferredBackBufferWidth = 700;
+            graphics.PreferredBackBufferWidth = 925;
 
             graphics.ApplyChanges();
 

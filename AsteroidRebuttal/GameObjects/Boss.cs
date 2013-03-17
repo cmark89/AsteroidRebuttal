@@ -13,8 +13,19 @@ using AsteroidRebuttal.Scripting;
 
 namespace AsteroidRebuttal.Enemies
 {
-    public class Boss : Enemy
+    public class Boss : GameObject, ICollidable
     {
+        protected List<Bullet> bullets;
+
+        public float Health { get; set; }
+
+        public List<GameObject> CollidedObjects { get; set; }
+        public int[] CollidesWithLayers { get; set; }
+        public event CollisionEventHandler OnOuterCollision;
+        public event CollisionEventHandler OnInnerCollision;
+
+        protected ScriptManager scriptManager;
+
         protected static Texture2D testBossTexture;
         protected static Texture2D boss2Texture;
         protected static Texture2D boss3Texture;
@@ -43,8 +54,10 @@ namespace AsteroidRebuttal.Enemies
             }
         }
 
-        public Boss(GameScene newScene, Vector2 newPos = new Vector2()) : base(newScene, newPos)
+        public Boss(GameScene newScene, Vector2 newPos)
         {
+            thisScene = newScene;
+            Center = newPos;
         }
 
         public override void Initialize()
@@ -60,6 +73,8 @@ namespace AsteroidRebuttal.Enemies
             if (DeletionBoundary == null)
                 DeletionBoundary = new Vector2(9999, 9999);
 
+            CollidedObjects = new List<GameObject>();
+
             base.Initialize();
         }
 
@@ -67,7 +82,7 @@ namespace AsteroidRebuttal.Enemies
         {
             if (testBossTexture == null)
             {
-                testBossTexture = content.Load<Texture2D>("Graphics/Ships/Enemy2");
+                testBossTexture = content.Load<Texture2D>("Graphics/Ships/Boss1");
             }
             if (boss2Texture == null)
             {
@@ -115,6 +130,15 @@ namespace AsteroidRebuttal.Enemies
             base.Update(gameTime);
         }
 
-
+        public void OuterCollision(GameObject sender, CollisionEventArgs e)
+        {
+            if (OnOuterCollision != null)
+                OnOuterCollision(sender, e);
+        }
+        public void InnerCollision(GameObject sender, CollisionEventArgs e)
+        {
+            if (OnOuterCollision != null)
+                OnOuterCollision(sender, e);
+        }
     }
 }

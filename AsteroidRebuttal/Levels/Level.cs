@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 using AsteroidRebuttal.Enemies;
 using AsteroidRebuttal.Scripting;
 
@@ -19,7 +20,7 @@ namespace AsteroidRebuttal.Levels
         protected Boss levelBoss;
 
         // Content
-        public static Song BossTheme;
+        public static SoundEffect BossTheme;
 
         public Level(LevelManager thisManager)
         {
@@ -75,11 +76,11 @@ namespace AsteroidRebuttal.Levels
                 case (EnemyType.Tortoise):
                     newEnemy = new Tortoise(manager.thisScene, position);
                     break;
-                case (EnemyType.Dragon):
-                    //newEnemy = new Slicer(manager.thisScene, position);
+                case (EnemyType.Dragonfly):
+                    newEnemy = new Dragonfly(manager.thisScene, position);
                     break;
                 case (EnemyType.Komodo):
-                    //newEnemy = new Slicer(manager.thisScene, position);
+                    newEnemy = new Komodo(manager.thisScene, position);
                     break;
                 default:
                     break;

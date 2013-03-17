@@ -16,6 +16,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
     public class TestBoss : Boss
     {
         public int phase = 1;
+        BulletEmitter subEmitter1;
+        BulletEmitter subEmitter2;
 
         public TestBoss(GameScene newScene, Vector2 newPos = new Vector2()) : base(newScene, newPos)
         {
@@ -133,24 +135,23 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     LerpPosition(new Vector2(300f, 125f), 1.5f);
                     yield return 2.2f;
                     cycles++;
-                    if (cycles > 2)
+                    if (cycles > 1)
                         bossPhase++;
                 }
 
-                BulletEmitter subEmitter1 = new BulletEmitter(this, this.Center, false);
+                subEmitter1 = new BulletEmitter(this, this.Center, false);
                 subEmitter1.LockedToParentPosition = true;
                 subEmitter1.LockPositionOffset = new Vector2(-28f, -10f);
-                BulletEmitter subEmitter2 = new BulletEmitter(this, this.Center, false);
+                subEmitter2 = new BulletEmitter(this, this.Center, false);
                 subEmitter2.LockedToParentPosition = true;
                 subEmitter2.LockPositionOffset = new Vector2(28f, -10f);
 
-                yield return 1.5f;
                 scriptManager.Execute(Subemitter1Script, subEmitter1);
                 scriptManager.Execute(Subemitter2Script, subEmitter2);
                 scriptManager.Execute(SubemitterFirePhase2, subEmitter1);
                 scriptManager.Execute(SubemitterFirePhase2, subEmitter2);
 
-                yield return 1.5f;
+                yield return 1f;
 
                 cycles = 0;
                 while (bossPhase == 2)
@@ -231,6 +232,12 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public IEnumerator<float> MainScriptPhase2(GameObject thisShip)
         {
+            if(subEmitter1 != null)
+                subEmitter1.Destroy();
+
+            if(subEmitter2 != null)
+                subEmitter2.Destroy();
+
             BulletEmitter mainEmitter1 = new BulletEmitter(this, this.Center, false);
             mainEmitter1.CustomValue1 = 1;       // Rotate this emitter counter clockwise
             mainEmitter1.CustomValue2 = 35;       // Rotate at this distance.
@@ -244,7 +251,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             while (true)
             {
-                LerpPosition(new Vector2(335, 255), 2f);
+                LerpPosition(new Vector2(350, 255), 2f);
                 yield return .9f;
                 CustomValue1 = (float)Math.PI / 2f * 3;
                 CustomValue2 = CustomValue1;
@@ -258,17 +265,17 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     while (subshots < 4)
                     {
-                        mainEmitter1.FireBullet(VectorMathHelper.GetAngleTo(this.Center, mainEmitter1.Center), 140f, Color.Lerp(Color.White, Color.DeepSkyBlue, .6f));
-                        mainEmitter2.FireBullet(VectorMathHelper.GetAngleTo(this.Center, mainEmitter2.Center), 140f, Color.Lerp(Color.White, Color.DeepSkyBlue, .6f));
+                        mainEmitter1.FireBullet(VectorMathHelper.GetAngleTo(this.Center, mainEmitter1.Center), 170f, Color.Lerp(Color.White, Color.DeepSkyBlue, .6f));
+                        mainEmitter2.FireBullet(VectorMathHelper.GetAngleTo(this.Center, mainEmitter2.Center), 170f, Color.Lerp(Color.White, Color.DeepSkyBlue, .6f));
                         subshots++;
                         shots++;
                         yield return .03f;
                     }
                     subshots = 0;
-                    yield return .06f;
+                    yield return .03f;
                 }
 
-                LerpPosition(new Vector2(335, 135), 1.5f);
+                LerpPosition(new Vector2(350, 135), 1.5f);
                 shots = 0;
                 // Randomize the rotation
                 CustomValue1 = (float)(new Random().NextDouble() * ((float)Math.PI*2));
@@ -364,9 +371,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
             yield return 3f + (thisBullet.CustomValue1 * .6f);
 
             BulletEmitter explosion = new BulletEmitter(this, thisBullet.Center);
-            explosion.FireBulletExplosion(8, 160f, Color.Lerp(Color.White, Color.DeepSkyBlue, .4f));
-            explosion.FireBulletCluster(VectorMathHelper.GetAngleTo(thisBullet.Center, thisScene.player.InnerHitbox.Center), 5, 40f, 160f, 40f, Color.Lerp(Color.White, Color.DeepSkyBlue, .4f), BulletType.Circle);
-            explosion.FireBulletCluster(VectorMathHelper.GetAngleTo(thisBullet.Center, thisScene.player.InnerHitbox.Center), 6, 50f, 140f, 50f, Color.Lerp(Color.White, Color.DeepSkyBlue, .4f), BulletType.CircleSmall);
+            explosion.FireBulletExplosion(6, 160f, Color.Lerp(Color.White, Color.DeepSkyBlue, .4f));
+            explosion.FireBulletCluster(VectorMathHelper.GetAngleTo(thisBullet.Center, thisScene.player.InnerHitbox.Center), 3, 40f, 160f, 40f, Color.Lerp(Color.White, Color.DeepSkyBlue, .4f), BulletType.Circle);
+            explosion.FireBulletCluster(VectorMathHelper.GetAngleTo(thisBullet.Center, thisScene.player.InnerHitbox.Center), 4, 50f, 140f, 50f, Color.Lerp(Color.White, Color.DeepSkyBlue, .4f), BulletType.CircleSmall);
             explosion.Destroy();
 
             thisBullet.Destroy();

@@ -65,6 +65,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 200,
                 100
             };
+
             MaxHealth = (int)Health;
 
             base.Initialize();
@@ -140,10 +141,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public IEnumerator<float> Phase1Script(GameObject thisShip)
         {
-            LerpPosition(new Vector2(350, 100), 2f);
-            yield return .5f;
+            Center = new Vector2(350, 100);
             LerpColor(Color.White, 2f);
-            yield return 4f;
+            yield return 3f;
 
             Vulnerable = true;
 
@@ -229,7 +229,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             rightWingCannon.CustomValue1 = -1;
             leftWingCannon.CustomValue1 = 1;
             yield return .5f;
-            LerpPosition(new Vector2(350, 225), 2.2f);
+            LerpPosition(new Vector2(350, 425), 2.2f);
             yield return 2.7f;
 
             // Begin the spray and pray phase
@@ -264,7 +264,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     yield return 2.2f;
                 }
 
-                LerpPosition(new Vector2(350, 125), 2.2f);
+                LerpPosition(new Vector2(350, 425), 2.2f);
                 yield return 1.2f;
                 shots = 0;
 
@@ -313,8 +313,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     Vector2 target = thisScene.player.InnerHitbox.Center;
                     while (shots < 15)
                     {
-                        leftWingCannon.FireBullet(VectorMathHelper.GetAngleTo(leftWingCannon.Center, target), 275f, Color.Lerp(Color.White, Color.Orange, .7f));
-                        rightWingCannon.FireBullet(VectorMathHelper.GetAngleTo(rightWingCannon.Center, target), 275f, Color.Lerp(Color.White, Color.Orange, .7f));
+                        leftWingCannon.FireBullet(VectorMathHelper.GetAngleTo(leftWingCannon.Center, target), 325f, Color.Lerp(Color.White, Color.Orange, .7f));
+                        rightWingCannon.FireBullet(VectorMathHelper.GetAngleTo(rightWingCannon.Center, target), 325f, Color.Lerp(Color.White, Color.Orange, .7f));
                         shots++;
                         yield return .03f;
                     }
@@ -326,9 +326,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     while (shots < 10)
                     {
                         Bullet newBullet;
-                        newBullet = leftInnerWingCannon.FireBullet(VectorMathHelper.GetAngleTo(leftInnerWingCannon.Center, thisScene.player.InnerHitbox.Center), 60f, Color.DeepSkyBlue);
+                        newBullet = leftInnerWingCannon.FireBullet(VectorMathHelper.GetAngleTo(leftInnerWingCannon.Center, thisScene.player.InnerHitbox.Center), 80f, Color.DeepSkyBlue);
                         newBullet.LerpRotation(VectorMathHelper.GetAngleTo(newBullet.Center, thisScene.player.InnerHitbox.Center) + (((float)rand.NextDouble() * 2) - 1f) * randomSpray, 4f);
-                        newBullet = rightInnerWingCannon.FireBullet(VectorMathHelper.GetAngleTo(rightInnerWingCannon.Center, thisScene.player.InnerHitbox.Center), 70f, Color.DeepSkyBlue);
+                        newBullet = rightInnerWingCannon.FireBullet(VectorMathHelper.GetAngleTo(rightInnerWingCannon.Center, thisScene.player.InnerHitbox.Center), 80f, Color.DeepSkyBlue);
                         newBullet.LerpRotation(VectorMathHelper.GetAngleTo(newBullet.Center, thisScene.player.InnerHitbox.Center) + (((float)rand.NextDouble() * 2) - 1f) * randomSpray, 4f);
                         shots++;
                         yield return .06f;
@@ -371,7 +371,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             yield return 2f;
 
             LerpPosition(new Vector2(350, 200), 4f);
-            scriptManager.Execute(Phase4BulletWave);
+            scriptManager.Execute(Phase4BulletWave, this);
 
             scriptManager.Execute(ModulatePhasingLong, this);
 
@@ -411,7 +411,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             thisBullet.LerpVelocity(350f, 0.3f);
         }
 
-        public IEnumerator<float> Phase4BulletWave()
+        public IEnumerator<float> Phase4BulletWave(GameObject go)
         {
             Random rand = new Random();
             float speed;

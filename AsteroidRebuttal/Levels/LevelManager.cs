@@ -14,6 +14,7 @@ using AsteroidRebuttal.Enemies.Bosses;
 using AsteroidRebuttal.Scripting;
 using AsteroidRebuttal.Core;
 using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace AsteroidRebuttal.Levels
 {
@@ -40,12 +41,12 @@ namespace AsteroidRebuttal.Levels
             //Level5Texture = content.Load<Texture2D>("Graphics/Backgrounds/level5");
 
             Level1.Level1Theme = content.Load<Song>("Audio/Music/ThisWarTornMote");
-            //Level2.Level1Theme = content.Load<Song>("Audio/Music/PaleBlueBattlefield");
+            Level2.Level2Theme = content.Load<Song>("Audio/Music/AboveTheCarnage");
             //Level3.Level1Theme = content.Load<Song>("Audio/Music/ApolloGraveyard");
             //Level4.Level1Theme = content.Load<Song>("Audio/Music/TechnoFuture");
             //Level5.Level1Theme = content.Load<Song>("Audio/Music/Showdown");
 
-            Level.BossTheme = content.Load<Song>("Audio/Music/BossTheme");
+            Level.BossTheme = content.Load<SoundEffect>("Audio/Music/Incursion");
         }
 
         public void Update(GameTime gameTime)

@@ -12,15 +12,15 @@ using AsteroidRebuttal.Scripting;
 
 namespace AsteroidRebuttal.Enemies
 {
-    public class Tortoise : Enemy
+    public class Dragonfly : Enemy
     {
         BulletEmitter mainEmitter;
-        public Tortoise(GameScene newScene, Vector2 position = new Vector2()) : base(newScene, position) { }
+        public Dragonfly(GameScene newScene, Vector2 position = new Vector2()) : base(newScene, position) { }
 
         public override void Initialize()
         {
-            Health = 10;
-            Texture = tortoiseTexture;
+            Health = 1;
+            Texture = dragonflyTexture;
             Color = Color.White;
 
             CollisionLayer = 1;
@@ -38,9 +38,7 @@ namespace AsteroidRebuttal.Enemies
             mainEmitter.LockedToParentPosition = true;
             mainEmitter.LockPositionOffset = (Origin / 2);
 
-            pointValue = 500;
-
-
+            pointValue = 75;
 
             scriptManager = thisScene.scriptManager;
 
