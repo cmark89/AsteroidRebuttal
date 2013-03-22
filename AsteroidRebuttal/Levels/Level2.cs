@@ -19,6 +19,7 @@ namespace AsteroidRebuttal.Levels
     {
         // Content
         public static Texture2D Level2GroundTexture;
+        public static Texture2D Level2CloudTexture;
         public static Song Level2Theme;
 
 
@@ -37,6 +38,7 @@ namespace AsteroidRebuttal.Levels
 
             // Individually add each layer to the scrolling background...
             scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level2GroundTexture, 50f, Color.White));
+            scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level2CloudTexture, 85f, Color.White));
         }
 
         public override IEnumerator<float> LevelScript()

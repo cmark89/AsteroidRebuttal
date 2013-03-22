@@ -23,7 +23,7 @@ namespace AsteroidRebuttal.Scenes
         public List<GameObject> gameObjects { get; private set; }
         public ScriptManager scriptManager;
 
-        float currentGameTime;
+        public float currentGameTime { get; private set; }
 
         // This is the actual GAME window; the UI will appear to the side.
         public Rectangle ScreenArea { get; private set; }
@@ -115,7 +115,7 @@ namespace AsteroidRebuttal.Scenes
             levelManager = new LevelManager(this);
 
             // Test
-            levelManager.SetLevel(2);
+            levelManager.SetLevel(3);
 
             //new FinalBoss(this, new Vector2(350, -300));
             player = new PlayerShip(this, new Vector2(100, 200));
@@ -312,10 +312,13 @@ namespace AsteroidRebuttal.Scenes
             bossHealthbarFrameColor = Color.Transparent;
 
             float elapsedTime = 0f;
+            float lastTime = currentGameTime;
+
             while (elapsedTime < 1f)
             {
                 bossHealthbarFrameColor = Color.Lerp(Color.Transparent, Color.White, elapsedTime);
-                elapsedTime += .03f;
+                elapsedTime += currentGameTime - lastTime;
+                lastTime = currentGameTime;
                 yield return .03f;
             }
 
@@ -323,12 +326,18 @@ namespace AsteroidRebuttal.Scenes
             elapsedTime = 0f;
             bossHealthbarColor = Color.Yellow;
 
-            while (elapsedTime < .5f)
+            Console.WriteLine("Start bar! At time: " + currentGameTime);
+
+            
+
+            while (elapsedTime < 1f)
             {
-                bossHealthbarWidth = (elapsedTime / .5f) * bossHealthbarMaxWidth;
-                elapsedTime += .01f;
-                yield return .01f;
+                bossHealthbarWidth = (elapsedTime / 1) * bossHealthbarMaxWidth;
+                elapsedTime += currentGameTime - lastTime;
+                lastTime = currentGameTime;
+                yield return .03f;
             }
+            Console.WriteLine("End bar! At time: " + currentGameTime);
 
             bossHealthbarAnimationComplete = true;
             bossHealthbarWidth = bossHealthbarMaxWidth;

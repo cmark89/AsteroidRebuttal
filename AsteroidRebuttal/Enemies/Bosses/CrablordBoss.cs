@@ -57,7 +57,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public override void Initialize()
         {
             Console.WriteLine("Initialize me!");
-            Health = 450;
+            Health = 500;
 
             // Get the actual origin.
             Origin = new Vector2(127.5f, 84.5f);
@@ -79,8 +79,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             PhaseChangeValues = new List<int>()
             {
-                275,
-                75
+                250,
+                150
             };
             MaxHealth = (int)Health;
 
@@ -110,7 +110,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 Center = circleCenter + orbitMovement;
             }
 
-            if (phase == 1 && Health < 275)
+            if (phase == 1 && Health < 250)
             {
                 phase = 2;
                 thisScene.BossPhaseChange();
@@ -118,7 +118,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 scriptManager.Execute(Phase2Script, this);
             }
 
-            if (phase == 2 && Health < 75)
+            if (phase == 2 && Health < 150)
             {
                 phase = 3;
                 thisScene.BossPhaseChange();
@@ -179,11 +179,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
         {
             while (true)
             {
-                int cycles = 0;
                 thisShip.LerpPosition(new Vector2(350f, 65f), 3f);
-                yield return 4f;
-                
+                yield return 3f;
                 Vulnerable = true;
+
+                int cycles = 0;
 
                 CircleMovement(60f, 1f, 4f);
 

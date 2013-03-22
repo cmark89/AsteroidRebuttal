@@ -264,7 +264,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     yield return 2.2f;
                 }
 
-                LerpPosition(new Vector2(350, 425), 2.2f);
+                LerpPosition(new Vector2(350, 300), 2.2f);
                 yield return 1.2f;
                 shots = 0;
 
@@ -278,7 +278,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     shots++;
                 }
 
-                LerpPosition(new Vector2(350, 225), 2.2f);
+                LerpPosition(new Vector2(350, 425), 2.2f);
             }
         }
 

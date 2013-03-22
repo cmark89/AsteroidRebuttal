@@ -36,13 +36,14 @@ namespace AsteroidRebuttal.Levels
             Console.WriteLine("Loaded level content!");
             Level1.Level1GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level1");
             Level2.Level2GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level2");
-            //Level3Texture = content.Load<Texture2D>("Graphics/Backgrounds/level3");
+            Level2.Level2CloudTexture = content.Load<Texture2D>("Graphics/Backgrounds/level2clouds");
+            Level3.Level3GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level3");
             //Level4Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4");
             //Level5Texture = content.Load<Texture2D>("Graphics/Backgrounds/level5");
 
             Level1.Level1Theme = content.Load<Song>("Audio/Music/ThisWarTornMote");
             Level2.Level2Theme = content.Load<Song>("Audio/Music/AboveTheCarnage");
-            //Level3.Level1Theme = content.Load<Song>("Audio/Music/ApolloGraveyard");
+            Level3.Level3Theme = content.Load<Song>("Audio/Music/ApolloGraveyard");
             //Level4.Level1Theme = content.Load<Song>("Audio/Music/TechnoFuture");
             //Level5.Level1Theme = content.Load<Song>("Audio/Music/Showdown");
 
@@ -73,7 +74,7 @@ namespace AsteroidRebuttal.Levels
                     newLevel = new Level2(this);
                     break;
                 case (3):
-                    //Set level = 3
+                    newLevel = new Level3(this);
                     break;
                 case (4):
                     //Set level = 4
