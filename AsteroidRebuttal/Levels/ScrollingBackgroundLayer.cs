@@ -12,7 +12,7 @@ namespace AsteroidRebuttal.Levels
     {
         Color layerColor;
         Texture2D layerTexture;
-        float layerSpeed;
+        public float layerSpeed;
 
         GameScene thisScene;
 
@@ -65,9 +65,13 @@ namespace AsteroidRebuttal.Levels
             {
                 sb.position.Y += (float)gameTime.ElapsedGameTime.TotalSeconds * layerSpeed;
 
-                if (sb.position.Y > thisScene.ScreenArea.Height)
+                if (layerSpeed > 0 && sb.position.Y >= thisScene.ScreenArea.Height)
                 {
                     sb.position = new Vector2(sb.position.X, (sb.position.Y - sb.texture.Height * 2));
+                }
+                else if (layerSpeed < 0 && sb.position.Y + sb.texture.Height <= 0)
+                {
+                    sb.position = new Vector2(sb.position.X, (sb.position.Y + sb.texture.Height * 2));
                 }
             }
 

@@ -12,6 +12,7 @@ using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
 using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Enemies;
+using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.GameObjects
 {
@@ -130,12 +131,25 @@ namespace AsteroidRebuttal.GameObjects
             if (KeyboardManager.KeyDown(Keys.Space) && gameTime.TotalGameTime.TotalSeconds > nextFireTime && CanFire)
             {
                 // Fire!
+                AudioManager.PlaySoundEffect(GameScene.Shot3Sound, .2f);
                 mainEmitter.FireBullet(((float)Math.PI / 2) * 3, 500f, Color.GreenYellow, BulletType.Diamond).SetCollisionLayer(2);
 
                 nextFireTime = (float)gameTime.TotalGameTime.TotalSeconds + .1f;
             }
 
             Position += movement;
+
+            // Now clamp the position...
+
+            if (Center.X - Origin.X < thisScene.ScreenArea.X)
+                Center = new Vector2(thisScene.ScreenArea.X + Origin.X, Center.Y);
+            else if (Center.X + Origin.X > thisScene.ScreenArea.X + thisScene.ScreenArea.Width)
+                Center = new Vector2(thisScene.ScreenArea.X + thisScene.ScreenArea.Width - Origin.X, Center.Y);
+
+            if (Center.Y - Origin.Y < thisScene.ScreenArea.Y)
+                Center = new Vector2(Center.X, thisScene.ScreenArea.Y + Origin.Y);
+            else if (Center.Y + Origin.Y > thisScene.ScreenArea.Y + thisScene.ScreenArea.Height)
+                Center = new Vector2(Center.X, thisScene.ScreenArea.Y + thisScene.ScreenArea.Height - Origin.Y);
 
             //Test a hoolio
             base.Update(gameTime);
@@ -171,7 +185,6 @@ namespace AsteroidRebuttal.GameObjects
                 Bullet thisBullet = (Bullet)sender;
                 if (!thisBullet.Grazed)
                 {
-                    Console.WriteLine("Bullet Graze!");
                     thisBullet.Grazed = true;
                     thisScene.GrazeCount++;
                     thisScene.Score += thisScene.GrazeValue;
@@ -186,16 +199,13 @@ namespace AsteroidRebuttal.GameObjects
 
         public void ObjectCollidedWith(GameObject sender, CollisionEventArgs e)
         {
-            Console.WriteLine(sender.ToString());
             if (sender is Bullet)
             {
-                Console.WriteLine("Killed by bullet!");
                 Destroy();
             }
 
             if (sender is Enemy || sender is Boss)
             {
-                Console.WriteLine("Killed by enemy!");
                 Destroy();
             }
         }

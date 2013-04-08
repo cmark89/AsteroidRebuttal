@@ -8,6 +8,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
+using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.Enemies.Bosses
 {
@@ -115,6 +116,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public void Explode()
         {
+            AudioManager.PlaySoundEffect(GameScene.Explosion1Sound, .9f, -.5f);
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .9f, .5f);
+
             //Damage the boss here.
             parentBoss.TakeDamage(1, this);
             Destroy();

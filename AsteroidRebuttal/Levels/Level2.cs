@@ -11,6 +11,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Enemies;
 using ObjectivelyRadical.Scripting;
 using AsteroidRebuttal.Core;
+using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Enemies.Bosses;
 
 namespace AsteroidRebuttal.Levels
@@ -21,6 +22,7 @@ namespace AsteroidRebuttal.Levels
         public static Texture2D Level2GroundTexture;
         public static Texture2D Level2CloudTexture;
         public static Song Level2Theme;
+        public static Texture2D Level2TitleTexture;
 
 
         public Level2(LevelManager thisManager) : base(thisManager) { }
@@ -28,6 +30,7 @@ namespace AsteroidRebuttal.Levels
         public override void Initialize()
         {
             SetupBackground();
+            TitleTexture = Level2TitleTexture;
         }
 
         public override void SetupBackground()
@@ -47,7 +50,16 @@ namespace AsteroidRebuttal.Levels
             Enemy e;
 
             AudioManager.PlaySong(Level2Theme, false, .5f);
-            yield return 4f;
+
+            TitleShown = true;
+            manager.thisScene.LerpTitleColor(Color.White, 1f);
+            yield return 1f;
+
+            yield return 2f;
+
+            manager.thisScene.LerpTitleColor(Color.Transparent, 1f);
+            yield return 1f;
+            TitleShown = false;
 
             // Time remaining: 61 seconds
 
@@ -246,6 +258,8 @@ namespace AsteroidRebuttal.Levels
             while (true)
             {
                 yield return 1.3f;
+                if (manager.thisScene.PointOnScreen(go.Center))
+                    AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .7f, .5f);
                 new BulletEmitter(go, go.Center, true).FireBulletCluster(VectorMathHelper.GetAngleTo(go.Center, manager.thisScene.player.InnerHitbox.Center), 1, 20f, 100f, 0f, Color.Orange);
             }
         }
@@ -257,6 +271,7 @@ namespace AsteroidRebuttal.Levels
 
             while (true)
             {
+                AudioManager.PlaySoundEffect(GameScene.Shot3Sound, .7f, .5f);
                 new BulletEmitter(go, go.Center, true).FireBulletSpread(go.Rotation, 3, 70f, 130f, Color.Orange);
                 yield return 1.5f;
             }
@@ -274,6 +289,7 @@ namespace AsteroidRebuttal.Levels
             yield return go.CustomValue1;
             while (true)
             {
+                AudioManager.PlaySoundEffect(GameScene.Shot8Sound, .7f, 0f);
                 new BulletEmitter(go, go.Center, true).FireBulletExplosion(12, 80f, Color.DeepSkyBlue);
                 yield return 2f;
             }
@@ -296,6 +312,7 @@ namespace AsteroidRebuttal.Levels
                     shots++;
 
                     emitter.Rotation += .2f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot8Sound, .7f, .5f);
                     foreach(Bullet b in emitter.FireBulletExplosion(20, 200f, Color.DeepSkyBlue))
                     {
                         b.LerpVelocity(40f, 4f);
@@ -324,6 +341,7 @@ namespace AsteroidRebuttal.Levels
 
                     emitter.Center = go.Center;
                     emitter.Rotation += .2f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot8Sound, .7f, -.4f);
                     foreach (Bullet b in emitter.FireBulletExplosion(10, 100f, Color.DeepSkyBlue))
                     {
                         b.LerpVelocity(40f, 4f);

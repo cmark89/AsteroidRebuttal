@@ -10,6 +10,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
+using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.Enemies.Bosses
 {
@@ -40,7 +41,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public override void Initialize()
         {
             Console.WriteLine("Initialize me!");
-            Health = 2050;
+            Health = 1800;
 
             // Get the actual origin.
             Origin = new Vector2(255.5f, 234.5f);
@@ -62,11 +63,10 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             PhaseChangeValues = new List<int>()
             {
-                1600,
                 1350,
-                1000,
-                700,
-                250
+                1100,
+                750,
+                450
             };
             MaxHealth = (int)Health;
 
@@ -88,6 +88,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             ring1.SetParent(this);
             ring1.SetTexture(boss5Ring1Texture);
             ring1.LockedToParentPosition = true;
+            ring1.Center = this.Center;
 
             ring2 = new Enemy(thisScene, Origin);
             ring2.Initialize();
@@ -98,6 +99,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             ring2.SetParent(this);
             ring2.SetTexture(boss5Ring2Texture);
             ring2.LockedToParentPosition = true;
+            ring2.Center = this.Center;
 
             ring1Emitters = new List<BulletEmitter>()
             {
@@ -143,6 +145,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             topLayer.SetTexture(boss5TopTexture);
             topLayer.SetParent(this);
             topLayer.LockedToParentPosition = true;
+            topLayer.Center = this.Center;
 
             rotatingBullets = new List<Bullet>();
         }
@@ -191,7 +194,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             }
 
 
-            if (phase == 1 && Health < 1600)
+            if (phase == 1 && Health < 1350)
             {
                 phase = 2;
                 thisScene.BossPhaseChange();
@@ -199,7 +202,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 scriptManager.Execute(Phase2Script, this);
             }
 
-            if (phase == 2 && Health < 1350)
+            if (phase == 2 && Health < 1100)
             {
                 phase = 3;
                 thisScene.BossPhaseChange();
@@ -207,7 +210,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 scriptManager.Execute(Phase3Script, this);
             }
 
-            if (phase == 3 && Health < 1000)
+            if (phase == 3 && Health < 750)
             {
                 phase = 4;
                 thisScene.BossPhaseChange();
@@ -215,7 +218,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 scriptManager.Execute(Phase4Script, this);
             }
 
-            if (phase == 4 && Health < 700)
+            if (phase == 4 && Health < 450)
             {
                 phase = 5;
                 thisScene.BossPhaseChange();
@@ -223,7 +226,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 scriptManager.Execute(Phase5Script, this);
             }
 
-            if (phase == 5 && Health < 250)
+            if (phase == 5 && Health < 0)
             {
                 phase = 6;
                 thisScene.BossPhaseChange();
@@ -251,6 +254,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     rotateSpeed = -.1f;
 
                 mainEmitter.Rotation = 0f;
+
+                AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .6f, -.40f);
                 foreach (Bullet b in mainEmitter.FireBulletExplosion(40, 120f, Color.DeepSkyBlue))
                 {
                     b.LerpVelocity(90f, 1f);
@@ -259,6 +264,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 yield return .4f;
 
                 mainEmitter.Rotation += rotateSpeed;
+                AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .6f, -.40f);
                 foreach (Bullet b in mainEmitter.FireBulletExplosion(40, 120f, Color.DeepSkyBlue))
                 {
                     b.LerpVelocity(90f, 1f);
@@ -267,6 +273,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 yield return .4f;
 
                 mainEmitter.Rotation += rotateSpeed;
+                AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .6f, -.40f);
                 foreach (Bullet b in mainEmitter.FireBulletExplosion(40, 120f, Color.DeepSkyBlue))
                 {
                     b.LerpVelocity(90f, 1f);
@@ -275,6 +282,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 yield return .4f;
 
                 mainEmitter.Rotation += rotateSpeed;
+                AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .6f, -.40f);
                 foreach (Bullet b in mainEmitter.FireBulletExplosion(40, 120f, Color.DeepSkyBlue))
                 {
                     b.LerpVelocity(90f, 1f);
@@ -283,6 +291,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 yield return .4f;
 
                 mainEmitter.Rotation += rotateSpeed;
+                AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .6f, -.40f);
                 foreach (Bullet b in mainEmitter.FireBulletExplosion(40, 120f, Color.DeepSkyBlue))
                 {
                     b.LerpVelocity(90f, 1f);
@@ -317,6 +326,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (currentGameTime < nextMoveTime)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot5Sound, .45f, .40f);
                     foreach (BulletEmitter be in ring1Emitters)
                     {
                         be.FireBullet(180, Color.Red);
@@ -340,14 +350,17 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public IEnumerator<float> Phase1MoveVolley(GameObject go)
         {
             mainEmitter.Rotation = 0;
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, .25f);
             mainEmitter.FireBulletExplosion(40, 160, Color.Lerp(Color.White, Color.Orange, .4f));
             yield return .2f;
 
             mainEmitter.Rotation += .2f;
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, .25f);
             mainEmitter.FireBulletExplosion(40, 160, Color.Lerp(Color.White, Color.Orange, .4f));
             yield return .2f;
 
             mainEmitter.Rotation += .2f;
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, .25f);
             mainEmitter.FireBulletExplosion(40, 160, Color.Lerp(Color.White, Color.Orange, .4f));
             yield return .2f;
         }
@@ -370,6 +383,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (shots < 40)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot6Sound, .45f, 0f);
+
                     foreach (BulletEmitter be in ring1Emitters)
                     {
                         Bullet b = be.FireBullet(20f, Color.Red);
@@ -407,6 +422,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             Bullet thisBullet = (Bullet)go;
             yield return 3f;
 
+            AudioManager.PlaySoundEffect(GameScene.Shot8Sound, .4f, .5f);
             thisBullet.LerpVelocity(thisBullet.CustomValue1, 3f);
         }
 
@@ -438,6 +454,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     int shots = 0;
                     
                     // Fire a slow moving, rotating spread shot from the center emitter.
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .7f, 1f);
                     foreach (Bullet b in mainEmitter.FireBulletExplosion(40, 50f, Color.Lerp(Color.White, Color.Orange, .4f)))
                     {
                         if (shots % 2 == 0)
@@ -479,6 +496,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     if (thisRotation < (angleToPlayer + .1f) && thisRotation > (angleToPlayer - .1f))
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .7f, .3f);
                         be.FireBulletCluster(be.Rotation, 10, 20f, 100f, 200f, Color.Red);
 
                         // Stop it from firing for .2 seconds
@@ -509,6 +527,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     if (thisRotation < (angleToPlayer + .1f) && thisRotation > (angleToPlayer - .1f))
                     {
                         // Fire a bomb that will explode after a few moments.
+                        AudioManager.PlaySoundEffect(GameScene.Shot6Sound, .75f, .5f);
                         Bullet bomb = be.FireBullet(140f, Color.Orange);
                         bomb.LerpVelocity(0f, 2f);
                         scriptManager.Execute(BombExplosion, bomb);
@@ -519,6 +538,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     }
                     else
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .5f, 0f);
                         foreach (Bullet b in be.FireBulletSpread(be.Rotation, 4, 25f, 130f, Color.DeepSkyBlue))
                         {
                             b.LerpVelocity(60f, 3f);
@@ -533,6 +553,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public IEnumerator<float> BombExplosion(GameObject go)
         {
             yield return 2f;
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .9f, 0f);
             BulletEmitter explosion = new BulletEmitter(this, go.Center, true);
             explosion.FireBulletExplosion(20, 110f, Color.Lerp(Color.White, Color.Orange, .7f));
             explosion.FireBulletExplosion(30, 130f, Color.Lerp(Color.White, Color.Orange, .7f), BulletType.CircleSmall);
@@ -583,8 +604,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (shots < 50)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot5Sound, .35f, -.2f);
                     mainEmitter.Rotation += .1f;
-                    mainEmitter.FireBulletExplosion(5, 120f, Color.DeepSkyBlue);
+                    mainEmitter.FireBulletExplosion(5, 170f, Color.DeepSkyBlue);
                     shots++;
                     yield return .06f;
                 }
@@ -596,8 +618,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (shots < 75)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot5Sound, .35f, .2f);
                     mainEmitter.Rotation -= .138f;
-                    mainEmitter.FireBulletExplosion(4, 40f, Color.Red);
+                    mainEmitter.FireBulletExplosion(4, 65f, Color.Red);
                     shots++;
                     yield return .03f;
                 }
@@ -666,6 +689,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (currentGameTime < nextMoveTime)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot5Sound, .35f, .40f);
                     foreach (BulletEmitter be in ring1Emitters)
                     {
                         //be.FireBullet(200, Color.Red).LerpVelocity(90, 1f);
@@ -691,20 +715,24 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public IEnumerator<float> Phase5MoveVolley(GameObject go)
         {
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, .25f);
             mainEmitter.Rotation = 0;
             mainEmitter.FireBulletExplosion(40, 160, Color.Lerp(Color.White, Color.Orange, .4f));
             yield return .2f;
 
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, .25f);
             mainEmitter.Rotation += .2f;
             mainEmitter.FireBulletExplosion(40, 160, Color.Lerp(Color.White, Color.Orange, .4f));
             yield return .2f;
 
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, .25f);
             mainEmitter.Rotation += .2f;
             mainEmitter.FireBulletExplosion(40, 160, Color.Lerp(Color.White, Color.Orange, .4f));
             yield return .2f;
 
             foreach (BulletEmitter be in ring2Emitters)
             {
+                AudioManager.PlaySoundEffect(GameScene.Shot6Sound, 1f, .25f);
                 Bullet b = be.FireBullet(200, Color.Orange);
                 b.LerpVelocity(0f, 1.5f);
                 scriptManager.Execute(Phase5BombExplosion, b);
@@ -714,6 +742,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public IEnumerator<float> Phase5BombExplosion(GameObject go)
         {
             yield return 2f;
+            AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .9f, .25f);
             BulletEmitter explosion = new BulletEmitter(this, go.Center, true);
             explosion.FireBulletExplosion(10, 110f, Color.Lerp(Color.White, Color.Orange, .7f));
             explosion.FireBulletExplosion(15, 130f, Color.Lerp(Color.White, Color.Orange, .7f), BulletType.CircleSmall);
@@ -730,12 +759,12 @@ namespace AsteroidRebuttal.Enemies.Bosses
             // Lerp the position and disable the player's shot 
             Console.WriteLine("WARNING! TARGET SYSTEM IS JAMMED!  YOU CANNOT FIRING!");
             thisScene.player.CanFire = false;
-            ring1.LerpAngularVelocity(2f, 3f);
-            ring2.LerpAngularVelocity(-3f, 3f);
-            yield return 3f;
+            ring1.LerpAngularVelocity(2.15f, 3f);
+            ring2.LerpAngularVelocity(-3.25f, 3f);
+            yield return 6f;
 
             // Start a 60 second countdown timer.
-            float finalPhaseEndTime = currentGameTime + 60f;
+            float finalPhaseEndTime = currentGameTime + 58f;
             float nextShotTime = currentGameTime + 2.5f;
 
             //BEGIN!
@@ -744,16 +773,18 @@ namespace AsteroidRebuttal.Enemies.Bosses
             while (finalPhaseEndTime - currentGameTime > 42f)
             {
                 Bullet b;
+                AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .25f, .25f);
                 foreach (BulletEmitter be in ring2Emitters)
                 {
-                    b = be.FireBullet(200f, Color.DeepSkyBlue);
-                    b.LerpVelocity(150f, 1.5f);
+                    b = be.FireBullet(270f, Color.DeepSkyBlue);
+                    b.LerpVelocity(200f, 1.5f);
                 }
 
                 if (currentGameTime >= nextShotTime && finalPhaseEndTime - currentGameTime > 47f)
                 {
                     foreach(BulletEmitter be in ring1Emitters)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot6Sound, .15f, 0f);
                         be.FireBulletSpread(be.Rotation, 5, 90f, 40f, Color.Red);
                         nextShotTime = currentGameTime + .7f;
                     }
@@ -771,6 +802,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 mainEmitter.Rotation = VectorMathHelper.GetRandom();
                 // Do some movementing while this happens
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .9f, .5f);
+
                 foreach (Bullet b in mainEmitter.FireBulletExplosion(15, 100f, Color.DeepSkyBlue))
                 {
                     b.CustomValue1 = rotationSpeed;
@@ -806,9 +839,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 if (shots < 10)
                 {
-                    foreach (Bullet b in mainEmitter.FireBulletExplosion(35, 40, Color.Orange))
+                    AudioManager.PlaySoundEffect(GameScene.Shot3Sound, .3f, .5f);
+                    Bullet[] tempbullets = mainEmitter.FireBulletExplosion(35, 40, Color.Orange);
+                    foreach (Bullet b in tempbullets)
                     {
-                        scriptManager.Execute(FinalPhaseBulletSpeed, b);
+                        b.LerpVelocity(230f, 3.5f);
                     }
 
                     shots++;
@@ -823,6 +858,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 if (currentGameTime > nextShotTime)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .9f, .5f);
+
                     foreach (Bullet b in mainEmitter.FireBulletExplosion(15, 60f, Color.DeepSkyBlue))
                     {
                         b.CustomValue1 = rotationSpeed;
@@ -852,7 +889,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
             yield return 3f;
 
             // Now explode for realzies
-
         }
 
         public IEnumerator<float> FinalPhaseMovement(GameObject go)
@@ -874,12 +910,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             LerpPosition(new Vector2(350f, 75f), 2f);
             
-        }
-
-        public IEnumerator<float> FinalPhaseBulletSpeed(GameObject go)
-        {
-            yield return 2f;
-            go.LerpVelocity(230f, .4f);
         }
 
 

@@ -10,6 +10,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
+using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.Enemies.Bosses
 {
@@ -24,7 +25,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         BulletEmitter arm6Emitter;
 
         int phase = 1;
-        int thisPhaseOrbHealth = 50;
+        int thisPhaseOrbHealth = 45;
         Random rand = new Random();
 
         // Used for holding things
@@ -67,9 +68,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             PhaseChangeValues = new List<int>()
             {
-                9,
-                7,
-                4
+                8,
+                6,
+                3
             };
             MaxHealth = (int)Health;
 
@@ -159,7 +160,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public IEnumerator<float> Phase1Script(GameObject thisShip)
         {
-            LerpPosition(new Vector2(375, 50f), 4f);
+            LerpPosition(new Vector2(375, 100f), 4f);
             yield return 4f;
 
             SummonOrb();
@@ -169,6 +170,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             while (true)
             {
+                AudioManager.PlaySoundEffect(GameScene.Shot2Sound, .15f, -.35f);
                 mainEmitter.Rotation = ((float)Math.PI / 2f) + (((float)Math.PI/2f) * (float)Math.Sin(currentGameTime * 2f));
                 mainEmitter.FireBullet(150f, Color.Orange, BulletType.DiamondSmall);
                 yield return .03f;
@@ -181,6 +183,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 yield return 3f;
                 new BulletEmitter(this, go.Center, true).FireBulletCluster(VectorMathHelper.GetAngleTo(go.Center, thisScene.player.InnerHitbox.Center), 14, 35f, 140f, 40f, Color.Purple);
+                AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .7f, -.5f);
                 
             }
         }
@@ -195,6 +198,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 float waveEndTime = currentGameTime + 5f;
                 while (currentGameTime < waveEndTime)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .25f, 0f);
                     Bullet[] firedBullets = mainEmitter.FireBulletSpread(VectorMathHelper.GetAngleTo(mainEmitter.Center, thisScene.player.InnerHitbox.Center), 5, 80f, 180f, Color.White, BulletType.DiamondSmall);
                     firedBullets[0].Color = Color.Orange;
                     firedBullets[1].Color = Color.Purple;
@@ -227,6 +231,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 yield return 2f;
                 new BulletEmitter(this, go.Center, true).FireBulletWave(VectorMathHelper.GetAngleTo(go.Center, thisScene.player.InnerHitbox.Center), 3, 100f, 25f, Color.MediumPurple, BulletType.DiamondSmall);
+                AudioManager.PlaySoundEffect(GameScene.Shot6Sound, .75f, 0f);
             }
         }
 
@@ -261,6 +266,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 float finishTime = currentGameTime + 10f;
                 while (currentGameTime < finishTime)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot2Sound, .15f, -.35f);
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .15f, 0f);
+
                     mainEmitter.Rotation = ((float)Math.PI / 2f) + (((float)Math.PI / 2f) * (float)Math.Sin(currentGameTime * 3f));
                     mainEmitter.FireBullet(150f, Color.Orange, BulletType.DiamondSmall);
 
@@ -297,6 +305,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 yield return 4f;
                 new BulletEmitter(this, go.Center, true).FireBulletExplosion(20, 75f, Color.MediumPurple, BulletType.DiamondSmall);
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .5f, .45f);
             }
         }
 
@@ -331,6 +340,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             while (true)
             {
                 emitters[currentArm].Rotation = VectorMathHelper.GetAngleTo(emitters[currentArm].Center, thisScene.player.InnerHitbox.Center);
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .65f, .45f);
                 foreach (Bullet b in emitters[currentArm].FireBulletExplosion(25, 190f, colors[currentArm], BulletType.DiamondSmall))
                 {
                     b.LerpVelocity(100f, 3f);
@@ -347,7 +357,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     scriptManager.Execute(Phase4Orb, SummonOrb());
                 }
 
-                yield return .3f;
+                yield return .23f;
             }
         }
 
@@ -365,6 +375,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 {
                     thisEmitter.Center = go.Center;
                     thisEmitter.Rotation = thisEmitter.CustomValue1 + ((float)Math.Sin(currentGameTime * 2f)) / 3f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot5Sound, .8f, 0f);
                     Bullet b = thisEmitter.FireBullet(160f, Color.OrangeRed, BulletType.DiamondSmall);
                     b.LerpVelocity(80f, 4f);
                     yield return .06f;
@@ -376,11 +387,12 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public ParasiteOrb SummonOrb()
         {
+            AudioManager.PlaySoundEffect(GameScene.PhaseInSound, .8f, 0f);
             ParasiteOrb orb = new ParasiteOrb(thisScene, Center);
             orb.SetTexture(boss4OrbTexture);
             orbs.Add(orb);
             orb.Rotation = VectorMathHelper.GetRandom();
-            orb.Velocity = 70f;
+            orb.Velocity = 55f;
             orb.Color = Color.Transparent;
             orb.LerpColor(Color.White, .5f);
             orb.SetParent(this);

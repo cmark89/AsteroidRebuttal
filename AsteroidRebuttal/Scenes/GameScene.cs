@@ -21,6 +21,7 @@ namespace AsteroidRebuttal.Scenes
     {
         public QuadTree quadtree {get; protected set;}
         public List<GameObject> gameObjects { get; private set; }
+        public List<Animation> animations { get; private set; }
         public ScriptManager scriptManager;
 
         public float currentGameTime { get; private set; }
@@ -39,6 +40,8 @@ namespace AsteroidRebuttal.Scenes
         LevelManager levelManager;
 
         //Content 
+        public static Texture2D ExplosionTexture;
+
         public static Texture2D BossHealthbarFrameTexture;
         public static Texture2D BossHealthbarBackgroundTexture;
         public static Texture2D BossHealthbarTexture;
@@ -48,8 +51,24 @@ namespace AsteroidRebuttal.Scenes
         public static Texture2D GUITextureExperienceFrame;
         public static Texture2D GUIRankOrb;
 
-        public static Texture2D GUIBossWarning;
+        public static Texture2D GUIBossWarningTexture;
+        public static Texture2D GUIJammedWarningTexture;
+
+        public static Texture2D GUIWarning;
         public bool BossWarningShown;
+
+        public static SoundEffect Explosion1Sound;
+        public static SoundEffect Shot1Sound;
+        public static SoundEffect Shot2Sound;
+        public static SoundEffect Shot3Sound;
+        public static SoundEffect Shot4Sound;
+        public static SoundEffect Shot5Sound;
+        public static SoundEffect Shot6Sound;
+        public static SoundEffect Shot7Sound;
+        public static SoundEffect Shot8Sound;
+
+        public static SoundEffect PhaseInSound;
+        public static SoundEffect PhaseOutSound;
 
         public static SoundEffect Rank1;
         public static SoundEffect Rank2;
@@ -58,6 +77,8 @@ namespace AsteroidRebuttal.Scenes
 
         public static SoundEffect BossWarning;
         public static SoundEffect BossAlarm;
+        public static SoundEffect JammedWarning;
+        public static SoundEffect JammedAlarm;
 
         public int Score = 0;
         public int ScoreMultiplier = 1;
@@ -98,10 +119,17 @@ namespace AsteroidRebuttal.Scenes
         float bossWarningColorLerpStartTime;
         float bossWarningColorLerpEndTime;
 
+        Color TitleColor = Color.Transparent;
+        Color TitleStartColor;
+        Color TitleEndColor;
+        float TitleColorLerpStartTime;
+        float TitleColorLerpEndTime;
+
         public override void Initialize()
         {
             scriptManager = new ScriptManager();
             gameObjects = new List<GameObject>();
+            animations = new List<Animation>();
 
             // Set the game area to 700 x 650.
             ScreenArea = new Rectangle(0, 0, 700, 650);
@@ -115,7 +143,7 @@ namespace AsteroidRebuttal.Scenes
             levelManager = new LevelManager(this);
 
             // Test
-            levelManager.SetLevel(3);
+            levelManager.SetLevel(5);
 
             //new FinalBoss(this, new Vector2(350, -300));
             player = new PlayerShip(this, new Vector2(100, 200));
@@ -126,6 +154,8 @@ namespace AsteroidRebuttal.Scenes
         {
             //TEST
             Console.WriteLine("Loaded level content!");
+            ExplosionTexture = content.Load<Texture2D>("Graphics/Effects/Explosion");
+
             BossHealthbarBackgroundTexture = content.Load<Texture2D>("Graphics/GUI/HealthBarBackground");
             BossHealthbarFrameTexture = content.Load<Texture2D>("Graphics/GUI/HealthBarFrame");
             BossHealthbarDividerTexture = content.Load<Texture2D>("Graphics/GUI/HealthBarDivision");
@@ -138,7 +168,21 @@ namespace AsteroidRebuttal.Scenes
             extendFont = content.Load<SpriteFont>("Fonts/ExtendFont");
             livesFont = content.Load<SpriteFont>("Fonts/LivesFont");
 
-            GUIBossWarning = content.Load<Texture2D>("Graphics/GUI/BossWarning");
+            GUIBossWarningTexture = content.Load<Texture2D>("Graphics/GUI/BossWarning");
+            GUIJammedWarningTexture = content.Load<Texture2D>("Graphics/GUI/CantFiringWarning");
+
+            Explosion1Sound = content.Load<SoundEffect>("Audio/SFX/explosion1");
+            Shot1Sound = content.Load<SoundEffect>("Audio/SFX/shot1");
+            Shot2Sound = content.Load<SoundEffect>("Audio/SFX/shot2");
+            Shot3Sound = content.Load<SoundEffect>("Audio/SFX/shot3");
+            Shot4Sound = content.Load<SoundEffect>("Audio/SFX/shot4");
+            Shot5Sound = content.Load<SoundEffect>("Audio/SFX/shot5");
+            Shot6Sound = content.Load<SoundEffect>("Audio/SFX/shot6");
+            Shot7Sound = content.Load<SoundEffect>("Audio/SFX/shot7");
+            Shot8Sound = content.Load<SoundEffect>("Audio/SFX/shot8");
+
+            PhaseInSound = content.Load<SoundEffect>("Audio/SFX/phaseIn");
+            PhaseOutSound = content.Load<SoundEffect>("Audio/SFX/phaseOut");
 
             Rank1 = content.Load<SoundEffect>("Audio/AI/LockAndLoad");
             Rank2 = content.Load<SoundEffect>("Audio/AI/BadBoy");
@@ -147,6 +191,8 @@ namespace AsteroidRebuttal.Scenes
 
             BossWarning = content.Load<SoundEffect>("Audio/AI/BossWarning");
             BossAlarm = content.Load<SoundEffect>("Audio/AI/WarningAlarm");
+            JammedWarning = content.Load<SoundEffect>("Audio/AI/AllWeaponsJammed");
+            JammedAlarm = content.Load<SoundEffect>("Audio/AI/JammedAlarm");
         }
 
 
@@ -168,6 +214,11 @@ namespace AsteroidRebuttal.Scenes
                 go.IsNewObject = false;
             }
 
+            foreach (Animation a in animations.FindAll(x => x.FlaggedForRemoval))
+            {
+                animations.Remove(a);
+            }
+
             // Populate the quadtree in preparation for collision checking.
             quadtree.Clear();
 
@@ -179,6 +230,11 @@ namespace AsteroidRebuttal.Scenes
             foreach (GameObject go in gameObjects.FindAll(x => !x.IsNewObject))
             {
                 quadtree.Insert(go);
+            }
+
+            foreach (Animation a in animations)
+            {
+                a.Update(gameTime);
             }
 
             scriptManager.Update(gameTime);
@@ -212,6 +268,8 @@ namespace AsteroidRebuttal.Scenes
                         ExperienceDecayPaused = false;
                 }
             }
+
+            AudioManager.PlayQueuedSoundEffects();
         }
 
         public void RemoveObjectsOutsideScreen()
@@ -236,6 +294,11 @@ namespace AsteroidRebuttal.Scenes
             foreach (GameObject go in gameObjects)
             {
                 go.Draw(spriteBatch);
+            }
+
+            foreach (Animation a in animations)
+            {
+                a.Draw(spriteBatch);
             }
 
             if(DrawQuadtree)
@@ -286,7 +349,12 @@ namespace AsteroidRebuttal.Scenes
 
             if (BossWarningShown)
             {
-                spriteBatch.Draw(GUIBossWarning, new Vector2((ScreenArea.Width / 2f) - (GUIBossWarning.Width / 2f), (ScreenArea.Height / 2f) - (GUIBossWarning.Height / 2f)), BossWarningColor);
+                spriteBatch.Draw(GUIWarning, new Vector2((ScreenArea.Width / 2f) - (GUIWarning.Width / 2f), (ScreenArea.Height / 2f) - (GUIWarning.Height / 2f)), BossWarningColor);
+            }
+
+            if (levelManager.currentLevel.TitleShown)
+            {
+                spriteBatch.Draw(levelManager.currentLevel.TitleTexture, new Vector2(0, 200), TitleColor);
             }
         }
 
@@ -417,6 +485,7 @@ namespace AsteroidRebuttal.Scenes
         //6.5 second total including final fade out
         public IEnumerator<float> ShowBossWarning()
         {
+            GUIWarning = GUIBossWarningTexture;
             PauseExperienceDecay(10f);
             BossWarningShown = true;
             LerpBossWarningColor(Color.White, 1.5f);
@@ -442,6 +511,37 @@ namespace AsteroidRebuttal.Scenes
             BossWarningShown = false;
         }
 
+        //5 second total including final fade out
+        public IEnumerator<float> ShowJammedWarning()
+        {
+            GUIWarning = GUIJammedWarningTexture;
+            PauseExperienceDecay(10f);
+            BossWarningShown = true;
+            LerpBossWarningColor(Color.White, 1f);
+
+            JammedAlarm.Play(.5f, 0f, 0f);
+            yield return .5f;
+
+            JammedWarning.Play(.8f, 0f, 0f);
+            yield return .5f;
+
+
+            for (int i = 0; i < 4; i++)
+            {
+                if(i%2 != 0)
+                    JammedAlarm.Play(.5f, 0f, 0f);
+
+                LerpBossWarningColor(new Color(.3f, .3f, .3f, .3f), .5f);
+                yield return .5f;
+                LerpBossWarningColor(Color.White, .5f);
+                yield return .5f;
+            }
+
+            LerpBossWarningColor(Color.Transparent, .5f);
+            yield return 1f;
+            BossWarningShown = false;
+        }
+
         public void LerpBossWarningColor(Color targetColor, float duration)
         {
             bossWarningStartColor = BossWarningColor;
@@ -457,12 +557,47 @@ namespace AsteroidRebuttal.Scenes
         {
             while (currentGameTime < bossWarningColorLerpEndTime)
             {
-                Console.WriteLine("LERP BOSS COLOR!");
                 BossWarningColor = Color.Lerp(bossWarningStartColor, bossWarningEndColor, (currentGameTime - bossWarningColorLerpStartTime) / (bossWarningColorLerpEndTime - bossWarningColorLerpStartTime));
                 yield return 0.00f;
             }
 
             BossWarningColor = bossWarningEndColor;
+        }
+
+        public void LerpTitleColor(Color targetColor, float duration)
+        {
+            TitleStartColor = TitleColor;
+            TitleEndColor = targetColor;
+
+            TitleColorLerpStartTime = currentGameTime;
+            TitleColorLerpEndTime = currentGameTime + duration;
+
+            scriptManager.Execute(TitleColorLerpScript);
+        }
+
+        public IEnumerator<float> TitleColorLerpScript()
+        {
+            while (currentGameTime < TitleColorLerpEndTime)
+            {
+                TitleColor = Color.Lerp(TitleStartColor, TitleEndColor, (currentGameTime - TitleColorLerpStartTime) / (TitleColorLerpEndTime - TitleColorLerpStartTime));
+                yield return 0.00f;
+            }
+
+            TitleColor = TitleEndColor;
+        }
+
+        public void PlayAnimation(Animation anim)
+        {
+            animations.Add(anim);
+        }
+
+        public bool PointOnScreen(Vector2 point)
+        {
+            float x, y;
+            x = point.X;
+            y = point.Y;
+
+            return (x > ScreenArea.X && x < ScreenArea.X + ScreenArea.Width && y > ScreenArea.Y && y < ScreenArea.Y + ScreenArea.Height);
         }
     }
 }

@@ -10,6 +10,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
+using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.Enemies.Bosses
 {
@@ -142,6 +143,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public IEnumerator<float> Phase1Script(GameObject thisShip)
         {
             Center = new Vector2(350, 100);
+            AudioManager.PlaySoundEffect(GameScene.PhaseInSound, .8f, 0f);
             LerpColor(Color.White, 2f);
             yield return 3f;
 
@@ -154,9 +156,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (shots < 5)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .5f, -.5f);
                     rightInnerWingCannon.FireBulletSpread((float)Math.PI / 2f, 5, 90, 200, Color.Lerp(Color.White, Color.Orange, .7f));
                     leftInnerWingCannon.FireBulletSpread((float)Math.PI / 2f, 5, 90, 200, Color.Lerp(Color.White, Color.Orange, .7f));
                     yield return .2f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .5f, -.5f);
                     leftWingCannon.FireBulletSpread((float)Math.PI / 2f, 5, 90, 200, Color.Lerp(Color.White, Color.Orange, .7f));
                     rightWingCannon.FireBulletSpread((float)Math.PI / 2f, 5, 90, 200, Color.Lerp(Color.White, Color.Orange, .7f));
 
@@ -165,6 +169,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 }
 
                 Phasing = true;
+                AudioManager.PlaySoundEffect(GameScene.PhaseOutSound, .8f, 0f);
                 LerpColor(Color.Transparent, 1f);
                 yield return 1f;
 
@@ -175,29 +180,37 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     LerpPosition(new Vector2(250, 400), .3f);
 
                 yield return .3f;
-                
+
+                AudioManager.PlaySoundEffect(GameScene.PhaseInSound, .8f, 0f);
                 LerpColor(Color.White, 1f);
                 yield return 1f;
                 Phasing = false;
 
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .8f, 0f);
                 mainEmitter.FireBulletExplosion(30, 300f, Color.DeepSkyBlue);
                 yield return .2f;
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .8f, 0f);
                 leftInnerWingCannon.FireBulletExplosion(40, 300f, Color.DeepSkyBlue);
                 yield return .2f;
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .8f, 0f);
                 rightInnerWingCannon.FireBulletExplosion(40, 300f, Color.DeepSkyBlue);
                 yield return .2f;
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .8f, 0f);
                 leftInnerWingCannon.FireBulletExplosion(40, 300f, Color.DeepSkyBlue);
                 yield return .2f;
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .8f, 0f);
                 rightInnerWingCannon.FireBulletExplosion(40, 300f, Color.DeepSkyBlue);
                 yield return .2f;
 
                 Phasing = true;
+                AudioManager.PlaySoundEffect(GameScene.PhaseOutSound, .8f, 0f);
                 LerpColor(Color.Transparent, 1f);
                 yield return 1f;
 
                 LerpPosition(new Vector2(350, 100), .2f);
                 yield return .2f;
 
+                AudioManager.PlaySoundEffect(GameScene.PhaseInSound, .8f, 0f);
                 LerpColor(Color.White, 1f);
                 yield return 1f;
                 Phasing = false;
@@ -213,11 +226,13 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public IEnumerator<float> Phase2Script(GameObject thisShip)
         {
             Phasing = true;
+            AudioManager.PlaySoundEffect(GameScene.PhaseOutSound, .8f, 0f);
             LerpColor(Color.Transparent, 1.5f);
             yield return 2f;
 
             Center = new Vector2(300, 25);
 
+            AudioManager.PlaySoundEffect(GameScene.PhaseInSound, .8f, 0f);
             LerpColor(Color.White, 1.5f);
             yield return 2;
             Phasing = false;
@@ -248,6 +263,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     
                     while (shots < shotsToFire)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .35f, -.8f);
                         shots++;
                         float angle = VectorMathHelper.GetAngleTo(thisScene.player.InnerHitbox.Center, mainEmitter.Center, spread);
 
@@ -270,8 +286,10 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (shots < 10)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .7f, .2f);
                     leftInnerWingCannon.FireBulletSpread(leftInnerWingCannon.Rotation - .33f, 4, 40f, 130f, Color.DeepSkyBlue);
                     yield return .35f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .7f, .2f);
                     rightInnerWingCannon.FireBulletSpread(rightInnerWingCannon.Rotation + .33f, 4, 40f, 130f, Color.DeepSkyBlue);
                     yield return .35f;
 
@@ -286,10 +304,12 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public IEnumerator<float> Phase3Script(GameObject thisShip)
         {
             Phasing = true;
+            AudioManager.PlaySoundEffect(GameScene.PhaseOutSound, .8f, 0f);
             LerpColor(Color.Transparent, 1.2f);
             yield return 2f;
 
             LerpPosition(new Vector2(350f, 45f), .1f);
+            AudioManager.PlaySoundEffect(GameScene.PhaseInSound, .8f, 0f);
             LerpColor(Color.White, 1.2f);
             yield return 1.2f;
             Phasing = false;
@@ -313,6 +333,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     Vector2 target = thisScene.player.InnerHitbox.Center;
                     while (shots < 15)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot2Sound, .3f, 0f);
                         leftWingCannon.FireBullet(VectorMathHelper.GetAngleTo(leftWingCannon.Center, target), 325f, Color.Lerp(Color.White, Color.Orange, .7f));
                         rightWingCannon.FireBullet(VectorMathHelper.GetAngleTo(rightWingCannon.Center, target), 325f, Color.Lerp(Color.White, Color.Orange, .7f));
                         shots++;
@@ -325,6 +346,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     float randomSpray = .7f;
                     while (shots < 10)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .35f, -.3f);
                         Bullet newBullet;
                         newBullet = leftInnerWingCannon.FireBullet(VectorMathHelper.GetAngleTo(leftInnerWingCannon.Center, thisScene.player.InnerHitbox.Center), 80f, Color.DeepSkyBlue);
                         newBullet.LerpRotation(VectorMathHelper.GetAngleTo(newBullet.Center, thisScene.player.InnerHitbox.Center) + (((float)rand.NextDouble() * 2) - 1f) * randomSpray, 4f);
@@ -339,24 +361,31 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     yield return .5f;
                 }
 
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .7f, -.2f);
                 mainEmitter.FireBulletExplosion(25, 225f, Color.Lerp(Color.White, Color.Orange, .7f));
                 yield return .1f;
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .7f, -.2f);
                 mainEmitter.FireBulletExplosion(24, 225f, Color.Lerp(Color.White, Color.Orange, .7f));
                 yield return .1f;
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .7f, -.2f);
                 mainEmitter.FireBulletExplosion(23, 225f, Color.Lerp(Color.White, Color.Orange, .7f));
                 yield return .1f;
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .7f, -.2f);
                 mainEmitter.FireBulletExplosion(22, 225f, Color.Lerp(Color.White, Color.Orange, .7f));
                 yield return .1f;
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .7f, -.2f);
                 mainEmitter.FireBulletExplosion(21, 225f, Color.Lerp(Color.White, Color.Orange, .7f));
                 yield return .1f;
 
                 // Lerp to the next position!!
                 Phasing = true;
+                AudioManager.PlaySoundEffect(GameScene.PhaseOutSound, .8f, 0f);
                 LerpColor(Color.Transparent, 1.2f);
                 yield return 1.5f;
                 Center = positions[rand.Next(0, 3)];
                 yield return .03f;
 
+                AudioManager.PlaySoundEffect(GameScene.PhaseInSound, .8f, 0f);
                 LerpColor(Color.White, 1.2f);
                 yield return 1.2f;
                 Phasing = false;
@@ -367,6 +396,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public IEnumerator<float> Phase4Script(GameObject thisObject)
         {
+            AudioManager.PlaySoundEffect(GameScene.PhaseInSound, .8f, 0f);
             LerpColor(Color.White, 1f);
             yield return 2f;
 
@@ -396,6 +426,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     bulletColor = Color.Lerp(Color.White, Color.Goldenrod, .5f);
 
                 // Prevent infinite grazing on these bullets
+                AudioManager.PlaySoundEffect(GameScene.Shot3Sound, .35f, -.3f);
                 thisEmitter.FireBullet(200f, bulletColor, BulletType.Circle).Grazed = true;
                 shots++;
                 yield return .03f;
@@ -406,7 +437,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         {
             Bullet thisBullet = (Bullet)thisObject;
             yield return 3f;
-
+            AudioManager.PlaySoundEffect(GameScene.Shot6Sound, .5f, 0f);
             thisBullet.Rotation = VectorMathHelper.GetAngleTo(thisBullet.Center, thisScene.player.InnerHitbox.Center);
             thisBullet.LerpVelocity(350f, 0.3f);
         }
@@ -419,6 +450,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             while (true)
             {
                 speed = rand.Next(40, 120);
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, 1f, -.8f);
                 foreach (Bullet b in mainEmitter.FireBulletExplosion(100, speed, Color.Lerp(Color.White, Color.Orange, .5f)))
                     scriptManager.Execute(ModulatePhasing, b);
 
@@ -426,6 +458,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 speed /= 2f;
 
+                AudioManager.PlaySoundEffect(GameScene.Shot7Sound, 1f, -.6f);
                 foreach (Bullet b in mainEmitter.FireBulletExplosion(100, speed, Color.DeepSkyBlue))
                     scriptManager.Execute(ModulatePhasing, b);
 
@@ -440,7 +473,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
             while (true)
             {
                 yield return 1f;
-                Console.WriteLine("Phase now!");
                 thisObject.Phasing = true;
                 thisObject.LerpColor(Color.Transparent, 1f);
                 float startTime = currentGameTime;
@@ -449,7 +481,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 yield return 2.5f;
 
                 float deltaTime = currentGameTime - startTime;
-                Console.WriteLine("Unphase now!  Unphased after " + deltaTime + " seconds.");
                 thisObject.LerpColor(thisColor, 1f);
                 yield return 1f;
                 thisObject.Phasing = false;
@@ -492,6 +523,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 yield return 5f;
                 thisObject.Phasing = true;
+                if(this is PhantomBoss)
+                    AudioManager.PlaySoundEffect(GameScene.PhaseOutSound, .8f, 0f);
                 thisObject.LerpColor(Color.Transparent, 2f);
                 yield return 2f;
 
@@ -499,6 +532,10 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 LerpPosition(positions[rand.Next(0, 6)], 4.5f);
 
                 yield return 5f;
+
+                if (this is PhantomBoss)
+                    AudioManager.PlaySoundEffect(GameScene.PhaseInSound, .8f, 0f);
+
                 thisObject.LerpColor(thisColor, 2f);
                 yield return 2f;
                 thisObject.Phasing = false;

@@ -10,6 +10,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
+using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.Enemies.Bosses
 {
@@ -189,6 +190,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (cycles < 2)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .8f, .35f);
                     Bullet[] theseBullets = mainEmitter.FireBulletCluster((float)Math.PI / 2f, 40, 70f, 40, 100f, Color.DarkGreen);
                     foreach (Bullet b in theseBullets)
                     {
@@ -197,6 +199,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     yield return 3f;
 
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .6f, .35f);
                     theseBullets = mainEmitter.FireBulletCluster((float)Math.PI / 2f, 40, 70f, 40, 100f, Color.DarkGreen);
                     foreach (Bullet b in theseBullets)
                     {
@@ -205,6 +208,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     yield return 2f;
 
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .6f, .35f);
                     theseBullets = mainEmitter.FireBulletCluster((float)Math.PI / 2f + .75f, 40, 70f, 30, 90f, Color.DarkGreen);
                     foreach (Bullet b in theseBullets)
                     {
@@ -213,6 +217,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     yield return .5f;
 
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .6f, .35f);
                     theseBullets = mainEmitter.FireBulletCluster((float)Math.PI / 2f - .75f, 40, 70f, 30, 90f, Color.DarkGreen); ;
                     foreach (Bullet b in theseBullets)
                     {
@@ -221,6 +226,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     yield return .5f;
 
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .6f, .35f);
                     theseBullets = mainEmitter.FireBulletCluster((float)Math.PI / 2f - .45f, 20, 70f, 20, 80f, Color.DarkGreen); ;
                     foreach (Bullet b in theseBullets)
                     {
@@ -229,6 +235,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     yield return .5f;
 
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .6f, .35f);
                     theseBullets = mainEmitter.FireBulletCluster((float)Math.PI / 2f + .45f, 20, 70f, 20, 80f, Color.DarkGreen); ;
                     foreach (Bullet b in theseBullets)
                     {
@@ -264,6 +271,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                         if (shots < 15)
                         {
+                            AudioManager.PlaySoundEffect(GameScene.Shot2Sound, .25f, .8f);
                             b = arm1Emitter.FireBullet(angle1, 250f, Color.DarkGreen, BulletType.Arrow);
                             scriptManager.Execute(ToxicBulletEffect, b);
                             b = arm6Emitter.FireBullet(angle6, 250f, Color.DarkGreen, BulletType.Arrow);
@@ -272,6 +280,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                         if (shots >= 15 && shots < 30)
                         {
+                            AudioManager.PlaySoundEffect(GameScene.Shot2Sound, .25f, .6f);
                             b = arm2Emitter.FireBullet(angle2, 250f, Color.DarkGreen, BulletType.Arrow);
                             scriptManager.Execute(ToxicBulletEffect, b);
                             b = arm5Emitter.FireBullet(angle5, 250f, Color.DarkGreen, BulletType.Arrow);
@@ -280,6 +289,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                         if (shots >= 30)
                         {
+                            AudioManager.PlaySoundEffect(GameScene.Shot2Sound, .25f, .7f);
                             b = arm3Emitter.FireBullet(angle3, 250f, Color.DarkGreen, BulletType.Arrow);
                             scriptManager.Execute(ToxicBulletEffect, b);
                             b = arm4Emitter.FireBullet(angle4, 250f, Color.DarkGreen, BulletType.Arrow);
@@ -294,6 +304,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     yield return .5f;
 
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .6f, .35f);
                     Bullet[] theseBullets = mainEmitter.FireBulletCluster(VectorMathHelper.GetAngleTo(mainEmitter.Center, thisScene.player.InnerHitbox.Center), 50, 80f, 120, 40f, Color.DarkGreen);
                     foreach (Bullet b in theseBullets)
                     {
@@ -326,6 +337,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (volleys < targetVolleys)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .6f, .35f);
                     Bullet[] theseBullets = mainEmitter.FireBulletCluster(VectorMathHelper.GetAngleTo(mainEmitter.Center, thisScene.player.InnerHitbox.Center), 40, 50f, 40, 50f, Color.DarkGreen);
                     foreach (Bullet b in theseBullets)
                     {
@@ -334,6 +346,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     if (volleys == targetVolleys / 2)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot8Sound, .8f, .35f);
                         theseBullets = mainEmitter.FireBulletExplosion(45, 130f, Color.DarkGreen);
                         foreach (Bullet b in theseBullets)
                         {
@@ -443,6 +456,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 while (currentGameTime < startTime + waitTimes[5])
                 {
                     // Shoot
+                    AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .6f, .35f);
                     foreach (Bullet b in mainEmitter.FireBulletCluster(VectorMathHelper.GetAngleTo(mainEmitter.Center, thisScene.player.InnerHitbox.Center), 18, 150f, 50f, 100f, Color.DarkGreen))
                     {
                         scriptManager.Execute(ToxicBulletEffect, b);

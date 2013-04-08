@@ -10,6 +10,7 @@ using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
 using Microsoft.Xna.Framework.Content;
+using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.Enemies
 {
@@ -30,8 +31,10 @@ namespace AsteroidRebuttal.Enemies
         protected static Texture2D tortoiseTexture;
         protected static Texture2D dragonflyTexture;
         protected static Texture2D komodoTexture;
+        protected static Texture2D phantomTexture;
 
         protected int pointValue;
+        protected bool usesSimpleExplosion = true;
 
         public Enemy(GameScene newScene, Vector2 position = new Vector2())
         {
@@ -80,6 +83,10 @@ namespace AsteroidRebuttal.Enemies
             {
                 komodoTexture = content.Load<Texture2D>("Graphics/Ships/Enemy4");
             }
+            if (phantomTexture == null)
+            {
+                phantomTexture = content.Load<Texture2D>("Graphics/Ships/Boss2");
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -110,11 +117,31 @@ namespace AsteroidRebuttal.Enemies
         {
             if (Health < 1)
             {
-                // Explosion
-                Destroy();
                 thisScene.Score += pointValue * thisScene.ScoreMultiplier;
                 thisScene.GainExperience(Math.Min(pointValue / 75, 5));
+
+                // Explosion
+                if (usesSimpleExplosion)
+                {
+                    thisScene.PlayAnimation(new Animation(GameScene.ExplosionTexture, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 48, 20f, new Vector2(Center.X - 24, Center.Y - 25), false));
+                    AudioManager.PlaySoundEffect(GameScene.Explosion1Sound, .6f);
+                    Destroy();
+                }
+                else
+                {
+                    scriptManager.Execute(CustomExplosion, this);
+                }
             }
+        }
+
+        public virtual IEnumerator<float> CustomExplosion(GameObject go)
+        {
+            Texture = null;
+            Rotation = 0;
+            Velocity = 0;
+
+            yield return 0f;
+            Destroy();
         }
     }
 
@@ -123,6 +150,7 @@ namespace AsteroidRebuttal.Enemies
         Slicer,
         Tortoise,
         Dragonfly,
-        Komodo
+        Komodo,
+        Phantom
     }
 }

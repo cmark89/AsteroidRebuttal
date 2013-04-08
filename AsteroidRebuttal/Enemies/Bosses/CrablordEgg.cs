@@ -8,6 +8,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
+using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.Enemies.Bosses
 {
@@ -30,6 +31,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
             // Get the actual origin.
             Origin = new Vector2(16.5f, 16.5f);
             Hitbox = new Circle(Center, 10f);
+
+            usesSimpleExplosion = false;
 
             DeletionBoundary = new Vector2(100, 100);
 
@@ -69,6 +72,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public void Explode()
         {
             BulletEmitter emitter = new BulletEmitter(this, Center, true);
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .9f, -.2f);
+
             foreach (Bullet b in emitter.FireBulletExplosion(100, 250, Color.DarkGreen))
                 scriptManager.Execute(CrablordBoss.ToxicBulletEffect, b);
 

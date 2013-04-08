@@ -19,6 +19,10 @@ namespace AsteroidRebuttal.Levels
 
         protected Boss levelBoss;
 
+        public bool TitleShown { get; protected set; }
+
+        public Texture2D TitleTexture { get; protected set;}
+
         // Content
         public static SoundEffect BossTheme;
 
@@ -39,6 +43,12 @@ namespace AsteroidRebuttal.Levels
             {
                 sbl.Update(gameTime);
             }
+
+            OnUpdate(gameTime);
+        }
+
+        public virtual void OnUpdate(GameTime gameTime)
+        {
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -81,6 +91,9 @@ namespace AsteroidRebuttal.Levels
                     break;
                 case (EnemyType.Komodo):
                     newEnemy = new Komodo(manager.thisScene, position);
+                    break;
+                case (EnemyType.Phantom):
+                    newEnemy = new Phantom(manager.thisScene, position);
                     break;
                 default:
                     break;

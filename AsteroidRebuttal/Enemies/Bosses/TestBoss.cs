@@ -10,6 +10,7 @@ using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
+using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.Enemies.Bosses
 {
@@ -101,10 +102,12 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     while (shots < 15)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .8f, .4f);
                         mainEmitter.FireBulletSpread(((float)Math.PI / 2), 7, 90f, 140f, Color.Lerp(Color.White, Color.Orange, .45f), BulletType.Circle);
                         shots++;
 
                         yield return .25f;
+                        AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .8f, .2f);
                         mainEmitter.FireBulletSpread(((float)Math.PI / 2), 6, 70f, 140f, Color.Lerp(Color.White, Color.Orange, .45f), BulletType.Circle);
                         shots++;
                         yield return .25f;
@@ -116,6 +119,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     while (shots < 20)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .3f, -.6f);
                         mainEmitter.FireBulletSpread(((float)Math.PI / 2 * .6f) + (float)Math.Sin(currentGameTime * 3) / 4, 3, 25f, 220f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                         shots++;
                         yield return .06f;
@@ -127,6 +131,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     while (shots < 20)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .3f, -.6f);
                         mainEmitter.FireBulletSpread(((float)Math.PI / 2 * 1.4f) + (float)Math.Sin(currentGameTime * 3) / 4, 3, 25f, 220f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                         shots++;
                         yield return .06f;
@@ -156,29 +161,38 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 cycles = 0;
                 while (bossPhase == 2)
                 {
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, 0f);
                     mainEmitter.FireBulletExplosion(15, 100f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .5f;
                     LerpPosition(new Vector2(50, 400), 3f);
                     yield return 1.5f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, 0f);
                     mainEmitter.FireBulletExplosion(15, 100f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .5f;
                     LerpPosition(new Vector2(550, 400), 3f);
                     yield return 1.5f;
                     LerpPosition(new Vector2(300f, 250f), 2f);
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, 0f);
                     mainEmitter.FireBulletExplosion(15, 100f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .5f;
                     LerpPosition(new Vector2(300f, 125f), 4f);
                     yield return .25f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, 0f);
                     mainEmitter.FireBulletExplosion(15, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .25f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, 0f);
                     mainEmitter.FireBulletExplosion(13, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .25f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, 0f);
                     mainEmitter.FireBulletExplosion(11, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .25f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, 0f);
                     mainEmitter.FireBulletExplosion(15, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .25f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, 0f);
                     mainEmitter.FireBulletExplosion(13, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .25f;
+                    AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .6f, 0f);
                     mainEmitter.FireBulletExplosion(11, 150f, Color.Lerp(Color.White, Color.DeepSkyBlue, .45f), BulletType.Circle);
                     yield return .5f;
 
@@ -200,11 +214,14 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     while (shots < 25)
                     {
                         shots++;
+                        AudioManager.PlaySoundEffect(GameScene.Shot3Sound, .5f, -.6f);
                         mainEmitter.FireBulletSpread(VectorMathHelper.GetAngleTo(this.Hitbox.Center, thisScene.player.InnerHitbox.Center), 5, 80f, 200f, Color.Lerp(Color.White, Color.Orange, .4f), BulletType.Circle);
                         yield return .175f;
                     }
 
                     int i = 1;
+
+                    AudioManager.PlaySoundEffect(GameScene.Shot8Sound, 1f, 0f);
                     foreach (Bullet b in mainEmitter.FireBulletWave(0f, 4, 200f, 50f, Color.Lerp(Color.White, Color.Orange, .3f)))
                     {
                         b.CustomValue1 = i++;
@@ -265,6 +282,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                     while (subshots < 4)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot4Sound, .29f, .5f);
                         mainEmitter1.FireBullet(VectorMathHelper.GetAngleTo(this.Center, mainEmitter1.Center), 170f, Color.Lerp(Color.White, Color.DeepSkyBlue, .6f));
                         mainEmitter2.FireBullet(VectorMathHelper.GetAngleTo(this.Center, mainEmitter2.Center), 170f, Color.Lerp(Color.White, Color.DeepSkyBlue, .6f));
                         subshots++;
@@ -283,7 +301,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
                 while (shots < 10)
                 {
-                    
+                    AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .8f, -.15f);
                     foreach (Bullet b in (mainEmitter1.FireBulletExplosion(15, 170f, Color.Lerp(Color.White, Color.Orange, .4f))))
                     {
                         b.LerpVelocity(90f, 3f);
@@ -356,9 +374,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public IEnumerator<float> SubemitterFirePhase2(GameObject go)
         {
+            
             BulletEmitter thisEmitter = (BulletEmitter)go;
             while (true)
             {
+                AudioManager.PlaySoundEffect(GameScene.Shot3Sound, .2f, -.5f);
                 thisEmitter.FireBullet(thisEmitter.Rotation, 350f, Color.Lerp(Color.White, Color.Orange, .7f), BulletType.DiamondSmall);
                 yield return .03f;
             }
@@ -371,6 +391,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
             yield return 3f + (thisBullet.CustomValue1 * .6f);
 
             BulletEmitter explosion = new BulletEmitter(this, thisBullet.Center);
+
+            AudioManager.PlaySoundEffect(GameScene.Shot1Sound, .7f, 0f);
+            AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .7f, 0f);
             explosion.FireBulletExplosion(6, 160f, Color.Lerp(Color.White, Color.DeepSkyBlue, .4f));
             explosion.FireBulletCluster(VectorMathHelper.GetAngleTo(thisBullet.Center, thisScene.player.InnerHitbox.Center), 3, 40f, 160f, 40f, Color.Lerp(Color.White, Color.DeepSkyBlue, .4f), BulletType.Circle);
             explosion.FireBulletCluster(VectorMathHelper.GetAngleTo(thisBullet.Center, thisScene.player.InnerHitbox.Center), 4, 50f, 140f, 50f, Color.Lerp(Color.White, Color.DeepSkyBlue, .4f), BulletType.CircleSmall);

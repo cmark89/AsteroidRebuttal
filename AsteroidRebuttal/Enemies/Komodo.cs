@@ -44,9 +44,6 @@ namespace AsteroidRebuttal.Enemies
 
             OnOuterCollision += CollisionHandling;
 
-
-            base.Initialize();
-
             base.Initialize();
         }
 

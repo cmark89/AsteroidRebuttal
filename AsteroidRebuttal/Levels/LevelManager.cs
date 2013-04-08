@@ -22,7 +22,7 @@ namespace AsteroidRebuttal.Levels
     {
         public GameScene thisScene;
         ScriptManager scriptManager;
-        Level currentLevel;
+        public Level currentLevel;
 
         public LevelManager(GameScene newScene)
         {
@@ -38,14 +38,32 @@ namespace AsteroidRebuttal.Levels
             Level2.Level2GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level2");
             Level2.Level2CloudTexture = content.Load<Texture2D>("Graphics/Backgrounds/level2clouds");
             Level3.Level3GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level3");
-            //Level4Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4");
-            //Level5Texture = content.Load<Texture2D>("Graphics/Backgrounds/level5");
+            Level4.Level4GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level4");
+            Level4.Level4Text1Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4text1");
+            Level4.Level4Text2Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4text2");
+            Level4.Level4Text3Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4text3");
+            Level4.Level4Text4Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4text4");
+            Level4.Level4Warning1Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4warning1");
+            Level4.Level4Warning2Texture = content.Load<Texture2D>("Graphics/Backgrounds/level4warning2");
+            Level5.Level5SpaceTexture = content.Load<Texture2D>("Graphics/Backgrounds/level5space");
+            Level5.Level5NebulaTexture = content.Load<Texture2D>("Graphics/Backgrounds/level5nebula");
+            Level5.Level5Stars1Texture = content.Load<Texture2D>("Graphics/Backgrounds/level5farstars");
+            Level5.Level5Stars2Texture = content.Load<Texture2D>("Graphics/Backgrounds/level5midstars");
+            Level5.Level5Stars3Texture = content.Load<Texture2D>("Graphics/Backgrounds/level5closestars");
+            Level5.Level5DebrisTexture = content.Load<Texture2D>("Graphics/Backgrounds/level5debris");
 
             Level1.Level1Theme = content.Load<Song>("Audio/Music/ThisWarTornMote");
             Level2.Level2Theme = content.Load<Song>("Audio/Music/AboveTheCarnage");
             Level3.Level3Theme = content.Load<Song>("Audio/Music/ApolloGraveyard");
-            //Level4.Level1Theme = content.Load<Song>("Audio/Music/TechnoFuture");
-            //Level5.Level1Theme = content.Load<Song>("Audio/Music/Showdown");
+            Level4.Level4Theme = content.Load<Song>("Audio/Music/Technoclasm");
+            Level5.Level5Theme = content.Load<Song>("Audio/Music/AsteroidRebuttal");
+            Level5.FinalAttackTheme = content.Load<Song>("Audio/Music/ReptilianFinale");
+
+            Level1.Level1TitleTexture = content.Load<Texture2D>("Graphics/GUI/Stage1Title");
+            Level2.Level2TitleTexture = content.Load<Texture2D>("Graphics/GUI/Stage2Title");
+            Level3.Level3TitleTexture = content.Load<Texture2D>("Graphics/GUI/Stage3Title");
+            Level4.Level4TitleTexture = content.Load<Texture2D>("Graphics/GUI/Stage4Title");
+            Level5.Level5TitleTexture = content.Load<Texture2D>("Graphics/GUI/Stage5Title");
 
             Level.BossTheme = content.Load<SoundEffect>("Audio/Music/Incursion");
         }
@@ -77,10 +95,10 @@ namespace AsteroidRebuttal.Levels
                     newLevel = new Level3(this);
                     break;
                 case (4):
-                    //Set level = 4
+                    newLevel = new Level4(this);
                     break;
                 case (5):
-                    //Set level = 5
+                    newLevel = new Level5(this);
                     break;
                 default:
                     break;
