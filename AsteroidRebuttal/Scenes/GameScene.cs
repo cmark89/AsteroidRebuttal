@@ -24,10 +24,13 @@ namespace AsteroidRebuttal.Scenes
         public List<Animation> animations { get; private set; }
         public ScriptManager scriptManager;
 
+
+
         public float currentGameTime { get; private set; }
 
         // This is the actual GAME window; the UI will appear to the side.
         public Rectangle ScreenArea { get; private set; }
+        public GameObject fader { get; private set; }
 
         // This is the area of the UI.
         public Rectangle GUIArea { get; private set; }
@@ -41,6 +44,7 @@ namespace AsteroidRebuttal.Scenes
 
         //Content 
         public static Texture2D ExplosionTexture;
+        public static Texture2D PlayerExplosionTexture;
 
         public static Texture2D BossHealthbarFrameTexture;
         public static Texture2D BossHealthbarBackgroundTexture;
@@ -58,6 +62,9 @@ namespace AsteroidRebuttal.Scenes
         public bool BossWarningShown;
 
         public static SoundEffect Explosion1Sound;
+        public static SoundEffect Explosion2Sound;
+        public static SoundEffect Explosion3Sound;
+        public static SoundEffect Explosion4Sound;
         public static SoundEffect Shot1Sound;
         public static SoundEffect Shot2Sound;
         public static SoundEffect Shot3Sound;
@@ -81,6 +88,7 @@ namespace AsteroidRebuttal.Scenes
         public static SoundEffect JammedAlarm;
 
         public int Score = 0;
+        public List<int> ExtendValues;
         public int ScoreMultiplier = 1;
         public int GrazeCount = 0;
         public int GrazeValue
@@ -131,8 +139,25 @@ namespace AsteroidRebuttal.Scenes
             gameObjects = new List<GameObject>();
             animations = new List<Animation>();
 
+            ExtendValues = new List<int>()
+            {
+                10000,
+                25000,
+                50000,
+                100000,
+                250000,
+                500000,
+                1000000,
+                2500000,
+                5000000,
+                10000000,
+                30000000,
+                100000000
+            };
+
             // Set the game area to 700 x 650.
             ScreenArea = new Rectangle(0, 0, 700, 650);
+            fader = new Fader(this);
             
             // Set the UI window to 150 x 650, beginning after the ScreenArea.
             GUIArea = new Rectangle(700, 0, 225, 650);
@@ -143,7 +168,7 @@ namespace AsteroidRebuttal.Scenes
             levelManager = new LevelManager(this);
 
             // Test
-            levelManager.SetLevel(5);
+            levelManager.SetLevel(1);
 
             //new FinalBoss(this, new Vector2(350, -300));
             player = new PlayerShip(this, new Vector2(100, 200));
@@ -155,6 +180,7 @@ namespace AsteroidRebuttal.Scenes
             //TEST
             Console.WriteLine("Loaded level content!");
             ExplosionTexture = content.Load<Texture2D>("Graphics/Effects/Explosion");
+            PlayerExplosionTexture = content.Load<Texture2D>("Graphics/Effects/explosion2");
 
             BossHealthbarBackgroundTexture = content.Load<Texture2D>("Graphics/GUI/HealthBarBackground");
             BossHealthbarFrameTexture = content.Load<Texture2D>("Graphics/GUI/HealthBarFrame");
@@ -172,6 +198,9 @@ namespace AsteroidRebuttal.Scenes
             GUIJammedWarningTexture = content.Load<Texture2D>("Graphics/GUI/CantFiringWarning");
 
             Explosion1Sound = content.Load<SoundEffect>("Audio/SFX/explosion1");
+            Explosion2Sound = content.Load<SoundEffect>("Audio/SFX/explosion2");
+            Explosion3Sound = content.Load<SoundEffect>("Audio/SFX/explosion3");
+            Explosion4Sound = content.Load<SoundEffect>("Audio/SFX/explosion4");
             Shot1Sound = content.Load<SoundEffect>("Audio/SFX/shot1");
             Shot2Sound = content.Load<SoundEffect>("Audio/SFX/shot2");
             Shot3Sound = content.Load<SoundEffect>("Audio/SFX/shot3");
@@ -269,7 +298,29 @@ namespace AsteroidRebuttal.Scenes
                 }
             }
 
+            CheckExtend();
             AudioManager.PlayQueuedSoundEffects();
+        }
+
+        public void CheckExtend()
+        {
+            if (Score > ExtendValues[0])
+            {
+                // The player has earned their next extend value!
+                // Give them another life.
+
+                Lives++;
+                // Play a nice sound.
+
+                if (ExtendValues.Count > 1)
+                {
+                    ExtendValues.RemoveAt(0);
+                }
+                else
+                {
+                    ExtendValues[0] *= 2;
+                }
+            }
         }
 
         public void RemoveObjectsOutsideScreen()
@@ -309,52 +360,53 @@ namespace AsteroidRebuttal.Scenes
                 if(bossHealthbarAnimationComplete)
                     bossHealthbarWidth = (levelBoss.Health / levelBoss.MaxHealth) * bossHealthbarMaxWidth;
 
-                spriteBatch.Draw(BossHealthbarBackgroundTexture, Vector2.Zero, bossHealthbarFrameColor);
+                spriteBatch.Draw(BossHealthbarBackgroundTexture, Vector2.Zero, null, bossHealthbarFrameColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, .1f);
 
-                spriteBatch.Draw(BossHealthbarTexture, new Rectangle(20, 0, (int)bossHealthbarWidth, 20), bossHealthbarColor);
+                spriteBatch.Draw(BossHealthbarTexture, new Rectangle(20, 0, (int)bossHealthbarWidth, 20), null, bossHealthbarColor, 0f, Vector2.Zero, SpriteEffects.None, .09f);
 
-                spriteBatch.Draw(BossHealthbarFrameTexture, Vector2.Zero, bossHealthbarFrameColor);
+                spriteBatch.Draw(BossHealthbarFrameTexture, Vector2.Zero, null, bossHealthbarFrameColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
 
                 foreach (int i in levelBoss.PhaseChangeValues)
                 {
-                    spriteBatch.Draw(BossHealthbarDividerTexture, new Vector2(20 + (((float)i / (float)levelBoss.MaxHealth) * bossHealthbarMaxWidth) - 2, 0), bossHealthbarFrameColor);
+                    spriteBatch.Draw(BossHealthbarDividerTexture, new Vector2(20 + (((float)i / (float)levelBoss.MaxHealth) * bossHealthbarMaxWidth) - 2, 0), null, bossHealthbarFrameColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, .07f);
                 }
             }
 
             // Draw the GUI!
-            spriteBatch.Draw(GUITexture, GUIArea, Color.White);
+            spriteBatch.Draw(GUITexture, GUIArea, null, Color.White, 0f, Vector2.Zero, SpriteEffects.None, .1f);
+
 
             //draw experience bar
-            spriteBatch.Draw(BossHealthbarTexture, new Rectangle(GUIArea.X + 36, 166, (int)(150 * (Experience / NextRankUp)), 22), Color.PaleGreen);
-            spriteBatch.Draw(GUITextureExperienceFrame, new Vector2(GUIArea.X, 163), Color.White);
+            spriteBatch.Draw(BossHealthbarTexture, new Rectangle(GUIArea.X + 36, 166, (int)(150 * (Experience / NextRankUp)), 22), null, Color.PaleGreen, 0f, Vector2.Zero, SpriteEffects.None, .09f);
+            spriteBatch.Draw(GUITextureExperienceFrame, new Vector2(GUIArea.X, 163), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
 
             if (Rank > 0)
             {
                 for (int i = 0; i < Rank; i++)
                 { 
-                    spriteBatch.Draw(GUIRankOrb, new Vector2(GUIArea.X + 57 + (28 * i), 138), Color.White);
+                    spriteBatch.Draw(GUIRankOrb, new Vector2(GUIArea.X + 57 + (28 * i), 138), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, .09f);
                 }
             }
 
             if (ScoreMultiplier > 1)
             {
-                spriteBatch.DrawString(scoreFont, "X" + ScoreMultiplier.ToString(), new Vector2(GUIArea.X + 176, 193), Color.Gold);
+                spriteBatch.DrawString(scoreFont, "X" + ScoreMultiplier.ToString(), new Vector2(GUIArea.X + 176, 193), Color.Gold, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
             }
 
-            spriteBatch.DrawString(scoreFont, String.Format("{0:000,000,000}",Score), new Vector2(GUIArea.X + 42, 38), Color.White);
-            spriteBatch.DrawString(extendFont, "Next Extend: 1,000,000", new Vector2(GUIArea.X + 42, 74), Color.Gold);
-            spriteBatch.DrawString(scoreFont, GrazeCount.ToString(), new Vector2(GUIArea.X + 108, 234), Color.Teal);
-            spriteBatch.DrawString(scoreFont, GrazeValue.ToString(), new Vector2(GUIArea.X + 108, 276), Color.Teal);
-            spriteBatch.DrawString(livesFont, Lives.ToString(), new Vector2(GUIArea.X + 46, 602), Color.White);
+            spriteBatch.DrawString(scoreFont, String.Format("{0:000,000,000}", Score), new Vector2(GUIArea.X + 42, 38), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
+            spriteBatch.DrawString(extendFont, "Next Extend: " + String.Format("{0:0,000}", ExtendValues[0]), new Vector2(GUIArea.X + 42, 74), Color.Gold, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
+            spriteBatch.DrawString(scoreFont, GrazeCount.ToString(), new Vector2(GUIArea.X + 108, 234), Color.Teal, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
+            spriteBatch.DrawString(scoreFont, GrazeValue.ToString(), new Vector2(GUIArea.X + 108, 276), Color.Teal, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
+            spriteBatch.DrawString(livesFont, Lives.ToString(), new Vector2(GUIArea.X + 46, 602), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
 
             if (BossWarningShown)
             {
-                spriteBatch.Draw(GUIWarning, new Vector2((ScreenArea.Width / 2f) - (GUIWarning.Width / 2f), (ScreenArea.Height / 2f) - (GUIWarning.Height / 2f)), BossWarningColor);
+                spriteBatch.Draw(GUIWarning, new Vector2((ScreenArea.Width / 2f) - (GUIWarning.Width / 2f), (ScreenArea.Height / 2f) - (GUIWarning.Height / 2f)), null, BossWarningColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
             if (levelManager.currentLevel.TitleShown)
             {
-                spriteBatch.Draw(levelManager.currentLevel.TitleTexture, new Vector2(0, 200), TitleColor);
+                spriteBatch.Draw(levelManager.currentLevel.TitleTexture, new Vector2(0, 200), null, TitleColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
         }
 
@@ -377,7 +429,9 @@ namespace AsteroidRebuttal.Scenes
         public IEnumerator<float> ShowBossHealthBar()
         {
             bossHealthbarFrameShown = true;
+            bossHealthbarColor = Color.Transparent;
             bossHealthbarFrameColor = Color.Transparent;
+            bossHealthbarAnimationComplete = false;
 
             float elapsedTime = 0f;
             float lastTime = currentGameTime;
@@ -409,6 +463,13 @@ namespace AsteroidRebuttal.Scenes
 
             bossHealthbarAnimationComplete = true;
             bossHealthbarWidth = bossHealthbarMaxWidth;
+        }
+
+        public void HideBossHealthbar()
+        {
+            bossHealthbarFrameShown = false;
+            bossHealthbarColor = Color.Transparent;
+            bossHealthbarFrameColor = Color.Transparent;
         }
 
         public void BossPhaseChange()
@@ -599,5 +660,83 @@ namespace AsteroidRebuttal.Scenes
 
             return (x > ScreenArea.X && x < ScreenArea.X + ScreenArea.Width && y > ScreenArea.Y && y < ScreenArea.Y + ScreenArea.Height);
         }
+
+        public IEnumerator<float> TryRespawn()
+        {
+            // First, wait a second or so for the explosion to complete
+            yield return 1.7f;
+
+            // Now, check if the number of lives is greater than 0
+            if (Lives > 0)
+            {
+                // Remove a life.
+                Lives--;
+
+                scriptManager.Execute(SpawnPlayer);
+            }
+            else
+            {
+                yield return 2f;
+                // Game over time!
+            }
+        }
+
+        public IEnumerator<float> SpawnPlayer()
+        {
+            // Ensure that the last player object was destroyed if it ever existed
+            if (player != null)
+                player.Destroy();
+
+            // Respawn the player at the set coordinates, with phasing.
+            player = new PlayerShip(this, new Vector2(350, 550));
+            player.Phasing = true;
+
+            float timeElapsed = 0f;
+            while (timeElapsed < 2.1f)
+            {
+                player.Color = new Color(.35f, .35f, .35f, .35f);
+                yield return .06f;
+
+                player.Color = new Color(1f, 1f, 1f, 1f);
+                yield return .06f;
+
+                timeElapsed += .12f;
+            }
+
+            player.Phasing = false;
+        }
+
+        public IEnumerator<float> BossExplosion(GameObject go)
+        {
+            // First, cancel all scripts, then do this.
+
+            float x;
+            float y;
+
+            Random rand = new Random();
+
+            for (int i = 0; i < 30; i++)
+            {
+                x = go.Center.X + (float)(((rand.NextDouble() * 2f) - 1f) * 75);
+                y = go.Center.Y + (float)(((rand.NextDouble() * 2f) - 1f) * 75);
+
+                AudioManager.PlaySoundEffect(GameScene.Explosion4Sound, .4f);
+                PlayAnimation(new Animation(GameScene.ExplosionTexture, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 48, 40f, new Vector2(x - 24, y - 25), false));
+                yield return .1f;
+            }
+
+            if (!(go is FinalBoss))
+            {
+                AudioManager.PlaySoundEffect(GameScene.Explosion4Sound, 1f);
+                AudioManager.PlaySoundEffect(GameScene.Explosion1Sound, .6f);
+                fader.LerpColor(Color.White, .3f);
+
+                yield return .3f;
+                go.Destroy();
+            }
+        }
     }
+
+    
+
 }

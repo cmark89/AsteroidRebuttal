@@ -56,6 +56,13 @@ namespace AsteroidRebuttal.Levels
             scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level5Stars2Texture, 36f, Color.White));
             scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level5Stars3Texture, 42f, Color.White));
             scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level5DebrisTexture, 80f, Color.White));
+
+            scrollingBackground[0].DrawLayer = .99f;
+            scrollingBackground[1].DrawLayer = .98f;
+            scrollingBackground[2].DrawLayer = .97f;
+            scrollingBackground[3].DrawLayer = .96f;
+            scrollingBackground[4].DrawLayer = .95f;
+            scrollingBackground[5].DrawLayer = .94f;
         }
 
         public override void OnUpdate(GameTime gameTime)
@@ -88,6 +95,7 @@ namespace AsteroidRebuttal.Levels
 
         public override IEnumerator<float> LevelScript()
         {
+            manager.thisScene.fader.LerpColor(Color.Transparent, 1f);
             Enemy e;
 
             AudioManager.PlaySong(Level5Theme, false, .5f);
@@ -383,22 +391,29 @@ namespace AsteroidRebuttal.Levels
             {
                 yield return .03f;
             }
-
-            // Dispose of the boss theme.
+            // Stop the boss theme and hide the health bar
             bossTheme.Dispose();
+            manager.thisScene.HideBossHealthbar();
 
-            yield return 5f;
             scriptManager.Execute(manager.thisScene.ShowJammedWarning);
             yield return 6f;
             AudioManager.PlaySong(FinalAttackTheme, false);
             // Dispose of the health bar.
 
             // Do the final phase... then destroy the enemy!
-            yield return 80f;
+            yield return 64f;
 
-            // Explode the enemy!
-            // Destroy() here is temporary!
+            AudioManager.PlaySoundEffect(GameScene.Explosion4Sound, 1f);
+            AudioManager.PlaySoundEffect(GameScene.Explosion1Sound, .6f);
+            manager.thisScene.fader.LerpColor(Color.White, .3f);
+            yield return .3f;
             boss.Destroy();
+
+            yield return 1.5f;
+            manager.thisScene.fader.LerpColor(Color.Black, 4f);
+
+            yield return 4f;
+            // THE END
         }
 
         // CustomValue1: Initial wait time

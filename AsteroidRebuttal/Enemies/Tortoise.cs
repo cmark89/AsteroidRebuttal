@@ -23,6 +23,7 @@ namespace AsteroidRebuttal.Enemies
             Texture = tortoiseTexture;
             Color = Color.White;
 
+            DrawLayer = .3f;
             CollisionLayer = 1;
             CollidesWithLayers = new int[] { 2 };
 

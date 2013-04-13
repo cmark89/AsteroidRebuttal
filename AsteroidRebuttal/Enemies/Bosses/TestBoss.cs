@@ -31,6 +31,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public override void Initialize()
         {
             Health = 400;
+            DrawLayer = .3f;
 
             // Get the actual origin.
             Origin = new Vector2(23.5f, 23.5f);
@@ -421,6 +422,16 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     Health--;
                 }
             }
+        }
+
+        public virtual IEnumerator<float> CustomExplosion(GameObject go)
+        {
+            Texture = null;
+            Rotation = 0;
+            Velocity = 0;
+
+            yield return 0f;
+            Destroy();
         }
     }
 }

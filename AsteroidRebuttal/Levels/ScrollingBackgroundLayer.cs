@@ -19,6 +19,7 @@ namespace AsteroidRebuttal.Levels
         public int LayerID { get; set; }
 
         ScrollingBackground[] scrollingBackgroundImages;
+        public float DrawLayer;
 
         #region Lerping Properties
 
@@ -123,7 +124,7 @@ namespace AsteroidRebuttal.Levels
         {
             foreach (ScrollingBackground sb in scrollingBackgroundImages)
             {
-                spriteBatch.Draw(sb.texture, new Vector2(sb.position.X, sb.position.Y), layerColor);
+                spriteBatch.Draw(sb.texture, new Vector2(sb.position.X, sb.position.Y), null, layerColor, 0f, Vector2.Zero, 1f, SpriteEffects.None, DrawLayer);
             }
         }
     }

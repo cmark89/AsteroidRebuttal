@@ -33,6 +33,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public override void Initialize()
         {
             Health = 5;
+            DrawLayer = .3f;
 
             // Get the actual origin.
             Origin = new Vector2(16.5f, 16.5f);
@@ -118,6 +119,16 @@ namespace AsteroidRebuttal.Enemies.Bosses
         {
             AudioManager.PlaySoundEffect(GameScene.Explosion1Sound, .9f, -.5f);
             AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .9f, .5f);
+            foreach (Bullet b in new BulletEmitter(parentBoss, Center, true).FireBulletExplosion(15, 80f, Color.Red))
+            {
+                b.Phasing = true;
+                b.LerpColor(Color.Transparent, 1.5f);
+            }
+            foreach (Bullet b in new BulletEmitter(parentBoss, Center, true).FireBulletExplosion(20, 120f, Color.Red, BulletType.CircleSmall))
+            {
+                b.Phasing = true;
+                b.LerpColor(Color.Transparent, 1.7f);
+            }
 
             //Damage the boss here.
             parentBoss.TakeDamage(1, this);

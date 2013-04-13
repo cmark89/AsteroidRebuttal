@@ -86,6 +86,10 @@ Content\Audio\SFX\shot7.xnb
 Content\Audio\SFX\shot8.xnb
 Content\Audio\SFX\phaseIn.xnb
 Content\Audio\SFX\phaseOut.xnb
+Content\Graphics\Effects\explosion2.xnb
+Content\Graphics\fader.xnb
+Content\Graphics\GUI\fader.xnb
+Content\Audio\SFX\explosion4.xnb
 Content\Audio\Music\ThisWarTornMote.wma
 Content\Audio\Music\AboveTheCarnage.wma
 Content\Audio\Music\ApolloGraveyard.wma

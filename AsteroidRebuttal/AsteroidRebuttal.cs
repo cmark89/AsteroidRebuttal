@@ -61,6 +61,7 @@ namespace AsteroidRebuttal
             Enemy.LoadContent(Content);
             Boss.LoadContent(Content);
             LevelManager.LoadContent(Content);
+            Fader.LoadContent(Content);
         }
 
 
@@ -85,7 +86,7 @@ namespace AsteroidRebuttal
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
 
             if (CurrentScene != null)
                 CurrentScene.Draw(spriteBatch);

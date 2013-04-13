@@ -42,10 +42,14 @@ namespace AsteroidRebuttal.Levels
             // Individually add each layer to the scrolling background...
             scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level2GroundTexture, 50f, Color.White));
             scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level2CloudTexture, 85f, Color.White));
+
+            scrollingBackground[0].DrawLayer = .99f;
+            scrollingBackground[1].DrawLayer = .98f;
         }
 
         public override IEnumerator<float> LevelScript()
         {
+            manager.thisScene.fader.LerpColor(Color.Transparent, 1f);
             // Time remaining: 65 seconds.
             Enemy e;
 
@@ -222,12 +226,33 @@ namespace AsteroidRebuttal.Levels
                 yield return .03f;
             }
 
-            // Explode the enemy!
-            // Destroy() here is temporary!
-            boss.Destroy();
-
-            // Dispose of the boss theme.
+            // Stop the boss theme and hide the health bar
             bossTheme.Dispose();
+            manager.thisScene.HideBossHealthbar();
+
+            // Explode the boss!!
+            scriptManager.AbortObjectScripts(boss);
+            manager.thisScene.player.Phasing = true;
+            foreach (GameObject b in manager.thisScene.gameObjects.FindAll(x => x is Bullet))
+            {
+                scriptManager.AbortObjectScripts(b);
+                b.Phasing = true;
+                b.LerpColor(Color.Transparent, 1f);
+            }
+
+            scriptManager.Execute(manager.thisScene.BossExplosion, boss);
+            yield return 3.3f;
+            yield return 2f;
+            manager.thisScene.fader.LerpColor(Color.Transparent, 3f);
+            yield return 3f;
+
+            manager.thisScene.fader.LerpColor(Color.Black, 2f);
+
+
+            yield return 2f;
+            manager.thisScene.player.Phasing = false;
+            manager.SetLevel(3);
+
         }
 
         IEnumerator<float> ColumnDragonfly(GameObject go)

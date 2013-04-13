@@ -42,6 +42,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         {
             Console.WriteLine("Initialize me!");
             Health = 1800;
+            DrawLayer = .425f;
 
             // Get the actual origin.
             Origin = new Vector2(255.5f, 234.5f);
@@ -89,6 +90,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             ring1.SetTexture(boss5Ring1Texture);
             ring1.LockedToParentPosition = true;
             ring1.Center = this.Center;
+            ring1.DrawLayer = .32f;
 
             ring2 = new Enemy(thisScene, Origin);
             ring2.Initialize();
@@ -100,6 +102,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             ring2.SetTexture(boss5Ring2Texture);
             ring2.LockedToParentPosition = true;
             ring2.Center = this.Center;
+            ring2.DrawLayer = .31f;
 
             ring1Emitters = new List<BulletEmitter>()
             {
@@ -146,6 +149,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             topLayer.SetParent(this);
             topLayer.LockedToParentPosition = true;
             topLayer.Center = this.Center;
+            topLayer.DrawLayer = .3f;
 
             rotatingBullets = new List<Bullet>();
         }
@@ -232,6 +236,16 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(FinalPhase, this);
+
+                // Fake Explode the boss!!
+                foreach (GameObject b in thisScene.gameObjects.FindAll(x => x is Bullet))
+                {
+                    scriptManager.AbortObjectScripts(b);
+                    b.Phasing = true;
+                    b.LerpColor(Color.Transparent, 1f);
+                }
+
+                scriptManager.Execute(thisScene.BossExplosion, this);
             }
 
             base.Update(gameTime);

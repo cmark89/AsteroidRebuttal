@@ -27,6 +27,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public override void Initialize()
         {
             Health = 5;
+            DrawLayer = .3f;
 
             // Get the actual origin.
             Origin = new Vector2(16.5f, 16.5f);

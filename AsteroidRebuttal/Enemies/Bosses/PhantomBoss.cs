@@ -37,6 +37,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         {
             Console.WriteLine("Initialize me!");
             Health = 500;
+            DrawLayer = .425f;
 
             // Get the actual origin.
             Origin = new Vector2(127.5f, 101.5f);

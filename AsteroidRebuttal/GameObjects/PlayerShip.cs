@@ -51,6 +51,8 @@ namespace AsteroidRebuttal.GameObjects
             Console.WriteLine("Player initialized!");
             Texture = playerShipTexture;
 
+            DrawLayer = .4f;
+
             if (thisScene == null)
                 Console.WriteLine("This scene is null!?");
             scriptManager = thisScene.scriptManager;
@@ -67,6 +69,8 @@ namespace AsteroidRebuttal.GameObjects
 
             CollidesWithLayers = new int[] { 0, 1 };
             CollisionLayer = 3;
+
+            Color = Color.White;
 
             CanFire = true;
 
@@ -132,7 +136,9 @@ namespace AsteroidRebuttal.GameObjects
             {
                 // Fire!
                 AudioManager.PlaySoundEffect(GameScene.Shot3Sound, .2f);
-                mainEmitter.FireBullet(((float)Math.PI / 2) * 3, 500f, Color.GreenYellow, BulletType.Diamond).SetCollisionLayer(2);
+                Bullet newBullet = mainEmitter.FireBullet(((float)Math.PI / 2) * 3, 500f, Color.GreenYellow, BulletType.Diamond);
+                newBullet.SetCollisionLayer(2);
+                newBullet.DrawLayer = .1f;
 
                 nextFireTime = (float)gameTime.TotalGameTime.TotalSeconds + .1f;
             }
@@ -157,10 +163,10 @@ namespace AsteroidRebuttal.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Center, Texture.Bounds, Color.White, Rotation, Origin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, Center, Texture.Bounds, Color, Rotation, Origin, 1f, SpriteEffects.None, DrawLayer);
 
             //HITBOX
-            spriteBatch.Draw(hitboxTexture, new Vector2(InnerHitbox.Center.X - InnerHitbox.Radius, InnerHitbox.Center.Y - InnerHitbox.Radius), Color.White);
+            spriteBatch.Draw(hitboxTexture, new Vector2(InnerHitbox.Center.X - InnerHitbox.Radius, InnerHitbox.Center.Y - InnerHitbox.Radius), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, DrawLayer - .01f);
         }
 
 
@@ -199,13 +205,14 @@ namespace AsteroidRebuttal.GameObjects
 
         public void ObjectCollidedWith(GameObject sender, CollisionEventArgs e)
         {
-            if (sender is Bullet)
+            if (!Phasing && (sender is Bullet || sender is Enemy || sender is Boss))
             {
-                Destroy();
-            }
+                Phasing = true;
+                thisScene.PlayAnimation(new Animation(GameScene.PlayerExplosionTexture, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 48, 20f, new Vector2(Center.X - 24, Center.Y - 25), false));
+                AudioManager.PlaySoundEffect(GameScene.Explosion3Sound, .8f);
 
-            if (sender is Enemy || sender is Boss)
-            {
+                thisScene.scriptManager.Execute(thisScene.TryRespawn);
+                
                 Destroy();
             }
         }

@@ -47,6 +47,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         {
             Console.WriteLine("Initialize me!");
             Health = 9;
+            DrawLayer = .31f;
 
             // Get the actual origin.
             Origin = new Vector2(127.5f, 61.5f);
@@ -103,13 +104,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase4Script, this);
-            }
-            if (phase == 4 && Health < 1)
-            {
-                scriptManager.AbortObjectScripts(this);
-                // Now explode!!
-            }
-            
+            }            
 
             base.Update(gameTime);
         }

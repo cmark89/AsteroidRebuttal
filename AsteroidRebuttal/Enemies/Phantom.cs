@@ -29,6 +29,8 @@ namespace AsteroidRebuttal.Enemies
             Texture = phantomTexture;
             Color = Color.Transparent;
 
+            DrawLayer = .425f;
+
             CollisionLayer = 1;
             CollidesWithLayers = new int[] { 2 };
 

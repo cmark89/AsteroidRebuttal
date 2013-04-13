@@ -128,6 +128,7 @@
     <Compile Include="Enemies\Slicer.cs" />
     <Compile Include="GameObjects\Animation.cs" />
     <Compile Include="GameObjects\Boss.cs" />
+    <Compile Include="GameObjects\Fader.cs" />
     <Compile Include="GameObjects\Enemy.cs" />
     <Compile Include="GameObjects\Bullet.cs" />
     <Compile Include="GameObjects\BulletEmitter.cs" />

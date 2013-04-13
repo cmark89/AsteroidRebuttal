@@ -51,6 +51,7 @@ namespace AsteroidRebuttal.GameObjects
         {
             thisScene = parent.thisScene;
             CollisionLayer = 0;
+            DrawLayer = .12f;
 
 
             // Switch on the bullet ty
@@ -117,7 +118,7 @@ namespace AsteroidRebuttal.GameObjects
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Center, Texture.Bounds, Color, Rotation + ((float)Math.PI / 2), Origin, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, Center, Texture.Bounds, Color, Rotation + ((float)Math.PI / 2), Origin, 1f, SpriteEffects.None, DrawLayer);
         }
     }
 

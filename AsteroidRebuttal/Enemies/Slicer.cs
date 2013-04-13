@@ -23,6 +23,8 @@ namespace AsteroidRebuttal.Enemies
             Texture = slicerTexture;
             Color = Color.White;
 
+            DrawLayer = .3f;
+            
             CollisionLayer = 1;
             CollidesWithLayers = new int[] { 2 };
 

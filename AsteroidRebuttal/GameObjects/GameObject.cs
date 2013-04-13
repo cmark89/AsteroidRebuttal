@@ -20,6 +20,7 @@ namespace AsteroidRebuttal.GameObjects
         public Color Color { get; set; }
         public GameScene thisScene;
         public List<GameObject> ChildObjects { get; protected set; }
+        public float DrawLayer { get; set; }
         #endregion
 
         #region Position, Hitboxes, Collision
@@ -278,6 +279,9 @@ namespace AsteroidRebuttal.GameObjects
         private void CheckIfOffScreen()
         {
             // Check if object is off screen and remove it if it is.
+            if (Hitbox == null)
+                return;
+
             if (Hitbox.Center.X + Hitbox.Radius < thisScene.ScreenArea.X - DeletionBoundary.X ||
                 Hitbox.Center.X - Hitbox.Radius > thisScene.ScreenArea.Width + DeletionBoundary.X ||
                 Hitbox.Center.Y + Hitbox.Radius < thisScene.ScreenArea.Y - DeletionBoundary.Y ||
@@ -347,11 +351,12 @@ namespace AsteroidRebuttal.GameObjects
         {
             // Draw the sprite simply.
             if (!DrawAtTrueRotation)
-                spriteBatch.Draw(Texture, Position, Color);
+            {
+                spriteBatch.Draw(Texture, Position, null, Color, 0f, Vector2.Zero, 1f, SpriteEffects.None, DrawLayer);
+            }
             else
             {
-
-                spriteBatch.Draw(Texture, Center, Texture.Bounds, Color, Rotation - (float)Math.PI / 2, Origin, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(Texture, Center, null, Color, Rotation - (float)Math.PI / 2, Origin, 1f, SpriteEffects.None, DrawLayer);
             }
         }
 

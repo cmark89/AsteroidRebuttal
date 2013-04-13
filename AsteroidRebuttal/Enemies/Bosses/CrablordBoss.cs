@@ -59,6 +59,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
         {
             Console.WriteLine("Initialize me!");
             Health = 500;
+            DrawLayer = .31f;
 
             // Get the actual origin.
             Origin = new Vector2(127.5f, 84.5f);
@@ -542,7 +543,13 @@ namespace AsteroidRebuttal.Enemies.Bosses
             }
         }
 
+        public override void Destroy()
+        {
+            foreach (GameObject go in eggs)
+                go.Destroy();
 
+            base.Destroy();
+        }
 
 
         public void CollisionHandling(GameObject sender, CollisionEventArgs e)

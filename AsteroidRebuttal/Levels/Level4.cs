@@ -57,11 +57,20 @@ namespace AsteroidRebuttal.Levels
             // Add the warning layers but hide them until needed.
             scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level4Warning1Texture, -160f, Color.Transparent));
             scrollingBackground.Add(new ScrollingBackgroundLayer(manager.thisScene, Level4Warning2Texture, -45f, Color.Transparent));
+
+            scrollingBackground[0].DrawLayer = .99f;
+            scrollingBackground[1].DrawLayer = .98f;
+            scrollingBackground[2].DrawLayer = .97f;
+            scrollingBackground[3].DrawLayer = .96f;
+            scrollingBackground[4].DrawLayer = .95f;
+            scrollingBackground[5].DrawLayer = .94f;
+            scrollingBackground[6].DrawLayer = .93f;
         }
 
         public override IEnumerator<float> LevelScript()
         {
             // Time remaining: 57 seconds.
+            manager.thisScene.fader.LerpColor(Color.Transparent, 1f);
             Enemy e;
 
             AudioManager.PlaySong(Level4Theme, false, .5f);
@@ -235,12 +244,32 @@ namespace AsteroidRebuttal.Levels
                 yield return .03f;
             }
 
-            // Explode the enemy!
-            // Destroy() here is temporary!
-            boss.Destroy();
-
-            // Dispose of the boss theme.
+            // Stop the boss theme and hide the health bar
             bossTheme.Dispose();
+            manager.thisScene.HideBossHealthbar();
+
+            // Explode the boss!!
+            scriptManager.AbortObjectScripts(boss);
+            manager.thisScene.player.Phasing = true;
+            foreach (GameObject b in manager.thisScene.gameObjects.FindAll(x => x is Bullet))
+            {
+                scriptManager.AbortObjectScripts(b);
+                b.Phasing = true;
+                b.LerpColor(Color.Transparent, 1f);
+            }
+
+            scriptManager.Execute(manager.thisScene.BossExplosion, boss);
+            yield return 3.3f;
+            yield return 2f;
+            manager.thisScene.fader.LerpColor(Color.Transparent, 3f);
+            yield return 3f;
+
+            manager.thisScene.fader.LerpColor(Color.Black, 2f);
+
+
+            yield return 2f;
+            manager.thisScene.player.Phasing = false;
+            manager.SetLevel(5);
         }
 
         public IEnumerator<float> DragonflyDelayedShoot(GameObject go)
