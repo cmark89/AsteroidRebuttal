@@ -25,7 +25,7 @@ namespace AsteroidRebuttal.Enemies
 
         public override void Initialize()
         {
-            Health = 200;
+            Health = 400;
             Texture = phantomTexture;
             Color = Color.Transparent;
 

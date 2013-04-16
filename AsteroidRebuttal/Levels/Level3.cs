@@ -35,8 +35,6 @@ namespace AsteroidRebuttal.Levels
 
         public override void SetupBackground()
         {
-            Console.WriteLine("Set up the background for level 3!");
-
             scrollingBackground = new List<ScrollingBackgroundLayer>();
 
             // Individually add each layer to the scrolling background...
@@ -211,7 +209,7 @@ namespace AsteroidRebuttal.Levels
             BeginBossBattle(boss);
 
             yield return 1.5f;
-            SoundEffectInstance bossTheme = AudioManager.PlaySong(BossTheme);
+            bossTheme = AudioManager.PlaySong(BossTheme);
 
             while (boss.Health > 0)
             {
@@ -234,6 +232,10 @@ namespace AsteroidRebuttal.Levels
 
             scriptManager.Execute(manager.thisScene.BossExplosion, boss);
             yield return 3.3f;
+            foreach (GameObject go in manager.thisScene.gameObjects.FindAll(x => x is CrablordEgg))
+            {
+                go.Destroy();
+            }
             yield return 2f;
             manager.thisScene.fader.LerpColor(Color.Transparent, 3f);
             yield return 3f;

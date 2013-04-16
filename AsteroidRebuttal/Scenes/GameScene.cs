@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Enemies;
 using AsteroidRebuttal.Enemies.Bosses;
@@ -19,10 +20,13 @@ namespace AsteroidRebuttal.Scenes
 {
     public class GameScene : Scene
     {
+        public AsteroidRebuttal Game;
         public QuadTree quadtree {get; protected set;}
         public List<GameObject> gameObjects { get; private set; }
         public List<Animation> animations { get; private set; }
         public ScriptManager scriptManager;
+
+        public bool PlayerCanFire = true;
 
 
 
@@ -38,7 +42,6 @@ namespace AsteroidRebuttal.Scenes
         public PlayerShip player;
 
         CollisionDetection collisionDetection;
-        bool DrawQuadtree;
 
         LevelManager levelManager;
 
@@ -81,6 +84,7 @@ namespace AsteroidRebuttal.Scenes
         public static SoundEffect Rank2;
         public static SoundEffect Rank3;
         public static SoundEffect Rank4;
+        public static SoundEffect ExtendSound;
 
         public static SoundEffect BossWarning;
         public static SoundEffect BossAlarm;
@@ -133,6 +137,11 @@ namespace AsteroidRebuttal.Scenes
         float TitleColorLerpStartTime;
         float TitleColorLerpEndTime;
 
+        public GameScene(AsteroidRebuttal thisGame)
+        {
+            Game = thisGame;
+        }
+
         public override void Initialize()
         {
             scriptManager = new ScriptManager();
@@ -145,15 +154,22 @@ namespace AsteroidRebuttal.Scenes
                 25000,
                 50000,
                 100000,
-                250000,
-                500000,
-                1000000,
-                2500000,
-                5000000,
-                10000000,
-                30000000,
-                100000000
+                200000,
+                400000,
+                800000,
+                1600000,
+                3200000,
+                6400000,
+                12800000,
+                25600000,
+
             };
+
+            if (AsteroidRebuttal.HardcoreMode)
+            {
+                ExtendValues.Clear();
+                Lives = 0;
+            }
 
             // Set the game area to 700 x 650.
             ScreenArea = new Rectangle(0, 0, 700, 650);
@@ -171,14 +187,13 @@ namespace AsteroidRebuttal.Scenes
             levelManager.SetLevel(1);
 
             //new FinalBoss(this, new Vector2(350, -300));
-            player = new PlayerShip(this, new Vector2(100, 200));
+            player = new PlayerShip(this, new Vector2(350, 550));
         }
 
 
         public override void LoadContent(ContentManager content)
         {
             //TEST
-            Console.WriteLine("Loaded level content!");
             ExplosionTexture = content.Load<Texture2D>("Graphics/Effects/Explosion");
             PlayerExplosionTexture = content.Load<Texture2D>("Graphics/Effects/explosion2");
 
@@ -209,6 +224,8 @@ namespace AsteroidRebuttal.Scenes
             Shot6Sound = content.Load<SoundEffect>("Audio/SFX/shot6");
             Shot7Sound = content.Load<SoundEffect>("Audio/SFX/shot7");
             Shot8Sound = content.Load<SoundEffect>("Audio/SFX/shot8");
+
+            ExtendSound = content.Load<SoundEffect>("Audio/SFX/Extend");
 
             PhaseInSound = content.Load<SoundEffect>("Audio/SFX/phaseIn");
             PhaseOutSound = content.Load<SoundEffect>("Audio/SFX/phaseOut");
@@ -268,17 +285,6 @@ namespace AsteroidRebuttal.Scenes
 
             scriptManager.Update(gameTime);
             collisionDetection.BroadphaseCollisionDetection();
-            
-            // Respawn function
-            if (KeyboardManager.KeyPressedUp(Microsoft.Xna.Framework.Input.Keys.F1))
-            {
-                player.Destroy();
-                player = new PlayerShip(this, new Vector2(350, 450));
-            }
-            if (KeyboardManager.KeyPressedUp(Microsoft.Xna.Framework.Input.Keys.Q))
-            {
-                DrawQuadtree = !DrawQuadtree;
-            }
 
             levelManager.Update(gameTime);
 
@@ -304,12 +310,16 @@ namespace AsteroidRebuttal.Scenes
 
         public void CheckExtend()
         {
+            if (AsteroidRebuttal.HardcoreMode)
+                return;
+
             if (Score > ExtendValues[0])
             {
                 // The player has earned their next extend value!
                 // Give them another life.
 
                 Lives++;
+                AudioManager.PlaySoundEffect(ExtendSound, .9f);
                 // Play a nice sound.
 
                 if (ExtendValues.Count > 1)
@@ -352,9 +362,6 @@ namespace AsteroidRebuttal.Scenes
                 a.Draw(spriteBatch);
             }
 
-            if(DrawQuadtree)
-                quadtree.Draw(spriteBatch);
-
             if (bossHealthbarFrameShown)
             {
                 if(bossHealthbarAnimationComplete)
@@ -394,7 +401,9 @@ namespace AsteroidRebuttal.Scenes
             }
 
             spriteBatch.DrawString(scoreFont, String.Format("{0:000,000,000}", Score), new Vector2(GUIArea.X + 42, 38), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
-            spriteBatch.DrawString(extendFont, "Next Extend: " + String.Format("{0:0,000}", ExtendValues[0]), new Vector2(GUIArea.X + 42, 74), Color.Gold, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
+            if(ExtendValues.Count > 0)
+                spriteBatch.DrawString(extendFont, "Next Extend: " + String.Format("{0:0,000}", ExtendValues[0]), new Vector2(GUIArea.X + 42, 74), Color.Gold, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
+
             spriteBatch.DrawString(scoreFont, GrazeCount.ToString(), new Vector2(GUIArea.X + 108, 234), Color.Teal, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
             spriteBatch.DrawString(scoreFont, GrazeValue.ToString(), new Vector2(GUIArea.X + 108, 276), Color.Teal, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
             spriteBatch.DrawString(livesFont, Lives.ToString(), new Vector2(GUIArea.X + 46, 602), Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, .08f);
@@ -446,11 +455,7 @@ namespace AsteroidRebuttal.Scenes
 
             bossHealthbarFrameColor = Color.White;
             elapsedTime = 0f;
-            bossHealthbarColor = Color.Yellow;
-
-            Console.WriteLine("Start bar! At time: " + currentGameTime);
-
-            
+            bossHealthbarColor = Color.Yellow;            
 
             while (elapsedTime < 1f)
             {
@@ -459,7 +464,6 @@ namespace AsteroidRebuttal.Scenes
                 lastTime = currentGameTime;
                 yield return .03f;
             }
-            Console.WriteLine("End bar! At time: " + currentGameTime);
 
             bossHealthbarAnimationComplete = true;
             bossHealthbarWidth = bossHealthbarMaxWidth;
@@ -487,29 +491,36 @@ namespace AsteroidRebuttal.Scenes
 
         public void RankUp()
         {
-            Rank++;
-            Experience = 5;
-            NextRankUp += 5;
-            ExperienceDecay *= 1.5f;
-            ScoreMultiplier *= 2;
-            PauseExperienceDecay(5f);
-
-            switch (Rank)
+            if (Rank < 4)
             {
-                case (1):
-                    Rank1.Play(.8f, 0f, 0f);
-                    break;
-                case (2):
-                    Rank2.Play(.8f, 0f, 0f);
-                    break;
-                case (3):
-                    Rank3.Play(.8f, 0f, 0f);
-                    break;
-                case (4):
-                    Rank4.Play(.8f, 0f, 0f);
-                    break;
-                default:
-                    break;
+                Rank++;
+                Experience = 5;
+                NextRankUp += 5;
+                ExperienceDecay *= 1.15f;
+                ScoreMultiplier *= 2;
+                PauseExperienceDecay(5f);
+
+                switch (Rank)
+                {
+                    case (1):
+                        Rank1.Play(.8f, 0f, 0f);
+                        break;
+                    case (2):
+                        Rank2.Play(.8f, 0f, 0f);
+                        break;
+                    case (3):
+                        Rank3.Play(.8f, 0f, 0f);
+                        break;
+                    case (4):
+                        Rank4.Play(.8f, 0f, 0f);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                Experience = NextRankUp;
             }
         }
 
@@ -663,21 +674,26 @@ namespace AsteroidRebuttal.Scenes
 
         public IEnumerator<float> TryRespawn()
         {
-            // First, wait a second or so for the explosion to complete
-            yield return 1.7f;
-
-            // Now, check if the number of lives is greater than 0
-            if (Lives > 0)
+            // Check if the number of lives is greater than 0
+            if (Lives > 0 || AsteroidRebuttal.ImmortalMode)
             {
+                // First, wait a second or so for the explosion to complete
+                yield return 1.7f;
+
                 // Remove a life.
-                Lives--;
+                if(!AsteroidRebuttal.ImmortalMode)
+                    Lives--;
 
                 scriptManager.Execute(SpawnPlayer);
             }
             else
             {
+                MediaPlayer.Stop();
+                levelManager.HaltAudio();
                 yield return 2f;
-                // Game over time!
+                fader.LerpColor(Color.Black, 2.5f);
+                yield return 2.5f;
+                Game.ChangeScene(new GameOverScene(Game));
             }
         }
 

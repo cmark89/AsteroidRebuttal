@@ -45,7 +45,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public override void Initialize()
         {
-            Console.WriteLine("Initialize me!");
             Health = 9;
             DrawLayer = .31f;
 
@@ -111,7 +110,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public void InitializeParts()
         {
-            Console.WriteLine("INIT PARTS");
             arms = new Vector2[6]
             {
                 new Vector2(31, 22),

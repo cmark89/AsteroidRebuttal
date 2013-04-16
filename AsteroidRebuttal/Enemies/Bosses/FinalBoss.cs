@@ -40,7 +40,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public override void Initialize()
         {
-            Console.WriteLine("Initialize me!");
             Health = 1800;
             DrawLayer = .425f;
 
@@ -253,7 +252,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public IEnumerator<float> Phase1Script (GameObject thisObject)
         {
-            Console.WriteLine("MOVE FINAL BOSS");
             LerpPosition(new Vector2(350f, 220f), 10f);
             yield return 5f;
             Vulnerable = true;
@@ -771,8 +769,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
             ring2.LerpAngularVelocity(0f, 4f);
             yield return 5f;
             // Lerp the position and disable the player's shot 
-            Console.WriteLine("WARNING! TARGET SYSTEM IS JAMMED!  YOU CANNOT FIRING!");
             thisScene.player.CanFire = false;
+            thisScene.PlayerCanFire = false;
             ring1.LerpAngularVelocity(2.15f, 3f);
             ring2.LerpAngularVelocity(-3.25f, 3f);
             yield return 6f;
@@ -857,7 +855,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                     Bullet[] tempbullets = mainEmitter.FireBulletExplosion(35, 40, Color.Orange);
                     foreach (Bullet b in tempbullets)
                     {
-                        b.LerpVelocity(230f, 3.5f);
+                        b.LerpVelocity(260f, 3.5f);
                     }
 
                     shots++;
@@ -874,7 +872,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 {
                     AudioManager.PlaySoundEffect(GameScene.Shot7Sound, .9f, .5f);
 
-                    foreach (Bullet b in mainEmitter.FireBulletExplosion(15, 60f, Color.DeepSkyBlue))
+                    foreach (Bullet b in mainEmitter.FireBulletExplosion(10, 60f, Color.DeepSkyBlue))
                     {
                         b.CustomValue1 = rotationSpeed;
                         b.CustomValue2 = 0f;
@@ -884,7 +882,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                         rotatingBullets.Add(b);
                     }
 
-                    foreach (Bullet b in mainEmitter.FireBulletExplosion(15, 60f, Color.Red))
+                    foreach (Bullet b in mainEmitter.FireBulletExplosion(10, 60f, Color.Red))
                     {
                         b.CustomValue1 = rotationSpeed * -1f;
                         b.CustomValue2 = 0f;
@@ -894,7 +892,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
                         rotatingBullets.Add(b);
                     }
 
-                    nextShotTime += .5f;
+                    nextShotTime += .75f;
                 }
 
                 yield return waitTime;
@@ -902,7 +900,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
             yield return 3f;
 
-            // Now explode for realzies
+            // Now explode for real
         }
 
         public IEnumerator<float> FinalPhaseMovement(GameObject go)

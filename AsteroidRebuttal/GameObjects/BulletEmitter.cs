@@ -81,18 +81,27 @@ namespace AsteroidRebuttal.GameObjects
         // Simple method that creates a bullet and shoots it in the direction the emitter is facing
         public Bullet FireBullet(float velocity, Color newColor, BulletType type = BulletType.Circle)
         {
+            if (AsteroidRebuttal.ManicMode)
+                velocity *= 2;
+
             return new Bullet(Parent, Center, Rotation, velocity, newColor, type);
         }
 
         // Method that creates a bullet and shoots it in any direction
-        public Bullet FireBullet(float rotation, float velocity, Color newColor, BulletType type = BulletType.Circle)
+        public Bullet FireBullet(float rotation, float velocity, Color newColor, BulletType type = BulletType.Circle, bool overridemanicmode = false)
         {
+            if (AsteroidRebuttal.ManicMode && !overridemanicmode)
+                velocity *= 2;
+
             return new Bullet(Parent, Center, rotation, velocity, newColor, type);
         }
 
         // Method that creates a bullet and shoots it in any direction
         public Bullet[] FireBulletExplosion(int numberOfBullets, float velocity, Color newColor, BulletType type = BulletType.Circle)
         {
+            if (AsteroidRebuttal.ManicMode)
+                velocity *= 2;
+
             List<Bullet> bullets = new List<Bullet>();
             
             float spread = ((float)(Math.PI * 2) / (float)numberOfBullets);
@@ -109,6 +118,9 @@ namespace AsteroidRebuttal.GameObjects
         // Method that creates a bullet and shoots it in any direction
         public Bullet[] FireBulletSpread(float rotation, int numberOfBullets, float spread, float velocity, Color newColor, BulletType type = BulletType.Circle)
         {
+            if (AsteroidRebuttal.ManicMode)
+                velocity *= 2;
+
             List<Bullet> bullets = new List<Bullet>();
             spread = VectorMathHelper.DegreesToRadians(spread);
 
@@ -127,6 +139,9 @@ namespace AsteroidRebuttal.GameObjects
         // Method that creates a cluster of bullets in a random spread and at variable velocity.
         public Bullet[] FireBulletCluster(float rotation, int numberOfBullets, float spread, float baseVelocity, float randomVelocity, Color newColor, BulletType type = BulletType.Circle)
         {
+            if (AsteroidRebuttal.ManicMode)
+                baseVelocity *= 2;
+
             List<Bullet> bullets = new List<Bullet>();
             spread = VectorMathHelper.DegreesToRadians(spread);
             float launchRotation;
@@ -145,6 +160,9 @@ namespace AsteroidRebuttal.GameObjects
         // Fire a number of bullets at once in the same direction, with each bullet's speed reduced by the speed variance 
         public Bullet[] FireBulletWave(float rotation, int numberOfBullets, float startVelocity, float velocityVariance, Color newColor, BulletType type = BulletType.Circle)
         {
+            if (AsteroidRebuttal.ManicMode)
+                startVelocity *= 2;
+
             List<Bullet> bullets = new List<Bullet>();
 
             for (int i = 0; i < numberOfBullets; i++)

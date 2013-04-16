@@ -17,6 +17,8 @@ namespace AsteroidRebuttal.Enemies.Bosses
     public class TestBoss : Boss
     {
         public int phase = 1;
+        int animFrame = 1;
+        float animTime = 0f;
         BulletEmitter subEmitter1;
         BulletEmitter subEmitter2;
 
@@ -36,7 +38,7 @@ namespace AsteroidRebuttal.Enemies.Bosses
             // Get the actual origin.
             Origin = new Vector2(23.5f, 23.5f);
             Hitbox = new Circle(Center, 15f);
-            Texture = testBossTexture;
+            Texture = boss1Texture;
 
             DeletionBoundary = new Vector2(1500, 1500);
             Color = Color.White;
@@ -60,13 +62,25 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public override void Update(GameTime gameTime)
         {
-            Console.Clear();
-            Console.WriteLine("Boss Health: " + Health + " / " + 200 + " ... " + ((float)Health / 200f) + "%");
+            animTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if(animTime > .12f)
+            {
+                animTime = 0f;
+                if (animFrame == 1)
+                {
+                    animFrame = 2;
+                    Texture = boss1Texture2;
+                }
+                else
+                {
+                    animFrame = 1;
+                    Texture = boss1Texture;
+                }
+            }
 
             if(phase == 1 && Health < 200)
             {
                 phase = 2;
-                Console.WriteLine("GO TO BOSS PHASE 2!!");
                 thisScene.BossPhaseChange();
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(MainScriptPhase2, this);

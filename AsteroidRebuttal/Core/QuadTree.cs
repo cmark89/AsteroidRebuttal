@@ -123,7 +123,6 @@ namespace AsteroidRebuttal.Core
                 // Split the tree if it has not yet split
                 if (subnodes[0] == null)
                 {
-                    //Console.WriteLine("Split level " + level);
                     Split();
 
                     for (int i = 0; i < gameObjects.Count; i++)

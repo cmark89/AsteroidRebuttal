@@ -57,7 +57,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public override void Initialize()
         {
-            Console.WriteLine("Initialize me!");
             Health = 500;
             DrawLayer = .31f;
 
@@ -128,14 +127,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
                 scriptManager.Execute(Phase3Script, this);
             }
 
-
-            //Console.WriteLine(Hitbox.Radius);
             base.Update(gameTime);
         }
 
         public void InitializeParts()
         {
-            Console.WriteLine("INIT PART");
             arms = new Vector2[6]
             {
                 new Vector2(38, 167),
@@ -546,7 +542,9 @@ namespace AsteroidRebuttal.Enemies.Bosses
         public override void Destroy()
         {
             foreach (GameObject go in eggs)
+            {
                 go.Destroy();
+            }
 
             base.Destroy();
         }

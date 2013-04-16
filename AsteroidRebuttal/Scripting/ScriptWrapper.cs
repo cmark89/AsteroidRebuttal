@@ -111,7 +111,6 @@ namespace AsteroidRebuttal.Scripting
 
         public void SetCompleted()
         {
-            //Console.WriteLine("Script set to complete!");
             State = ScriptState.Completed;
         }
     }

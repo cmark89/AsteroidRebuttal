@@ -45,8 +45,6 @@ namespace AsteroidRebuttal.Levels
 
         public override void SetupBackground()
         {
-            Console.WriteLine("Set up the background for level 5!");
-
             scrollingBackground = new List<ScrollingBackgroundLayer>();
             
             // Individually add each layer to the scrolling background...
@@ -375,7 +373,7 @@ namespace AsteroidRebuttal.Levels
 
             scrollingBackground[1].LerpColor(Color.Red, 5.7f);
 
-            yield return 5.7f;
+            yield return 7f;
 
             manager.thisScene.PlayBossWarning();
             yield return 6.6f;
@@ -385,7 +383,7 @@ namespace AsteroidRebuttal.Levels
             BeginBossBattle(boss);
 
             yield return 1.5f;
-            SoundEffectInstance bossTheme = AudioManager.PlaySong(BossTheme);
+            bossTheme = AudioManager.PlaySong(BossTheme);
 
             while (boss.Health > 0)
             {
@@ -394,6 +392,7 @@ namespace AsteroidRebuttal.Levels
             // Stop the boss theme and hide the health bar
             bossTheme.Dispose();
             manager.thisScene.HideBossHealthbar();
+            yield return 5f;
 
             scriptManager.Execute(manager.thisScene.ShowJammedWarning);
             yield return 6f;
@@ -414,6 +413,7 @@ namespace AsteroidRebuttal.Levels
 
             yield return 4f;
             // THE END
+            manager.thisScene.Game.ChangeScene(new TitleScene(manager.thisScene.Game));
         }
 
         // CustomValue1: Initial wait time
@@ -514,6 +514,8 @@ namespace AsteroidRebuttal.Levels
 
         public IEnumerator<float> Phantom1Script(GameObject go)
         {
+            Random rand = new Random();
+
             Phantom phantom = (Phantom)go;
             List<Vector2> randomTeleportLocations = new List<Vector2>()
             {
@@ -560,27 +562,31 @@ namespace AsteroidRebuttal.Levels
                     shots = 0;
 
                     Vector2 target = manager.thisScene.player.InnerHitbox.Center;
+
+
                     while (shots < 15)
                     {
-                        AudioManager.PlaySoundEffect(GameScene.Shot2Sound, .25f);
-                        phantom.leftWingCannon.FireBullet(VectorMathHelper.GetAngleTo(phantom.leftWingCannon.Center, target), 325f, Color.Lerp(Color.White, Color.Orange, .7f));
-                        phantom.rightWingCannon.FireBullet(VectorMathHelper.GetAngleTo(phantom.rightWingCannon.Center, target), 325f, Color.Lerp(Color.White, Color.Orange, .7f));
+                        AudioManager.PlaySoundEffect(GameScene.Shot2Sound, .3f);
+                        phantom.leftWingCannon.FireBullet(VectorMathHelper.GetAngleTo(phantom.leftWingCannon.Center, target), 350f, Color.Lerp(Color.White, Color.Orange, .7f));
+                        phantom.rightWingCannon.FireBullet(VectorMathHelper.GetAngleTo(phantom.rightWingCannon.Center, target), 350f, Color.Lerp(Color.White, Color.Orange, .7f));
                         shots++;
-                        yield return .03f;
+                        yield return .06f;
                     }
+
 
                     shots = 0;
                     yield return .2f;
 
-                    float randomSpray = .7f;
                     while (shots < 10)
                     {
+                        AudioManager.PlaySoundEffect(GameScene.Shot5Sound, .25f);
                         Bullet newBullet;
-                        AudioManager.PlaySoundEffect(GameScene.Shot5Sound, .3f);
-                        newBullet = phantom.leftInnerWingCannon.FireBullet(VectorMathHelper.GetAngleTo(phantom.leftInnerWingCannon.Center, manager.thisScene.player.InnerHitbox.Center), 80f, Color.DeepSkyBlue);
-                        newBullet = phantom.rightInnerWingCannon.FireBullet(VectorMathHelper.GetAngleTo(phantom.rightInnerWingCannon.Center, manager.thisScene.player.InnerHitbox.Center), 80f, Color.DeepSkyBlue);
+                        newBullet = phantom.leftInnerWingCannon.FireBullet(VectorMathHelper.GetAngleTo(phantom.leftInnerWingCannon.Center, manager.thisScene.player.InnerHitbox.Center), 100f, Color.DeepSkyBlue);
+                        newBullet.LerpRotation(VectorMathHelper.GetAngleTo(newBullet.Center, manager.thisScene.player.InnerHitbox.Center) + (((float)rand.NextDouble() * 2) - 1f) * .7f, 4f);
+                        newBullet = phantom.rightInnerWingCannon.FireBullet(VectorMathHelper.GetAngleTo(phantom.rightInnerWingCannon.Center, manager.thisScene.player.InnerHitbox.Center), 100f, Color.DeepSkyBlue);
+                        newBullet.LerpRotation(VectorMathHelper.GetAngleTo(newBullet.Center, manager.thisScene.player.InnerHitbox.Center) + (((float)rand.NextDouble() * 2) - 1f) * .7f, 4f);
                         shots++;
-                        yield return .06f;
+                        yield return .03f;
                     }
 
                     shots = 0;

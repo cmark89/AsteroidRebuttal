@@ -35,7 +35,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
         public override void Initialize()
         {
-            Console.WriteLine("Initialize me!");
             Health = 500;
             DrawLayer = .425f;
 
@@ -56,7 +55,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
             InitializeParts();
 
             scriptManager = thisScene.scriptManager;
-            Console.WriteLine("Execute le scripto!");
             scriptManager.Execute(Phase1Script, this);
 
             OnOuterCollision += CollisionHandling;
@@ -75,15 +73,11 @@ namespace AsteroidRebuttal.Enemies.Bosses
 
 
         public override void Update(GameTime gameTime)
-        {
-            //Console.Clear();
-            //Console.WriteLine("Boss Health: " + Health + " / " + 500 + " ... " + ((float)Health / 5f) + "%");
-            
+        {            
             if (phase == 1 && Health < 400)
             {
                 phase = 2;
                 thisScene.BossPhaseChange();
-                Console.WriteLine("GO TO BOSS PHASE 2!!");
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase2Script, this);
             }
@@ -92,7 +86,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 phase = 3;
                 thisScene.BossPhaseChange();
-                Console.WriteLine("GO TO BOSS PHASE 3!!");
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.AbortObjectScripts(leftWingCannon);
                 scriptManager.AbortObjectScripts(rightWingCannon);
@@ -103,7 +96,6 @@ namespace AsteroidRebuttal.Enemies.Bosses
             {
                 phase = 4;
                 thisScene.BossPhaseChange();
-                Console.WriteLine("GO TO BOSS PHASE 3!!");
                 scriptManager.AbortObjectScripts(this);
                 scriptManager.Execute(Phase4Script, this);
             }

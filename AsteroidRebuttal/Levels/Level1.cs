@@ -34,8 +34,6 @@ namespace AsteroidRebuttal.Levels
 
         public override void SetupBackground()
         {
-            Console.WriteLine("Set up the background for level 1!");
-
             scrollingBackground = new List<ScrollingBackgroundLayer>();
 
             // Individually add each layer to the scrolling background...
@@ -289,7 +287,7 @@ namespace AsteroidRebuttal.Levels
             Boss boss = new TestBoss(manager.thisScene, new Vector2(350f, -20f));
             BeginBossBattle(boss);
             yield return 1f;
-            SoundEffectInstance bossTheme = AudioManager.PlaySong(BossTheme);
+            bossTheme = AudioManager.PlaySong(BossTheme);
 
             while (boss.Health > 0)
             {

@@ -30,6 +30,10 @@ namespace AsteroidRebuttal
         // The current scene of the game.
         public Scene CurrentScene { get; private set; }
 
+        public static bool ImmortalMode = false;
+        public static bool ManicMode = false;
+        public static bool HardcoreMode = false;
+
         public AsteroidRebuttal()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -46,7 +50,8 @@ namespace AsteroidRebuttal
         protected override void Initialize()
         {
             base.Initialize();
-            ChangeScene(new GameScene());
+            ChangeScene(new LogoSplashScene(this));
+            this.Window.Title = "Asteroid Rebuttal";
         }
 
         protected override void LoadContent()
@@ -84,7 +89,7 @@ namespace AsteroidRebuttal
         
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
 
@@ -102,8 +107,8 @@ namespace AsteroidRebuttal
                 CurrentScene.Unload();
 
             CurrentScene = newScene;
-            CurrentScene.Initialize();
             CurrentScene.LoadContent(Content);
+            CurrentScene.Initialize();
         }
     }
 }

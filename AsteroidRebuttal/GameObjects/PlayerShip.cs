@@ -48,13 +48,10 @@ namespace AsteroidRebuttal.GameObjects
 
         public override void Initialize()
         {
-            Console.WriteLine("Player initialized!");
             Texture = playerShipTexture;
 
             DrawLayer = .4f;
 
-            if (thisScene == null)
-                Console.WriteLine("This scene is null!?");
             scriptManager = thisScene.scriptManager;
 
             bullets = new List<Bullet>();
@@ -72,7 +69,7 @@ namespace AsteroidRebuttal.GameObjects
 
             Color = Color.White;
 
-            CanFire = true;
+            CanFire = thisScene.PlayerCanFire;
 
             OnOuterCollision += ObjectGrazed;
             OnInnerCollision += ObjectCollidedWith;
@@ -85,7 +82,6 @@ namespace AsteroidRebuttal.GameObjects
             if (playerShipTexture == null)
             {
                 playerShipTexture = content.Load<Texture2D>("Graphics/playerShip");
-                Console.WriteLine("Player texture loaded!");
             }
 
             if (hitboxTexture == null)
@@ -98,16 +94,13 @@ namespace AsteroidRebuttal.GameObjects
         {
             currentGameTime = (float)gameTime.TotalGameTime.TotalSeconds;
 
-            //Console.Clear();
-            //Console.WriteLine(string.Format("Main Hitbox: {0}, {1} ... Radius: {2}\nInner Hitbox: {3}, {4} ... Radius: {5}", Hitbox.Center.X, Hitbox.Center.Y, Hitbox.Radius, InnerHitbox.Center.X, InnerHitbox.Center.Y, InnerHitbox.Radius));
-
             Vector2 movement = new Vector2();
             // Update controls
             float moveSpeed;
 
             if (KeyboardManager.KeyDown(Keys.LeftShift))
             {
-                moveSpeed = speed / 2f;
+                moveSpeed = speed / 2.5f;
             }
             else
             {
@@ -136,7 +129,7 @@ namespace AsteroidRebuttal.GameObjects
             {
                 // Fire!
                 AudioManager.PlaySoundEffect(GameScene.Shot3Sound, .2f);
-                Bullet newBullet = mainEmitter.FireBullet(((float)Math.PI / 2) * 3, 500f, Color.GreenYellow, BulletType.Diamond);
+                Bullet newBullet = mainEmitter.FireBullet(((float)Math.PI / 2) * 3, 500f, Color.GreenYellow, BulletType.Diamond, true);
                 newBullet.SetCollisionLayer(2);
                 newBullet.DrawLayer = .1f;
 
@@ -166,7 +159,7 @@ namespace AsteroidRebuttal.GameObjects
             spriteBatch.Draw(Texture, Center, Texture.Bounds, Color, Rotation, Origin, 1f, SpriteEffects.None, DrawLayer);
 
             //HITBOX
-            spriteBatch.Draw(hitboxTexture, new Vector2(InnerHitbox.Center.X - InnerHitbox.Radius, InnerHitbox.Center.Y - InnerHitbox.Radius), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, DrawLayer - .01f);
+            spriteBatch.Draw(hitboxTexture, new Vector2(InnerHitbox.Center.X - InnerHitbox.Radius + .5f, InnerHitbox.Center.Y - InnerHitbox.Radius), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, DrawLayer - .01f);
         }
 
 
@@ -211,6 +204,7 @@ namespace AsteroidRebuttal.GameObjects
                 thisScene.PlayAnimation(new Animation(GameScene.PlayerExplosionTexture, new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 48, 20f, new Vector2(Center.X - 24, Center.Y - 25), false));
                 AudioManager.PlaySoundEffect(GameScene.Explosion3Sound, .8f);
 
+                thisScene.ResetRank();
                 thisScene.scriptManager.Execute(thisScene.TryRespawn);
                 
                 Destroy();

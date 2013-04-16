@@ -21,6 +21,7 @@ namespace AsteroidRebuttal.GameObjects
         public GameScene thisScene;
         public List<GameObject> ChildObjects { get; protected set; }
         public float DrawLayer { get; set; }
+        public static int ObjectCount = 0;
         #endregion
 
         #region Position, Hitboxes, Collision
@@ -208,6 +209,9 @@ namespace AsteroidRebuttal.GameObjects
             {
                 Color = Color.White;
             }
+
+            ObjectCount++;
+            DrawLayer -= ObjectCount * .0000001f;
         }
 
 
@@ -221,7 +225,6 @@ namespace AsteroidRebuttal.GameObjects
 
             if (Parent != null && LockedToParentRotation)
             {
-                Console.WriteLine("LOCKED ROTATION SET");
                 Rotation = Parent.Rotation;
             }
             else
@@ -380,6 +383,9 @@ namespace AsteroidRebuttal.GameObjects
 
         public void LerpVelocity(float newVelocity, float duration)
         {
+            if (AsteroidRebuttal.ManicMode && this is Bullet)
+                newVelocity *= 2;
+
             lerpingVelocity = true;
             startVelocity = Velocity;
             targetVelocity = newVelocity;
@@ -414,6 +420,7 @@ namespace AsteroidRebuttal.GameObjects
 
         public virtual void Destroy()
         {
+            ObjectCount--;
             FlaggedForRemoval = true;
             foreach (GameObject go in ChildObjects)
                 go.Destroy();

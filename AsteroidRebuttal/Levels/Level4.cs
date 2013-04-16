@@ -31,6 +31,7 @@ namespace AsteroidRebuttal.Levels
         public static Texture2D Level4TitleTexture;
 
         public static Song Level4Theme;
+        bool WarningFlashing;
 
 
         public Level4(LevelManager thisManager) : base(thisManager) { }
@@ -43,8 +44,6 @@ namespace AsteroidRebuttal.Levels
 
         public override void SetupBackground()
         {
-            Console.WriteLine("Set up the background for level 4!");
-
             scrollingBackground = new List<ScrollingBackgroundLayer>();
 
             // Individually add each layer to the scrolling background...
@@ -237,7 +236,7 @@ namespace AsteroidRebuttal.Levels
             BeginBossBattle(boss);
 
             yield return 1.5f;
-            SoundEffectInstance bossTheme = AudioManager.PlaySong(BossTheme);
+            bossTheme = AudioManager.PlaySong(BossTheme);
 
             while (boss.Health > 0)
             {
@@ -260,7 +259,22 @@ namespace AsteroidRebuttal.Levels
 
             scriptManager.Execute(manager.thisScene.BossExplosion, boss);
             yield return 3.3f;
-            yield return 2f;
+
+            
+
+            yield return 1f;
+
+            WarningFlashing = false;
+            scrollingBackground[0].LerpColor(Color.White, 1f);
+            scrollingBackground[1].LerpColor(Color.White, 1f);
+            scrollingBackground[2].LerpColor(Color.White, 1f);
+            scrollingBackground[3].LerpColor(Color.White, 1f);
+            scrollingBackground[4].LerpColor(Color.White, 1f);
+            scrollingBackground[5].LerpColor(Color.Transparent, 1f);
+            scrollingBackground[6].LerpColor(Color.Transparent, 1f);
+
+            yield return 1f;
+
             manager.thisScene.fader.LerpColor(Color.Transparent, 3f);
             yield return 3f;
 
@@ -312,24 +326,25 @@ namespace AsteroidRebuttal.Levels
                 if(manager.thisScene.PointOnScreen(go.Center))
                     AudioManager.PlaySoundEffect(GameScene.Shot6Sound, .45f, .4f);
 
-                new BulletEmitter(go, go.Center, true).FireBullet(0f, 200f, Color.Orange).LerpVelocity(50f, 3f);
-                new BulletEmitter(go, go.Center, true).FireBullet((float)Math.PI, 200f, Color.Orange).LerpVelocity(50f, 3f);
-                yield return .18f;
+                new BulletEmitter(go, go.Center, true).FireBullet(0f, 150f, Color.Orange).LerpVelocity(50f, 3f);
+                new BulletEmitter(go, go.Center, true).FireBullet((float)Math.PI, 150f, Color.Orange).LerpVelocity(50f, 3f);
+                yield return .24f;
             }
         }
         public IEnumerator<float> KomodoStrafeBlue(GameObject go)
         {
             while (true)
             {
-                new BulletEmitter(go, go.Center, true).FireBullet(0f, 200f, Color.DeepSkyBlue).LerpVelocity(50f, 3f);
-                new BulletEmitter(go, go.Center, true).FireBullet((float)Math.PI, 200f, Color.DeepSkyBlue).LerpVelocity(50f, 3f);
-                yield return .18f;
+                new BulletEmitter(go, go.Center, true).FireBullet(0f, 150f, Color.DeepSkyBlue).LerpVelocity(50f, 3f);
+                new BulletEmitter(go, go.Center, true).FireBullet((float)Math.PI, 150f, Color.DeepSkyBlue).LerpVelocity(50f, 3f);
+                yield return .24f;
             }
         }
 
         public IEnumerator<float> Warning1Flash()
         {
-            while (true)
+            WarningFlashing = true;
+            while (WarningFlashing)
             {
                 scrollingBackground[5].LerpColor(Color.Lerp(Color.Transparent, Color.White, .5f), 3f);
                 yield return 4f;
@@ -340,7 +355,8 @@ namespace AsteroidRebuttal.Levels
 
         public IEnumerator<float> Warning2Flash()
         {
-            while (true)
+            WarningFlashing = true;
+            while (WarningFlashing)
             {
                 scrollingBackground[6].LerpColor(Color.Lerp(Color.Transparent, Color.White, .4f), 2.1f);
                 yield return 2.7f;

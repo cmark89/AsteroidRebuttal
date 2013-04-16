@@ -16,6 +16,7 @@ namespace AsteroidRebuttal.Levels
         protected List<ScrollingBackgroundLayer> scrollingBackground;
         protected LevelManager manager;
         protected ScriptManager scriptManager;
+        public SoundEffectInstance bossTheme;
 
         protected Boss levelBoss;
 
@@ -68,11 +69,7 @@ namespace AsteroidRebuttal.Levels
         // Sets up the background to begin scrolling.
         public virtual void SetupBackground()
         {
-            Console.WriteLine("Set up the background");
-
             scrollingBackground = new List<ScrollingBackgroundLayer>();
-            // Individually add each layer to the scrolling background...
-            //scrollingBackground.Add(new ScrollingBackgroundLayer(thisScene, texture, scrollSpeed, color);
         }
 
         public Enemy SpawnEnemy(EnemyType newType, Vector2 position)

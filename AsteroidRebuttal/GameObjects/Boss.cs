@@ -26,7 +26,8 @@ namespace AsteroidRebuttal.Enemies
 
         protected ScriptManager scriptManager;
 
-        protected static Texture2D testBossTexture;
+        protected static Texture2D boss1Texture;
+        protected static Texture2D boss1Texture2;
         protected static Texture2D boss2Texture;
         protected static Texture2D boss3Texture;
         protected static Texture2D boss3EggTexture;
@@ -80,9 +81,13 @@ namespace AsteroidRebuttal.Enemies
 
         public static void LoadContent(ContentManager content)
         {
-            if (testBossTexture == null)
+            if (boss1Texture == null)
             {
-                testBossTexture = content.Load<Texture2D>("Graphics/Ships/Boss1");
+                boss1Texture = content.Load<Texture2D>("Graphics/Ships/Boss1");
+            }
+            if (boss1Texture2 == null)
+            {
+                boss1Texture2 = content.Load<Texture2D>("Graphics/Ships/Boss1-2");
             }
             if (boss2Texture == null)
             {

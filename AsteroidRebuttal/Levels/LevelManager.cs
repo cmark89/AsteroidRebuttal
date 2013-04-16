@@ -32,8 +32,6 @@ namespace AsteroidRebuttal.Levels
 
         public static void LoadContent(ContentManager content)
         {
-            //TEST
-            Console.WriteLine("Loaded level content!");
             Level1.Level1GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level1");
             Level2.Level2GroundTexture = content.Load<Texture2D>("Graphics/Backgrounds/level2");
             Level2.Level2CloudTexture = content.Load<Texture2D>("Graphics/Backgrounds/level2clouds");
@@ -72,6 +70,12 @@ namespace AsteroidRebuttal.Levels
         {
             if (currentLevel != null)
                 currentLevel.Update(gameTime);
+        }
+
+        public void HaltAudio()
+        {
+            if (currentLevel.bossTheme != null)
+                currentLevel.bossTheme.Dispose();
         }
 
         public void Draw(SpriteBatch spriteBatch)
