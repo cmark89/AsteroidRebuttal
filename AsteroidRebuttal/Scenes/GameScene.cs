@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ObjectivelyRadical;
-using ObjectivelyRadical.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -194,7 +192,7 @@ namespace AsteroidRebuttal.Scenes
         public override void LoadContent(ContentManager content)
         {
             //TEST
-            ExplosionTexture = content.Load<Texture2D>("Graphics/Effects/Explosion");
+            ExplosionTexture = content.Load<Texture2D>("Graphics/Effects/explosion");
             PlayerExplosionTexture = content.Load<Texture2D>("Graphics/Effects/explosion2");
 
             BossHealthbarBackgroundTexture = content.Load<Texture2D>("Graphics/GUI/HealthBarBackground");
@@ -319,7 +317,7 @@ namespace AsteroidRebuttal.Scenes
                 // Give them another life.
 
                 Lives++;
-                AudioManager.PlaySoundEffect(ExtendSound, .9f);
+                AudioManager.PlaySoundEffect(ExtendSound, .9f, 0f, false);
                 // Play a nice sound.
 
                 if (ExtendValues.Count > 1)
@@ -503,16 +501,16 @@ namespace AsteroidRebuttal.Scenes
                 switch (Rank)
                 {
                     case (1):
-                        Rank1.Play(.8f, 0f, 0f);
+						AudioManager.PlaySoundEffect(Rank1, .8f, 0f, false);
                         break;
                     case (2):
-                        Rank2.Play(.8f, 0f, 0f);
+                        AudioManager.PlaySoundEffect(Rank2, .8f, 0f, false);
                         break;
                     case (3):
-                        Rank3.Play(.8f, 0f, 0f);
+                        AudioManager.PlaySoundEffect(Rank3, .8f, 0f, false);
                         break;
                     case (4):
-                        Rank4.Play(.8f, 0f, 0f);
+                        AudioManager.PlaySoundEffect(Rank4, .8f, 0f, false);
                         break;
                     default:
                         break;
@@ -562,16 +560,16 @@ namespace AsteroidRebuttal.Scenes
             BossWarningShown = true;
             LerpBossWarningColor(Color.White, 1.5f);
 
-            BossAlarm.Play(.8f, 0f, 0f);
+            AudioManager.PlaySoundEffect(BossAlarm, .8f, 0f, false);
             yield return .75f;
 
-            BossWarning.Play(.6f, 0f, 0f);
+            AudioManager.PlaySoundEffect(BossWarning, .6f, 0f, false);
             yield return .75f;
 
 
             for (int i = 0; i < 2; i++)
             {
-                BossAlarm.Play(.8f, 0f, 0f);
+                AudioManager.PlaySoundEffect(BossAlarm, .8f, 0f, false);
                 LerpBossWarningColor(new Color(.5f, .5f, .5f, .5f), 1f);
                 yield return 1f;
                 LerpBossWarningColor(Color.White, 1f);
@@ -591,17 +589,17 @@ namespace AsteroidRebuttal.Scenes
             BossWarningShown = true;
             LerpBossWarningColor(Color.White, 1f);
 
-            JammedAlarm.Play(.5f, 0f, 0f);
+            AudioManager.PlaySoundEffect(JammedAlarm, .5f, 0f, false);
             yield return .5f;
 
-            JammedWarning.Play(.8f, 0f, 0f);
+            AudioManager.PlaySoundEffect(JammedWarning, .8f, 0f, false);
             yield return .5f;
 
 
             for (int i = 0; i < 4; i++)
             {
                 if(i%2 != 0)
-                    JammedAlarm.Play(.5f, 0f, 0f);
+                    AudioManager.PlaySoundEffect(JammedAlarm, .5f, 0f, false);
 
                 LerpBossWarningColor(new Color(.3f, .3f, .3f, .3f), .5f);
                 yield return .5f;

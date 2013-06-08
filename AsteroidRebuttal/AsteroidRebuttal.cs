@@ -78,6 +78,7 @@ namespace AsteroidRebuttal
         
         protected override void Update(GameTime gameTime)
         {
+            GamepadManager.Update(gameTime);
             KeyboardManager.Update(gameTime);
 
             if (CurrentScene != null)

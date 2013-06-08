@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ObjectivelyRadical;
-using ObjectivelyRadical.Controls;
-using ObjectivelyRadical.Scripting;
+using AsteroidRebuttal.Core;
+using AsteroidRebuttal.Scripting;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
@@ -57,7 +56,7 @@ namespace AsteroidRebuttal.Scenes
             scriptManager.Update(gameTime);
 
             // Check for input to skip the screen
-            if (KeyboardManager.KeyPressedUp(Keys.Space) || KeyboardManager.KeyPressedUp(Keys.Enter))
+            if (KeyboardManager.KeyPressedUp(Keys.Space) || KeyboardManager.KeyPressedUp(Keys.Enter) || GamepadManager.ProceedButtonPressedUp())
             {
                 Game.ChangeScene(new TitleScene(Game));
             }

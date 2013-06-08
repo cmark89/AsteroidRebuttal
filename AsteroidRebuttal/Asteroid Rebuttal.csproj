@@ -131,8 +131,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\AudioManager.cs" />
     <Compile Include="Core\CollisionDetection.cs" />
+    <Compile Include="Core\GamepadManager.cs" />
     <Compile Include="Core\ICollidable.cs" />
+    <Compile Include="Core\KeyboardManager.cs" />
+    <Compile Include="Core\MouseManager.cs" />
     <Compile Include="Core\QuadTree.cs" />
     <Compile Include="Core\VectorMathHelper.cs" />
     <Compile Include="Enemies\Bosses\ParasiteOrb.cs" />
@@ -164,24 +168,22 @@
     <Compile Include="Levels\LevelManager.cs" />
     <Compile Include="Levels\ScrollingBackground.cs" />
     <Compile Include="Levels\ScrollingBackgroundLayer.cs" />
-    <Compile Include="Scenes\LogoSplashScene.cs" />
-    <Compile Include="Scenes\TitleScene.cs" />
-    <Compile Include="Scenes\GameOverScene.cs" />
-    <Compile Include="Scenes\GameScene.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="AsteroidRebuttal.cs" />
+    <Compile Include="Scenes\GameOverScene.cs" />
+    <Compile Include="Scenes\GameScene.cs" />
+    <Compile Include="Scenes\LogoSplashScene.cs" />
+    <Compile Include="Scenes\Scene.cs" />
+    <Compile Include="Scenes\TitleScene.cs" />
     <Compile Include="Scripting\ScriptManager.cs" />
     <Compile Include="Scripting\ScriptWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CheatCodes.txt" />
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\ObjectivelyRadical\ObjectivelyRadical\ObjectivelyRadical.csproj">
-      <Project>{158429AB-CFC0-49CD-A4E1-24F71E594E40}</Project>
-      <Name>ObjectivelyRadical</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AsteroidRebuttalContent\AsteroidRebuttalContent.contentproj">
       <Name>AsteroidRebuttalContent</Name>
       <XnaReferenceType>Content</XnaReferenceType>
@@ -215,7 +217,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AsteroidRebuttal_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

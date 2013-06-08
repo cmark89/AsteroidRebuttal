@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.Media;
 using ObjectivelyRadical;
 using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Enemies;
-using ObjectivelyRadical.Scripting;
 using AsteroidRebuttal.Core;
 using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Enemies.Bosses;
@@ -170,28 +169,6 @@ namespace AsteroidRebuttal.Levels
             e = SpawnEnemyAtAngle(EnemyType.Komodo, new Vector2(550, -30), (float)Math.PI / 2, 60f);
             scriptManager.Execute(KomodoStrafeBlue, e);
             yield return 4f;
-
-            // Turtles, round 2.
-            e = SpawnEnemy(EnemyType.Tortoise, new Vector2(350, -35f));
-            e.Rotation = (float)Math.PI / 2f;
-            e.CustomValue1 = .4f;
-            e.CustomValue2 = (float)Math.PI / 2f;
-            e.Velocity = 40f;
-            scriptManager.Execute(TurtleBarrage, e);
-
-            e = SpawnEnemy(EnemyType.Tortoise, new Vector2(150, -65f));
-            e.Rotation = (float)Math.PI / 2f;
-            e.CustomValue1 = .6f;
-            e.CustomValue2 = (float)(Math.PI / 4f) * 1;
-            e.Velocity = 40f;
-            scriptManager.Execute(TurtleBarrage, e);
-
-            e = SpawnEnemy(EnemyType.Tortoise, new Vector2(550, -65f));
-            e.Rotation = (float)Math.PI / 2f;
-            e.CustomValue1 = .6f;
-            e.CustomValue2 = (float)(Math.PI / 4f) * 3;
-            e.Velocity = 40f;
-            scriptManager.Execute(TurtleBarrage, e);
 
             yield return 4f;
 

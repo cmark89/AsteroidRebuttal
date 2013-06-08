@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ObjectivelyRadical.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -12,7 +11,6 @@ using AsteroidRebuttal.Scenes;
 using AsteroidRebuttal.Scripting;
 using AsteroidRebuttal.GameObjects;
 using AsteroidRebuttal.Enemies;
-using ObjectivelyRadical;
 
 namespace AsteroidRebuttal.GameObjects
 {
@@ -98,7 +96,7 @@ namespace AsteroidRebuttal.GameObjects
             // Update controls
             float moveSpeed;
 
-            if (KeyboardManager.KeyDown(Keys.LeftShift))
+            if (KeyboardManager.KeyDown(Keys.LeftShift) || GamepadManager.AButtonDown() || GamepadManager.AnyShoulderButtonDown())
             {
                 moveSpeed = speed / 2.5f;
             }
@@ -108,24 +106,24 @@ namespace AsteroidRebuttal.GameObjects
             }
 
          
-            if(KeyboardManager.KeyDown(Keys.Left))
+            if(KeyboardManager.KeyDown(Keys.Left) || GamepadManager.LeftButtonDown())
             {
                 movement.X = -1 * (moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-            if(KeyboardManager.KeyDown(Keys.Right))
+            if(KeyboardManager.KeyDown(Keys.Right) || GamepadManager.RightButtonDown())
             {
                 movement.X = (moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-            if(KeyboardManager.KeyDown(Keys.Up))
+            if(KeyboardManager.KeyDown(Keys.Up) || GamepadManager.UpButtonDown())
             {
                 movement.Y = -1 * (moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
-            if(KeyboardManager.KeyDown(Keys.Down))
+            if(KeyboardManager.KeyDown(Keys.Down) || GamepadManager.DownButtonDown())
             {
                 movement.Y = (moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds);
             }
 
-            if (KeyboardManager.KeyDown(Keys.Space) && gameTime.TotalGameTime.TotalSeconds > nextFireTime && CanFire)
+            if ((KeyboardManager.KeyDown(Keys.Space) || GamepadManager.XButtonDown()) && gameTime.TotalGameTime.TotalSeconds > nextFireTime && CanFire)
             {
                 // Fire!
                 AudioManager.PlaySoundEffect(GameScene.Shot3Sound, .2f);
@@ -135,6 +133,10 @@ namespace AsteroidRebuttal.GameObjects
 
                 nextFireTime = (float)gameTime.TotalGameTime.TotalSeconds + .1f;
             }
+
+			// Calculate the movement from the sticks if they exist
+			movement.X += (moveSpeed * GamepadManager.LeftStickX() * (float)gameTime.ElapsedGameTime.TotalSeconds);
+			movement.Y -= (moveSpeed * GamepadManager.LeftStickY() * (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             Position += movement;
 

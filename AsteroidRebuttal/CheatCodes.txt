@@ -1,0 +1,17 @@
+﻿+++++++++++++++++++++++
+ASTEROID REBUTTAL v1.04
+ C H E A T   C O D E S
++++++++++++++++++++++++
+
+To activate a cheat code, you must be on the main menu screen (after the title has appeared and the prompt to press enter has begun flashing).
+Hold down left shift on the keyboard (or one of the bumpers on a controller) and input the sequence on the arrow keys or D-pad.  
+If entered correctly, you will receive a notification.
+
+IMMORTAL MODE - In Immortal Mode, you have unlimited lives.  Use this if you cannot beat the game on your own but want to see all the content.
+To Activate: Up, Up, Left, Right, Left, Right, Down
+
+MANIC MODE - In Manic Mode, all enemy bullets move twice as fast.  Use this if you think the game is too easy.
+To Activate: Right, Down, Left, Right, Down, Left, Up, Up
+
+HARDCORE MODE - In Hardcore Mode, you start with only one life and cannot earn more lives.  
+To Activate: Right, Up, Left, Down, Right, Down, Left, Up, Down

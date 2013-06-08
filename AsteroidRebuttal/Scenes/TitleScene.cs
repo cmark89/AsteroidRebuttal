@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ObjectivelyRadical;
-using ObjectivelyRadical.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -78,7 +76,7 @@ namespace AsteroidRebuttal.Scenes
                 cheatTextCurrentColor = Color.Lerp(Color.Gold, Color.Transparent, ((float)gameTime.TotalGameTime.TotalSeconds - cheatInputTime) / 4f);
             }
 
-            if (fadephase < 2 && (KeyboardManager.KeyPressedUp(Keys.Space) || KeyboardManager.KeyPressedUp(Keys.Enter) || KeyboardManager.KeyPressedUp(Keys.Escape)))
+            if (fadephase < 2 && (KeyboardManager.KeyPressedUp(Keys.Space) || KeyboardManager.KeyPressedUp(Keys.Enter) || KeyboardManager.KeyPressedUp(Keys.Escape) || GamepadManager.ProceedButtonPressedUp()))
             {
                 backgroundCurrentColor = Color.White;
                 text1CurrentColor = Color.White;
@@ -86,18 +84,15 @@ namespace AsteroidRebuttal.Scenes
                 startTextColor = Color.White;
                 startTextNextChange = time + .8f;
                 fadephase = 2;
-            }
-
-            // Process input on the main screen...
-            if (fadephase == 2)
+            } else if (fadephase == 2)
             {
-                if (KeyboardManager.KeyDown(Keys.LeftShift))
+                if (KeyboardManager.KeyDown(Keys.LeftShift) || GamepadManager.AnyShoulderButtonDown())
                 {
                     // Get the input to add to the cheat string.
-                    if (KeyboardManager.KeyPressedUp(Keys.Up)) { cheatInputText = String.Concat(cheatInputText, "U"); }
-                    if (KeyboardManager.KeyPressedUp(Keys.Down)) { cheatInputText = String.Concat(cheatInputText, "D"); }
-                    if (KeyboardManager.KeyPressedUp(Keys.Left)) { cheatInputText = String.Concat(cheatInputText, "L"); }
-                    if (KeyboardManager.KeyPressedUp(Keys.Right)) { cheatInputText = String.Concat(cheatInputText, "R"); }
+                    if (KeyboardManager.KeyPressedUp(Keys.Up) || GamepadManager.UpButtonPressedUp()) { cheatInputText = String.Concat(cheatInputText, "U"); }
+                    if (KeyboardManager.KeyPressedUp(Keys.Down) || GamepadManager.DownButtonPressedUp()) { cheatInputText = String.Concat(cheatInputText, "D"); }
+                    if (KeyboardManager.KeyPressedUp(Keys.Left) || GamepadManager.LeftButtonPressedUp()) { cheatInputText = String.Concat(cheatInputText, "L"); }
+                    if (KeyboardManager.KeyPressedUp(Keys.Right) || GamepadManager.RightButtonPressedUp()) { cheatInputText = String.Concat(cheatInputText, "R"); }
 
                     CheckCheats(gameTime);
                 }
@@ -107,7 +102,7 @@ namespace AsteroidRebuttal.Scenes
                 }
 
 
-                if (KeyboardManager.KeyPressedDown(Keys.Enter) && !HelpShown && !CreditsShown)
+                if ((KeyboardManager.KeyPressedDown(Keys.Enter) || GamepadManager.ProceedButtonPressedUp()) && !HelpShown && !CreditsShown)
                 {
                     // Begin the game...
                     fadephase = 3;
@@ -213,7 +208,7 @@ namespace AsteroidRebuttal.Scenes
                 ActivateManicMode();
                 cheatInputText = "";
             }
-            else if (cheatInputText == "RULDRDLUD" && !AsteroidRebuttal.ManicMode)
+            else if (cheatInputText == "RULDRDLUD" && !AsteroidRebuttal.HardcoreMode)
             {
                 AsteroidRebuttal.HardcoreMode = true;
                 cheatInputTime = (float)gameTime.TotalGameTime.TotalSeconds;

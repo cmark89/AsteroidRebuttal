@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ObjectivelyRadical;
-using ObjectivelyRadical.Controls;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
@@ -41,7 +39,7 @@ namespace AsteroidRebuttal.Scenes
         public override void Update(GameTime gameTime)
         {
             time += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (KeyboardManager.KeyPressedUp(Keys.Space))
+            if (KeyboardManager.KeyPressedUp(Keys.Space) || GamepadManager.ProceedButtonPressedUp())
             {
                 if(fadephase < 2)
                     time = 8f;
